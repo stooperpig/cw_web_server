@@ -1,0 +1,55 @@
+{
+  "currentTurn": 6,
+  "currentPlayerId": 0,
+  "taskCounter": 201,
+  "teams": [
+    {
+      "id": 0,
+      "name": "Russian",
+      "players": [
+        {
+          "id": 0,
+          "name": "Russ",
+          "counters": [
+            {
+              "id": 9,
+              "type": "testCounter",
+              "tasks": [
+                {
+                  "id": 100,
+                  "type": "In",
+                  "hexX": 0,
+                  "hexY": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "German",
+      "players": [
+        {
+          "id": 1,
+          "name": "Germ",
+          "counters": [
+            {
+              "id": 109,
+              "type": "testCounter",
+              "tasks": [
+                {
+                  "id": 200,
+                  "type": "In",
+                  "hexX": 1,
+                  "hexY": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

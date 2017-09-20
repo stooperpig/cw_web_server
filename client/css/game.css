@@ -1,0 +1,65 @@
+
+body {font-family: Segoe UI,Helvetica,Arial,sans-serif;}
+
+#header {border-bottom:1px solid #ffffff; width:100%; height:85px;}
+#mainMenuDiv {background-color:#201913; width:100%; height:40px; color:#ffffff;}
+#mainToolbar {border-top:1px dotted #ffffff; background-color:#201913; height:39px; padding-top:5px; padding-left:5px;}
+#mainToolbar span {color:white}
+
+#footer {position:relative; border-top:1px solid #ffffff; width:100%; height:34px; background-color:#201913}
+#footerClockDiv {float:left; background-color:#201913; width:350px; height:29px; padding-top:5px; padding-left:4px;}
+#currentTimeDiv {float:left; border:1px solid #ffffff; width:30px; margin-left:6px; margin-right:10px; color:#ffffff; text-align:center; 
+	font-family:Impact,Charcoal,sans-serif;}
+#clockControlsDiv {float:left; width:300px;}
+#footerStatusDiv {float:left; background-color:#201913; height:29px; padding-top:5px; padding-left:2px; color:#ffffff; border-left:1px dotted #ffffff; }
+#footerTurnDiv {float:right; background-color:#201913; height:29px; padding-top:5px; padding-left:10px; padding-right:10px; color:#ffffff; border-left:1px dotted #ffffff;}
+
+#center {width:100%; height:600px;} 
+#sidebar {border-right:1px solid #ffffff; float:left; width:180px; height:100%;}
+#stackDiv {width:179px; overflow:auto; background:#201913; color:#ffffff;}
+#sidebarTabs {height:250px;}
+#taskListDiv {height:212px; overflow:auto; padding:0;}
+
+
+#gameModeButton {float:right; margin-right:10px;}
+
+#hexInfo { padding:0; }
+#taskList { padding:0em 1.4em; }
+
+#currentHexDiv {background-color:#201913;; width:179px; height:120px; color:#ffffff;}
+
+#mainMapDiv {height:100%; overflow:auto; background-color:#000000;}
+#mainMapCanvas {border: 0px none black;}
+
+#counterList .ui-selecting, #targetList .ui-selecting, #taskList .ui-selecting { background: #FECA40; }
+#counterList .ui-selected, #targetList .ui-selected, #taskList .ui-selected { background: #F39814; color: white; }
+#counterList, #targetList, #taskList { list-style-type: none; margin: 0; padding: 0;}
+#counterList li, #targetList li { margin: 3px; padding: 0.4em; font-size: .75em;}
+
+.board {padding:0px; margin:0px;}
+.boardRow .board {float:left;}
+.boardRow {width:3328px;}
+.clear {clear:both;}
+
+#taskList {
+	overflow:auto;
+}
+
+nav {color: #9BCC60; font-weight:bold;}
+nav ul ul {display: none;}
+nav ul li:hover > ul {display: block;}
+nav ul {list-style: none outside none; padding: 0px; position: relative;}
+nav ul:after {clear: both; content: ""; display: block;}
+nav ul li {float: left;}
+nav ul li:hover {background: url("/panzerblitz/server/images/ui-bg_gloss-wave_30_44372c_500x100.png") repeat-x scroll 50% 50% #44372C;}
+nav ul li:hover a {color: #ffffff;}
+nav ul li a {display: block; padding: 10px 10px; text-decoration: none; color: #9BCC60;}
+nav ul ul {background: none repeat scroll 0 0 #201913; border-radius: 0 0 0 0; padding: 0; position: absolute; top: 100%;}
+nav ul ul li {border-bottom: 1px solid #575F6A; border-top: 1px solid #6B727C; float: none; position: relative;}
+nav ul ul li a {color: #FFFFFF; padding: 15px 40px;}
+nav ul ul li a:hover {background: url("/panzerblitz/server/images/ui-bg_gloss-wave_30_44372c_500x100.png") repeat-x scroll 50% 50% #44372C;}
+nav ul ul ul {left: 100%; position: absolute; top: 0;}
+
+#mainToolbar .ui-button {position:static;}
+.ui-widget {font-size:.9em;}
+.ui-widget-overlay {background:#ffffff; -moz-opacity:0.99; filter:alpha(opacity=99);}

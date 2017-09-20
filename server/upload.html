@@ -1,0 +1,12 @@
+<html>
+<body>
+<form enctype="multipart/form-data" action="receiveSim.php" method="POST">
+    <!-- MAX_FILE_SIZE must precede the file input field -->
+    <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+    <!-- Name of input element determines name in $_FILES array -->
+    Send this file 0: <input name="file[]" type="file" /></br>
+    Send this file 1: <input name="file[]" type="file" /></br>
+    <input type="submit" value="Send File" />
+</form>
+</body>
+</html>
