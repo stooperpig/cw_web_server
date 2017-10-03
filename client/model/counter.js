@@ -1,14 +1,29 @@
 var wego = wego || {};
 
-wego.Counter = function(id,counterType) {
-	this.mId =id;
-	this.mCounterType = counterType;
+wego.Counter = function() {
 	this.mTasks = new Array();
 	this.mReplayTasks = new Array();
-	this.mRemainingMovementFactor = counterType.getMovementFactor();
 	this.mPlayer = null;
 	this.mCurrentTask = null;
-}
+	this.mRemainingMovementFactor = 10;
+
+    this.type = "";
+    this.quality = "";
+    this.weapon = "";
+	this.unitImageIndex = 3;
+	this.unitSymbolIndex = 0;
+	this.name = "";
+	this.parentName = "";
+	this.facing = "";
+	this.strength = "";
+	this.id = "";
+	this.fatigue = "";
+	this.formation = 0;
+	this.fixed = false;
+	this.moraleStatus = 0;
+	this.leadership = 0;
+	this.command = 0;
+};
 
 wego.Counter.prototype = {
 		
@@ -44,105 +59,6 @@ wego.Counter.prototype = {
 		this.mCurrentTask = task;
 	},
 	
-	canDirectFire:function(hex) {
-		var returnValue = false;
-		if (this.mTasks.length == 1) {
-			var weaponClass = this.mCounterType.getWeaponClass();
-			if (weaponClass != wego.WeaponClass.CARRIER) {
-				returnValue = true;
-			}
-			
-			if (returnValue == true && hex != null) {
-				var map = wego.Map;
-				var currentHex = this.getHex();
-				var range = map.getRange(currentHex,hex);
-				if (range > this.mCounterType.getRangeFactor()) {
-					returnValue = false;
-				}
-			}
-		}
-		
-		return returnValue;
-	},
-	
-	canIndirectFire:function(hex) {
-		var returnValue = false;
-		if (this.mTasks.length == 1) {
-			var counterType = this.getCounterType();
-			var weaponClass = counterType.getWeaponClass();
-			switch(weaponClass) {
-				case wego.WeaponClass.MORTAR:
-					returnValue = true;
-					break;
-				case wego.WeaponClass.HIGH_EXPLOSIVE:
-					var unitCategory = counterType.getUnitCategory();
-					if (unitCategory == wego.UnitCategory.SELF_PROPELLED_GUN && this.mNationality == wego.NationalityType.GERMAN) {
-						returnValue = true;
-					}
-					break;
-			}
-			
-			if (returnValue == true && hex != null) {
-				var map = wego.Map;
-				var currentHex = this.getHex();
-				var range = map.getRange(currentHex,hex);
-				if (range > counterType.getRangeFactor()) {
-					returnValue = false;
-				}
-			}
-		}
-		
-		return returnValue;
-	},
-	
-	canLoad:function(otherUnit) {
-		var returnValue = false;
-		
-		if (this.mTasks.length == 1) {
-			var myUnitCategory = this.mCounterType.getUnitCategory();
-			var otherUnitCategory = otherUnit.getCounterType().getUnitCategory();
-			switch(myUnitCategory) {
-				case wego.UnitCategory.TRANSPORT:
-					switch(otherUnitCategory) {
-						case wego.UnitCategory.INFANTRY:
-						case wego.UnitCategory.COMMAND_POST:
-						case wego.UnitCategory.TOWED_GUN:
-							returnValue = true;
-							break;
-					}
-					break;
-				case wego.UnitCategory.ASSAULT_GUN:
-				case wego.UnitCategory.TANK:
-					if (otherUnitCategory == wego.UnitCategory.INFANTRY) {
-						returnValue = true;
-					}
-					break;
-			}
-			
-			if (!returnValue) {
-				switch(myUnitCategory) {
-					case wego.UnitCategory.INFANTRY:
-						switch(otherUnitCategory) {
-							case wego.UnitCategory.ASSAULT_GUN:
-							case wego.UnitCategory.TANK:
-							case wego.UnitCategory.TRANSPORT:
-								returnValue = true;
-							break;
-						}
-						break
-					case wego.UnitCategory.COMMAND_POST:
-					case wego.UnitCategory.TOWED_GUN:
-						if (otherUnitCategory == wego.UnitCategory.TRANSPORT) {
-							returnValue = true;
-						}
-						break;
-				}
-			}
-		}
-		
-		return returnValue;
-	},
-	
 	canMoveTo:function(toHex) {
 		var returnValue = false;
 		
@@ -160,22 +76,7 @@ wego.Counter.prototype = {
 	canOpportunityFire:function() {
 		return this.canDirectFire(null);
 	},
-	
-	canUnload:function() {
-		var returnValue = false;
-		var passengers = this.getPassengers();
-		if (passengers != null && passengers.length > 0) {
-			returnValue = true;
-		} else {
-			if (this.mTasks.length == 1) {
-				var transport = this.getTransport();
-				returnValue = (transport != null);
-			}
-		}
-		
-		return returnValue;
-	},
-	
+
 	deleteTask:function(time,adjustPassengersOrTransport) {
 		var length = this.mTasks.length;
 		
@@ -212,23 +113,19 @@ wego.Counter.prototype = {
 	},
 	
 	getCounterName: function () {
-		return this.mCounterType.mCounterName;
-	},
-	
-	getCounterType:function () {
-		return this.mCounterType;
+		return this.name;
 	},
 	
 	getId:function () {
-		return this.mId;
+		return this.id;
 	},
 	
 	getImage:function () {
-		return this.mCounterType.getImage();
+		return null;
 	},
 	
 	getImageSrc:function () {
-		return this.mCounterType.getImageSrc();
+		return "";
 	},
 	
 	getHex:function () {
@@ -256,7 +153,7 @@ wego.Counter.prototype = {
 	},
 	
 	getMovementFactor:function() {
-		return this.mCounterType.getMovementFactor();
+		return this.movementFactor;
 	},
 	
 	getPassengers:function() {
@@ -360,16 +257,7 @@ wego.Counter.prototype = {
 		return returnValue;
 	},
 	
-	isFort:function() {
-		var returnValue = false;
-		var category = this.mCounterType.getUnitCategory();
-		if (category == wego.UnitCategory.FORT) {
-			returnValue = true;
-		}
-		
-		return returnValue;
-	},
-	
+
 	isReady:function() {
 		var returnValue = false;
 		
@@ -380,60 +268,6 @@ wego.Counter.prototype = {
 		
 		return returnValue;
 	}, 
-	
-	isTruck:function() {
-		var returnValue = false;
-		var subcategory = this.mCounterType.getUnitSubcategory();
-		if (subcategory == wego.UnitSubcategory.TRUCK) {
-			returnValue = true;
-		}
-		
-		return returnValue;
-	},
-	
-	isVehicle:function() {
-		var returnValue = false;
-		var category = this.mCounterType.getUnitCategory();
-		switch(category) {
-			case wego.UnitCategory.TRANSPORT:
-			case wego.UnitCategory.ARMORED_CAR:
-			case wego.UnitCategory.SELF_PROPELLED_GUN:
-			case wego.UnitCategory.ASSAULT_GUN:
-			case wego.UnitCategory.TANK_DESTORYER:
-			case wego.UnitCategory.TANK:
-				returnValue = true;
-		
-		}
-		return returnValue;
-	},
-	
-	loadPassengers:function(passengers) {
-		var unitCategory = this.mCounterType.getUnitCategory();
-		var movementCost = this.getMovementFactor();
-//		switch(unitCategory) {
-//			case wego.UnitCategory.TRANSPORT:
-//			case wego.UnitCategory.ASSAULT_GUN:
-//			case wego.UnitCategory.TANK:
-				var hex = this.getHex();
-				var task = new wego.Task(wego.TaskType.LOAD,hex,movementCost);
-				task.addPassengers(passengers);
-				this.addTask(task);
-//				break;
-//			default:
-//				var task = new wego.Task(wego.TaskType.LOAD,null,movementCost);
-//				task.setTransport(otherUnits);
-//				this.addTask(task);
-//				break;
-//		}
-	},
-	
-	loadTransport:function(transport) {
-		var unitCategory = this.mCounterType.getUnitCategory();
-		var movementCost = this.getMovementFactor();
-		var task = new wego.Task(wego.TaskType.LOAD,null,movementCost);
-		task.setTransport(transport);
-		this.addTask(task);
-	},
 	
 	moveTo:function(toHex) {
 		var fromHex = this.getHex();
@@ -460,24 +294,11 @@ wego.Counter.prototype = {
 		}
 	},
 	
-	/*public boolean isAfv() {
-		boolean returnValue = false;
-		UnitCategory category = getCategory();
-		switch(category) {
-			case ARMORED_CAR:
-			case ASSAULT_GUN:
-			case TANK_DESTORYER:
-			case TANK:
-				returnValue = true;
-		
-		}
-		return returnValue;
-	}*/
-	
+
 	save:function() {
 		var returnValue = {};
-		returnValue.id = this.mId;
-		returnValue.type = this.mCounterType.getCounterName();
+		returnValue.id = this.id;
+		//returnValue.type = this.mCounterType.getCounterName();
 		returnValue.tasks = new Array();
 		for(var i = 0; i < this.mTasks.length; ++i) {
 			var result = this.mTasks[i].save();
@@ -498,7 +319,7 @@ wego.Counter.prototype = {
 	},
 	
 	toString:function() {
-		return this.mCounterType.getCounterName();
+		return ""; //this.mCounterType.getCounterName();
 	},
 	
 	unload:function() {

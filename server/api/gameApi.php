@@ -65,10 +65,10 @@ if ($action == "retrieveGame") {
 	if (isset($_GET["gameId"])) {
 		$gameId = $_GET["gameId"];
 		$playerId = $_GET["playerId"];
-		$scenario = file_get_contents('../data/scenarios/scenario0.json');
-		$game = file_get_contents('../data/games/game'.$gameId.'_'.$playerId.'.json');
+		//$scenario = file_get_contents('../data/scenarios/scenario0.json');
+		$game = file_get_contents('../data/games/game'.$gameId.'-'.$playerId.'.json');
 		//	header('Content-type: application/json');
-		echo '{"scenario":'.$scenario.',"game":'.$game.'}';
+		echo $game;
 	} else {
 		echo '{"message":"Game id missing on request"}';
 	}

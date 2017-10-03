@@ -92,101 +92,77 @@ wego.UnitPanelController = (function() {
 	}
 	
 	function updateStack(hex,selectedCounters) {
-		//wego.MainController.updateCounterList("#counterList",hex,selectedCounters,wego.Game.getCurrentPlayer());
-				var canvas = document.getElementById('unitBoxCanvas');
-        		var context = canvas.getContext('2d');
-        		context.canvas.height = (109 * 2) + 5
-        		context.clearRect(0,0,canvas.width,canvas.height);
-        		drawUnitBox(context, 3, 5, 0);
-        		drawUnit(context, 2, 6, 1);
-        		drawUnitBox(context, 3, 5, 110);
-                drawUnit(context, 5, 6, 111);
+		var canvas = document.getElementById('unitBoxCanvas');
+        var context = canvas.getContext('2d');
+        context.clearRect(0,0,canvas.width,canvas.height);
 
-                context.font = "10px Arial";
-                context.textAlign = "right";
-                context.fillStyle = "white";
+        var stack = hex.getStack();
+        if (stack != null) {
+            var counters = stack.getCounters();
+            if (counters != null) {
+                var numCounters = counters.length;
+               context.canvas.height = (109 * numCounters) + 20;
+                for(var i = 0; i < numCounters; ++i) {
+                    drawCounter(context, i, counters[i]);
+                }
+             }
+         }
+	}
 
-                var x = 102;
-                var rowSpace = 15
-                y = 11;
-                context.fillText("999",x,y);
-                y += rowSpace;
-                context.fillText("10",x,y);
-                y += rowSpace
-                context.fillText("12",x,y);
-                y += rowSpace
-                context.fillText("A",x,y);
-                y += rowSpace
-                context.fillText("0",x,y);
+	function drawCounter(context, index, counter) {
+	    var rowSpace = 15
+	    var x = 3;
+	    var baseY = index * (109 + 2);
 
-                x = 31;
-                y += rowSpace - 1;
-                context.fillStyle = "black";
-                context.fillText("M",x,y);
+	    wego.SpriteUtil.drawSprite(context, "UnitBox", 3, x, baseY);
+	    wego.SpriteUtil.drawSprite(context, "Units", counter.unitPicture, x + 1, baseY + 1);
 
-                var spriteNumber = 204;
-                var spriteSheet = wego.ImageCache["Icons2d"].image;
-                var spritesPerRow = 12;
-                var spritesRows = 20;
+        context.font = "10px Arial";
+        context.textAlign = "right";
+        context.fillStyle = "white";
 
-                var spriteRow = Math.floor(spriteNumber / spritesPerRow);
-                var spriteColumn = spriteNumber % spritesPerRow;
+        x = 102;
+        var y = baseY + 11;
+        context.fillText(counter.strength, x, y);
+        y += rowSpace;
+        context.fillText(counter.range, x, y);
+        y += rowSpace
+        context.fillText(counter.movement, x, y);
+        y += rowSpace
+        context.fillText(counter.quality, x, y);
+        y += rowSpace
+        context.fillText(counter.fatigue, x, y);
 
-                var spriteX = (spriteColumn * 32);
-                var spriteY = (32 * spriteRow);
-                var width = 32;
-                var height = 32;
-                context.drawImage(spriteSheet, spriteX, spriteY, width, height, x+10, y-20, width, height);
+        x = 31;
+        y += rowSpace - 1;
+        context.fillStyle = "black";
+        context.fillText("M",x,y);
 
-                var spriteNumber = 155;
-                var spriteSheet = wego.ImageCache["Icons2d"].image;
-                var spritesPerRow = 12;
-                var spritesRows = 20;
+        wego.SpriteUtil.drawSprite(context, "Icons2d", 204, x + 10, y - 20);
+        wego.SpriteUtil.drawSprite(context, "Icons2d", 155, x + 43, y - 20);
+        wego.SpriteUtil.drawSprite(context, "Icons2d", 180, 0, y - 5);
 
-                var spriteRow = Math.floor(spriteNumber / spritesPerRow);
-                var spriteColumn = spriteNumber % spritesPerRow;
+        context.fillStyle = "black";
+        context.font = "8px Arial";
+                         context.textAlign = "center";
+        context.fillText(counter.parentOrgName, 63, y + 12);
+        context.fillText(counter.orgName, 63, y + 20);
 
-                var spriteX = (spriteColumn * 32);
-                var spriteY = (32 * spriteRow);
-                var width = 32;
-                var height = 32;
-                context.drawImage(spriteSheet, spriteX, spriteY, width, height, x+43, y-20, width, height);
+//        context.font = "10px Arial";
+//        context.fillStyle = "white";
+//        context.textAlign = "right";
 
-                 var spriteNumber = 180;
-                 var spriteSheet = wego.ImageCache["Icons2d"].image;
-                 var spritesPerRow = 12;
-                 var spritesRows = 20;
-
-                 var spriteRow = Math.floor(spriteNumber / spritesPerRow);
-                 var spriteColumn = spriteNumber % spritesPerRow;
-
-                 x = 0;
-                 var spriteX = (spriteColumn * 32);
-                 var spriteY = (32 * spriteRow);
-                 var width = 32;
-                 var height = 32;
-                 context.drawImage(spriteSheet, spriteX, spriteY, width, height, x, y-5, width, height);
-
-                 context.fillStyle = "black";
-                 context.font = "8px Arial";
-                                 context.textAlign = "center";
-                 context.fillText("1st US Reg Btln",x + 63,y + 12);
-                 context.fillText("1st Brig (Sturgis)",x + 63,y + 20);
-
-                context.font = "10px Arial";
-                context.fillStyle = "white";
-                                context.textAlign = "right";
-                x = 102;
-                y = 11 + 109 + 1;
-                context.fillText("999",x,y);
-                y += rowSpace;
-                context.fillText("10",x,y);
-                y += rowSpace
-                context.fillText("12",x,y);
-                y += rowSpace
-                context.fillText("A",x,y);
-                y += rowSpace
-                context.fillText("0",x,y);
+//        x = 102;
+//        y = 11 + 109 + 1;
+//        context.fillText("999",x,y);
+//        y += rowSpace;
+//        context.fillText("10",x,y);
+//        y += rowSpace
+//        context.fillText("12",x,y);
+//        y += rowSpace
+//        context.fillText("A",x,y);
+//        y += rowSpace
+//        context.fillText("0",x,y);
 	}
 	
 	function updateTaskList() {
@@ -217,37 +193,37 @@ wego.UnitPanelController = (function() {
 		}
 	}
 
-	function drawUnitBox(context, spriteNumber, x, y) {
-        var spriteSheet = wego.ImageCache["UnitBox"].image;
-        var spritesPerRow = 3;
-        var spritesRows = 2;
-        var spriteWidth = 101;
-        var spriteHeight = 109;
+//	function drawUnitBox(context, spriteNumber, x, y) {
+//        var spriteSheet = wego.ImageCache["UnitBox"].image;
+//        var spritesPerRow = 3;
+//        var spritesRows = 2;
+//        var spriteWidth = 101;
+//        var spriteHeight = 109;
+//
+//        var spriteRow = Math.floor(spriteNumber / spritesPerRow);
+//        var spriteColumn = spriteNumber % spritesPerRow;
+//
+//        var spriteX = (spriteColumn * spriteWidth);
+//        var spriteY = (spriteRow * spriteHeight);
+//
+//        context.drawImage(spriteSheet, spriteX, spriteY, spriteWidth, spriteHeight, x, y, spriteWidth, spriteHeight);
+//    }
 
-        var spriteRow = Math.floor(spriteNumber / spritesPerRow);
-        var spriteColumn = spriteNumber % spritesPerRow;
-
-        var spriteX = (spriteColumn * spriteWidth);
-        var spriteY = (spriteRow * spriteHeight);
-
-        context.drawImage(spriteSheet, spriteX, spriteY, spriteWidth, spriteHeight, x, y, spriteWidth, spriteHeight);
-    }
-
-    function drawUnit(context, spriteNumber, x, y) {
-        var spriteSheet = wego.ImageCache["Units"].image;
-        var spritesPerRow = 10;
-        var spritesRows = 5;
-        var spriteWidth = 66;
-        var spriteHeight = 74;
-
-        var spriteRow = Math.floor(spriteNumber / spritesPerRow);
-        var spriteColumn = spriteNumber % spritesPerRow;
-
-        var spriteX = (spriteColumn * spriteWidth);
-        var spriteY = (spriteRow * spriteHeight);
-
-        context.drawImage(spriteSheet, spriteX, spriteY, spriteWidth, spriteHeight, x, y, spriteWidth, spriteHeight);
-    }
+//    function drawUnit(context, spriteNumber, x, y) {
+//        var spriteSheet = wego.ImageCache["Units"].image;
+//        var spritesPerRow = 10;
+//        var spritesRows = 5;
+//        var spriteWidth = 66;
+//        var spriteHeight = 74;
+//
+//        var spriteRow = Math.floor(spriteNumber / spritesPerRow);
+//        var spriteColumn = spriteNumber % spritesPerRow;
+//
+//        var spriteX = (spriteColumn * spriteWidth);
+//        var spriteY = (spriteRow * spriteHeight);
+//
+//        context.drawImage(spriteSheet, spriteX, spriteY, spriteWidth, spriteHeight, x, y, spriteWidth, spriteHeight);
+//    }
 	
 	return {
 		deleteTask : deleteTask,

@@ -51,6 +51,7 @@
 	<script src="/civilwar/client/controller/toolbarcontroller.js"></script>
 	<script src="/civilwar/client/controller/maincontroller.js"></script>
 	<script src="/civilwar/client/util/api.js"></script>
+	<script src="/civilwar/client/util/spriteutil.js"></script>
 	<script src="/civilwar/client/main.js"></script>
 </head>
 <body>

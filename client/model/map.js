@@ -57,10 +57,11 @@ wego.Map = (function () {
 	function getImages() {
 		if (mImages == null) {
 			mImages = new Array(); 
-			for(var i = 0; i < mBoards.length; ++i) {
-				console.log("board " + i + " " + mBoards[i].name);
-				mImages[i] = wego.ImageCache[mBoards[i].name].image;
-			}
+			//r(var i = 0; i < mBoards.length; ++i) {
+			//	console.log("board " + i + " " + mBoards[i].name);
+			//	mImages[i] = wego.ImageCache[mBoards[i].name].image;
+			//}
+			mImages[0] = wego.ImageCache['main1'].image;
 			
 			mBoardHeight = mImages[0].naturalHeight;
 			mBoardWidth = mImages[0].naturalWidth;
@@ -140,7 +141,7 @@ wego.Map = (function () {
 		var columns = mapData.columns;
 		var rows = mapData.rows;
 		var hexTypes = mapData.hexTypes;
-		var secondaryHexTypes = mapData.secondaryHexTypes;
+		//var secondaryHexTypes = mapData.secondaryHexTypes;
 		var elevations = mapData.elevations;
 		var gullies = mapData.gully;
 		var forests = mapData.forest;
@@ -152,8 +153,8 @@ wego.Map = (function () {
 			for(j = 0; j < rows; ++j) {
 				var type = hexTypes[j].charAt(i);
 				var hexType = wego.HexType.getType(type);
-				var secondaryType = secondaryHexTypes[j].charAt(i);
-				var secondaryHexType = wego.SecondaryHexType.getType(secondaryType);
+				//var secondaryType = secondaryHexTypes[j].charAt(i);
+				//var secondaryHexType = wego.SecondaryHexType.getType(secondaryType);
 				var elevation = elevations[j].charAt(i);
 				var gullyMask = gullies[j].charCodeAt(i) - 32;
 				var forestMask = forests[j].charCodeAt(i) - 32;
@@ -162,7 +163,7 @@ wego.Map = (function () {
 				var townMask = towns[j].charCodeAt(i) - 32;
 				var hex = new wego.Hex(i,j);
 				hex.setHexType(hexType);
-				hex.setSecondaryHexType(secondaryHexType);
+				//hex.setSecondaryHexType(secondaryHexType);
 				hex.setElevation(elevation);
 				hex.setHexSideType(wego.HexSideType.FOREST,forestMask);
 				hex.setHexSideType(wego.HexSideType.GULLY,gullyMask);

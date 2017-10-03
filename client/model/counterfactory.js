@@ -1,28 +1,32 @@
 var wego = wego || {};
 
 wego.CounterFactory = (function() {
-	var counterTypeMap = {};
+	//var counterTypeMap = {};
 
-	function buildCounter(id,counterTypeName) {
-		var returnValue = null;
+	function buildCounter(counterData) {
+        var counter = new wego.Counter();
+
+        counter.type = counterData.type;
+        counter.quality = counterData.quality;
+        counter.weapon = counterData.weapon;
+	    counter.unitImageIndex = counterData.unitImageIndex;
+        counter.unitSymbolIndex = counterData.unitSymbolIndex;
+    	counter.name = counterData.name;
+       	counter.parentName = counterData.parentName;
+    	counter.facing = counterData.facing;
+       	counter.strength = counterData.strength;
+    	counter.id = counterData.id;
+    	counter.fatigue = counterData.fatigue;
+    	counter.formation = counterData.formation;
+    	counter.fixed = counterData.fixed;
+    	counter.moraleStatus = counterData.moraleStatus;
+    	counter.leadership = counterData.leadership;
+    	counter.command = counterData.command;
 		
-		var counterType = counterTypeMap[counterTypeName];
-		if (counterType != null) {
-			returnValue = new wego.Counter(id,counterType);
-		}
-		
-		return returnValue;
+		return counter;
 	}
 	
 	function initialize(counterData) {
-	    for(var i = 0; i < counterData.length; ++i) {
-	        var counter = counterData[i];
-	        var nationality = wego.NationalityType.getType(counter.nationality);
-	        var weaponClass = wego.WeaponClass.getType(counter.weaponClass);
-	        var unitCategory = wego.UnitCategory.getType(counter.unitCategory);
-	        var unitSubcategory = wego.UnitSubcategory.getType(counter.unitSubcategory);
-	        counterTypeMap[counter.name] = new wego.CounterType(nationality, counter.name, counter.attackFactor, counter.rangeFactor, counter.defenseFactor, counter.movementFactor, weaponClass, unitCategory, unitSubcategory);
-	    }
 	}
 	
 	return {

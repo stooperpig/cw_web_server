@@ -2,7 +2,7 @@ var wego = wego || {};
 
 wego.Scenario = (function() {
 	var mName = null;
-	var mCounterTypes = null;
+	//var mCounterTypes = null;
 	var mMapData = null;
 	var mOtherImages = null;
 	
@@ -13,29 +13,29 @@ wego.Scenario = (function() {
 	function initialize(data) {
 		mName = data.name;
 		mMapData = data.mapData;
-		mCounterTypes = data.counterTypes;
+		//mCounterTypes = data.counterTypes;
 		mOtherImages = data.otherImages;
 
 		wego.Map.initialize(mMapData);
-		wego.CounterFactory.initialize(mCounterTypes);
+		//wego.CounterFactory.initialize(mCounterTypes);
 	}
 	
-	function getCounterTypes() {
-		return mCounterTypes;
-	}
+//	function getCounterTypes() {
+//		return mCounterTypes;
+//	}
 	
 	function getImages() {
 		var returnValue = new Array();
-		for(var i = 0; i < mCounterTypes.length; ++i) {
-		    if (mCounterTypes[i].image != null) {
-			    returnValue[mCounterTypes[i].name] = mCounterTypes[i].image;
-			}
-		}
+//		for(var i = 0; i < mCounterTypes.length; ++i) {
+//		    if (mCounterTypes[i].image != null) {
+//			    returnValue[mCounterTypes[i].name] = mCounterTypes[i].image;
+//			}
+//		}
 
 		var boards = mMapData.boards;
-		for (var i = 0; i < boards.length; ++i) {
-		    returnValue[boards[i].name] = boards[i].image;
-		}
+		//for (var i = 0; i < boards.length; ++i) {
+		    returnValue['main1'] = boards.main1;
+		//}
 
 		for (var name in mOtherImages) {
 		    returnValue[name] = mOtherImages[name];
@@ -49,7 +49,7 @@ wego.Scenario = (function() {
 	}
 	
 	return {
-		getCounterTypes: getCounterTypes,
+		//getCounterTypes: getCounterTypes,
 		getImages: getImages,
 		getMapData: getMapData,
 		getName: getName,

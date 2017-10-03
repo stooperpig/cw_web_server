@@ -55,7 +55,7 @@ wego.Game = (function() {
 		mTurn = data.currentTurn;
 		console.log("currentPlayer: " + data.currentPlayerId);
 		wego.Task.counter = data.taskCounter;
-		
+
 		var counters = data.counters;
 		if (counters != null) {
 		    for (var i = 0; i < counters.length; ++i) {
@@ -63,7 +63,9 @@ wego.Game = (function() {
 		        mCounters.push(counter);
 		    }
 		}
-		
+
+		debugger;
+
 		//First pass thru data creates all the teams, players, and
 		//counters. The next pass will handle tasks.  There are two
 		//passes because some tasks have references to other counters
@@ -77,7 +79,7 @@ wego.Game = (function() {
 				team.addPlayer(player);
 				var counters = players[j].counters;
 				for (var k = 0; k < counters.length; ++k) {
-				    var counter = wego.CounterFactory.buildCounter(counters[k].id, counters[k].type);
+				    var counter = wego.CounterFactory.buildCounter(counters[k]);
 				    if (counter == null) {
 				        debugger;
 				    }

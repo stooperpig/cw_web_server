@@ -58,6 +58,7 @@ wego.MainController = (function() {
 	}
 	
 	function loadData(data) {
+	debugger;
 		console.log(data);
 		wego.Scenario.initialize(data.scenario);
 		
