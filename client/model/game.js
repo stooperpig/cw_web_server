@@ -64,8 +64,6 @@ wego.Game = (function() {
 		    }
 		}
 
-		debugger;
-
 		//First pass thru data creates all the teams, players, and
 		//counters. The next pass will handle tasks.  There are two
 		//passes because some tasks have references to other counters
