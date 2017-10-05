@@ -101,9 +101,13 @@ wego.UnitPanelController = (function() {
             var counters = stack.getCounters();
             if (counters != null) {
                 var numCounters = counters.length;
-               context.canvas.height = (109 * numCounters) + 20;
+                context.canvas.height = (109 * numCounters) + 20;
+                var unitCount = 0;
                 for(var i = 0; i < numCounters; ++i) {
-                    drawCounter(context, i, counters[i]);
+                    if (counters[i].type != "L") {
+                        drawCounter(context, unitCount, counters[i]);
+                        ++unitCount;
+                    }
                 }
              }
          }
@@ -114,8 +118,12 @@ wego.UnitPanelController = (function() {
 	    var x = 3;
 	    var baseY = index * (109 + 2);
 
-	    wego.SpriteUtil.drawSprite(context, "UnitBox", 3, x, baseY);
-	    wego.SpriteUtil.drawSprite(context, "Units", counter.unitPicture, x + 1, baseY + 1);
+	    var side = counter.getPlayer().getTeam().getId();
+
+	    var imageIndex = wego.SpriteUtil.getUnitBoxSpriteIndex(side, false, false);
+	    wego.SpriteUtil.drawSprite(context, "UnitBox", imageIndex, x, baseY);
+
+	    wego.SpriteUtil.drawSprite(context, "Units", counter.unitImageIndex, x + 1, baseY + 1);
 
         context.font = "10px Arial";
         context.textAlign = "right";
@@ -123,46 +131,73 @@ wego.UnitPanelController = (function() {
 
         x = 102;
         var y = baseY + 11;
-        context.fillText(counter.strength, x, y);
-        y += rowSpace;
-        context.fillText(counter.range, x, y);
-        y += rowSpace
-        context.fillText(counter.movement, x, y);
-        y += rowSpace
-        context.fillText(counter.quality, x, y);
-        y += rowSpace
-        context.fillText(counter.fatigue, x, y);
+        switch(counter.type) {
+            case "I":
+            case "C":
+                context.fillText(counter.strength * 25, x, y);
+            break;
+            default:
+                context.fillText(counter.strength, x, y);
+            break;
+        }
 
-        x = 31;
+        y += rowSpace;
+        if (counter.range != 0) {
+            context.fillText(counter.range, x, y);
+        } else {
+            context.fillText("--", x, y);
+        }
+        y += rowSpace
+
+        if (counter.formation == 0) {
+            context.fillText(counter.lineMovement, x, y);
+        } else {
+            context.fillText(counter.columnMovement, x, y);
+        }
+        y += rowSpace
+
+        if (counter.quality != 0) {
+            context.fillText(counter.quality, x, y);
+        } else {
+            context.fillText("--", x, y);
+        }
+        y += rowSpace
+
+        if (counter.type != "S") {
+            context.fillText(counter.fatigue, x, y);
+         } else {
+            context.fillText("--", x, y);
+         }
+
+        x = 29;
         y += rowSpace - 1;
         context.fillStyle = "black";
-        context.fillText("M",x,y);
+        context.fillText(counter.weapon,x,y);
 
-        wego.SpriteUtil.drawSprite(context, "Icons2d", 204, x + 10, y - 20);
+        imageIndex = wego.SpriteUtil.getFormationSpriteIndex(counter.formation, counter.facing);
+        wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 10, y - 20);
+
+
+        if (counter.moraleStatus == 2) {
+            imageIndex = wego.SpriteUtil.routedSpriteIndex;
+            wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 23, y - 20);
+        }
+
+        if (counter.fixed) {
+            imageIndex = wego.SpriteUtil.fixedSpriteIndex;
+            wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x - 4, y - 20);
+        }
+
         wego.SpriteUtil.drawSprite(context, "Icons2d", 155, x + 43, y - 20);
+
+
         wego.SpriteUtil.drawSprite(context, "Icons2d", 180, 0, y - 5);
 
         context.fillStyle = "black";
         context.font = "8px Arial";
-                         context.textAlign = "center";
-        context.fillText(counter.parentOrgName, 63, y + 12);
-        context.fillText(counter.orgName, 63, y + 20);
-
-//        context.font = "10px Arial";
-//        context.fillStyle = "white";
-//        context.textAlign = "right";
-
-//        x = 102;
-//        y = 11 + 109 + 1;
-//        context.fillText("999",x,y);
-//        y += rowSpace;
-//        context.fillText("10",x,y);
-//        y += rowSpace
-//        context.fillText("12",x,y);
-//        y += rowSpace
-//        context.fillText("A",x,y);
-//        y += rowSpace
-//        context.fillText("0",x,y);
+        context.textAlign = "center";
+        context.fillText(counter.name, 63, y + 12);
+        context.fillText("", 63, y + 20);
 	}
 	
 	function updateTaskList() {

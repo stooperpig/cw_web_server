@@ -43,6 +43,10 @@ wego.SpriteUtil = (function() {
     height: 74
  }
 
+ var routedSpriteIndex = 152;
+ var disruptedSpriteIndex = 154;
+ var fixedSpriteIndex = 138;
+
  function drawSprite(context, sheetName, spriteNumber, x, y) {
         var sprite = sprites[sheetName];
         var spriteSheet = wego.ImageCache[sheetName].image;
@@ -109,9 +113,47 @@ wego.SpriteUtil = (function() {
     return index;
  }
 
+ function getUnitBoxSpriteIndex(side, selected, known) {
+    var index = 0;
+    if(side == 1) {
+        index = 3;
+    } else {
+        index = 0;
+    }
+
+    return index;
+ }
+
+  function getUnitSpriteIndex(side, baseIndex) {
+     var index = 0;
+     if(side == 1) {
+         index = 3;
+     } else {
+         index = 0;
+     }
+
+     return index;
+  }
+
+  function getFormationSpriteIndex(formation, facing) {
+    var index = 0;
+    if (formation == 0) {
+        index = 204 + facing;
+    } else {
+        index = 210 + facing;
+    }
+
+    return index;
+  }
+
 return {
     drawSprite: drawSprite,
     getStackSpriteIndex: getStackSpriteIndex,
-    getMilSymbolSpriteIndex: getMilSymbolSpriteIndex
+    getMilSymbolSpriteIndex: getMilSymbolSpriteIndex,
+    getUnitBoxSpriteIndex: getUnitBoxSpriteIndex,
+    getUnitSpriteIndex: getUnitSpriteIndex,
+    getFormationSpriteIndex: getFormationSpriteIndex,
+    routedSpriteIndex: routedSpriteIndex,
+    fixedSpriteIndex: fixedSpriteIndex
 }
 })();

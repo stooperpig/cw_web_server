@@ -22,6 +22,11 @@ wego.CounterFactory = (function() {
     	counter.moraleStatus = counterData.moraleStatus;
     	counter.leadership = counterData.leadership;
     	counter.command = counterData.command;
+    	counter.range = counterData.range;
+	    counter.lineMovement = counterData.lineMovement;
+	    counter.columnMovement = counterData.columnMovement;
+	    counter.canChangeFormation = counterData.canChangeFormation;
+	    counter.canMoveInLine = counterData.canMoveInLine;
 		
 		return counter;
 	}

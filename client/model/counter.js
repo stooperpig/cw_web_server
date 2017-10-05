@@ -5,17 +5,17 @@ wego.Counter = function() {
 	this.mReplayTasks = new Array();
 	this.mPlayer = null;
 	this.mCurrentTask = null;
-	this.mRemainingMovementFactor = 10;
+	this.mRemainingMovementFactor = 0;
 
     this.type = "";
-    this.quality = "";
+    this.quality = 0;
     this.weapon = "";
 	this.unitImageIndex = 3;
 	this.unitSymbolIndex = 0;
 	this.name = "";
 	this.parentName = "";
 	this.facing = "";
-	this.strength = "";
+	this.strength = 0;
 	this.id = "";
 	this.fatigue = "";
 	this.formation = 0;
@@ -23,6 +23,11 @@ wego.Counter = function() {
 	this.moraleStatus = 0;
 	this.leadership = 0;
 	this.command = 0;
+	this.range = 0;
+	this.lineMovement = 0;
+	this.columnMovement = 0;
+	this.canChangeFormation = true;
+	this.canMoveInLine = true;
 };
 
 wego.Counter.prototype = {

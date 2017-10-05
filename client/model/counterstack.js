@@ -29,7 +29,6 @@ wego.CounterStack.prototype = {
 		if (this.mCounters.length > 0) {
 		    var counterCount = 0;
 		    var firstCounter = null;
-		    debugger;
 		    var side = this.mCounters[0].getPlayer().getTeam().getId();
 
 		    for(var i = 0; i < this.mCounters.length; ++i) {
