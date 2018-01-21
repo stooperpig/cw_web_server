@@ -45,14 +45,22 @@ wego.UnitPanelController = (function() {
 		amplify.subscribe(wego.Topic.CURRENT_HEX, function(data) {
 			updateStack(data.hex,data.selectedCounters);
 			updateHexInfo(data.hex);
+        });
+        
+        amplify.subscribe(wego.Topic.SELECTED_COUNTERS, function(data) {
+			updateStack(data.hex,data.selectedCounters);
 		});
 		
-		$("#counterList").bind('mousedown', function (e) {
+		$("#unitBoxCanvas").bind('mousedown', function (e) {
 			e.metaKey = true;
-		}).selectable({
-			selected: updateTaskList,
-			unselected: updateTaskList,
-			filter:".ui-state-enabled"
+	        console.log("click event: " + e);
+	        var counter = getCounter(e);
+            console.log("clicked counter: " + counter);
+            if (counter != null) {
+                var selectedCounters = wego.UiState.getSelectedCounters();
+                selectedCounters.push(counter);
+                wego.UiState.setSelectedCounters(selectedCounters);
+            }
 		});
 		
 		$("#taskList").bind('mousedown', function (e) {
@@ -63,16 +71,55 @@ wego.UnitPanelController = (function() {
 			filter:".ui-state-enabled"
 		});
 	}
+
+    function getCounter(event) {
+        debugger;
+        var counter = null;
+        var posX = $(event.target).offset().left;
+        var posY = $(event.target).offset().top;
+        var x = event.pageX - posX;
+        var y = event.pageY - posY;
+        console.log("clickEvent: (" + x + "," + y + ")");
+
+        var currentHex = wego.UiState.getCurrentHex();
+        var stack = currentHex.getStack();
+        if (stack != null) {
+            var counters = stack.getCounters();
+            var leaders = getLeaders(counters);
+
+            var leaderRows = Math.ceil(leaders.length / 2);
+            var leaderMaxY = leaderRows * wego.SpriteUtil.leaderBoxHeight;
+            if (y > leaderMaxY) {
+                console.log("clicked on a unit");
+                var adjY = y - leaderMaxY;
+                var unitRow = Math.floor(adjY / wego.SpriteUtil.unitBoxHeight);
+                console.log("clicked on unit " + unitRow);
+                if (leaders.length == 0) {
+                    counter = counters[unitRow];
+                } else {
+                    var units = getUnits(counters);
+                    counter = units[unitRow];    
+                }
+
+            } else {
+                console.log("clicked on a leader");
+                var leaderRow = Math.floor(y / (wego.SpriteUtil.leaderBoxHeight));
+                var leaderColumn = Math.floor(x / (wego.SpriteUtil.leaderBoxWidth));
+                console.log("clicked on leader " + leaderRow + "," + leaderColumn + " -> " + ((leaderRow * 2) + leaderColumn));
+            }
+        }
+
+        //var coord = hexMap.pointToHex((event.pageX - posX) , (event.pageY - posY));
+        //console.log("clicked on hex (" + coord.col + "," + coord.row + ") point (" + posX + "," + posY + ")");
+        //hex = hexMap.getHex(coord.col, coord.row);
+        return counter;
+    }
 	
 	function updateHexInfo(hex) {
 		var hexInfo = $("#hexInfo");
 		if (hex != null) {
 			var info = hex.getHexType().name;
 			
-			var secondaryHexType = hex.getSecondaryHexType();
-			if (secondaryHexType != wego.SecondaryHexType.CLEAR) {
-				info += "/" + hex.getSecondaryHexType().name;
-			}
 			info += " (" + hex.getColumn() + "," + hex.getRow() + ")<br>";
 			info += "elev: " + hex.getElevation() + "<br>";
 			
@@ -89,6 +136,28 @@ wego.UnitPanelController = (function() {
 		} else {
 			hexInfo.html("");
 		}
+    }
+    
+    function getUnits(counters) {
+        var units = new Array();
+        var numCounters = counters.length;
+        for(var i = 0; i < numCounters; ++i) {
+            if (counters[i].type != "L") {
+                units.push(counters[i]);
+            }
+        }
+        return units;
+    }
+
+	function getLeaders(counters) {
+	    var leaders = new Array();
+        var numCounters = counters.length;
+        for(var i = 0; i < numCounters; ++i) {
+            if (counters[i].type == "L") {
+                leaders.push(counters[i]);
+            }
+        }
+        return leaders;
 	}
 	
 	function updateStack(hex,selectedCounters) {
@@ -101,22 +170,77 @@ wego.UnitPanelController = (function() {
             var counters = stack.getCounters();
             if (counters != null) {
                 var numCounters = counters.length;
-                context.canvas.height = (109 * numCounters) + 20;
+                var leaders = new Array();
+                for(var i = 0; i < numCounters; ++i) {
+                    if (counters[i].type == "L") {
+                        leaders.push(counters[i]);
+                    }
+                }
+
+                var leaderRows = Math.ceil(leaders.length / 2)
+
+                context.canvas.height = (wego.SpriteUtil.unitBoxHeight * numCounters) + 20 + (leaderRows * wego.SpriteUtil.leaderBoxHeight);
+                var unitCount = 0;
+                for(var i = 0; i < leaders.length; ++i) {
+                    var baseY = 0;
+                    drawLeader(context, baseY, counters[i]);
+                }
+
                 var unitCount = 0;
                 for(var i = 0; i < numCounters; ++i) {
                     if (counters[i].type != "L") {
-                        drawCounter(context, unitCount, counters[i]);
+                        var baseY = unitCount * (wego.SpriteUtil.unitBoxHeight + 2) + (leaderRows * wego.SpriteUtil.leaderBoxHeight + 2);
+                        var selected = (selectedCounters != null) ?containsObject(counters[i], selectedCounters):false;
+                        console.log("unit selected: " + selected);
+                        drawCounter(context, baseY, counters[i]);
                         ++unitCount;
                     }
                 }
              }
          }
+    }
+    
+    function containsObject(obj, list) {
+        var i;
+        for (i = 0; i < list.length; i++) {
+            if (list[i] === obj) {
+                return true;
+            }
+        }
+    
+        return false;
+    }
+
+	function drawLeader(context, baseY, counter) {
+        var x = 2;
+        wego.SpriteUtil.drawSprite(context, "Leaders", counter.unitImageIndex, x, baseY);
+
+        context.font = "10px Arial";
+        context.textAlign = "right";
+        context.fillStyle = "white";
+
+        x = 58;
+
+        context.fillText(getLetterValue(counter.command), x, 12);
+        context.fillText(getLetterValue(counter.leadership), x, 28);
+
+        y = 44;
+        if (counter.formation == 0) {
+            context.fillText(counter.lineMovement, x, y);
+        } else {
+            context.fillText(counter.columnMovement, x, y);
+        }
+
+        context.fillStyle = "black";
+        context.font = "10px Arial bold";
+        context.textAlign = "center";
+        context.fillText(counter.shortName, 30, 60);
+        console.log("shortName " + counter.shortName);
 	}
 
-	function drawCounter(context, index, counter) {
-	    var rowSpace = 15
+	function drawCounter(context, baseY, counter) {
+	    var rowSpace = 19
 	    var x = 3;
-	    var baseY = index * (109 + 2);
 
 	    var side = counter.getPlayer().getTeam().getId();
 
@@ -129,8 +253,9 @@ wego.UnitPanelController = (function() {
         context.textAlign = "right";
         context.fillStyle = "white";
 
-        x = 102;
-        var y = baseY + 11;
+        x = 124;
+        var y = baseY + 16;
+        context.fillText("S", x - 28, y);
         switch(counter.type) {
             case "I":
             case "C":
@@ -142,13 +267,16 @@ wego.UnitPanelController = (function() {
         }
 
         y += rowSpace;
+        context.fillText("RG", x - 21, y);
         if (counter.range != 0) {
             context.fillText(counter.range, x, y);
         } else {
             context.fillText("--", x, y);
         }
+
         y += rowSpace
 
+        context.fillText("MV", x - 21, y);
         if (counter.formation == 0) {
             context.fillText(counter.lineMovement, x, y);
         } else {
@@ -156,48 +284,88 @@ wego.UnitPanelController = (function() {
         }
         y += rowSpace
 
+        context.fillText("QL", x - 21, y);
         if (counter.quality != 0) {
-            context.fillText(counter.quality, x, y);
+            context.fillText(getLetterValue(counter.quality), x, y);
         } else {
             context.fillText("--", x, y);
         }
         y += rowSpace
 
+        context.fillText("FA", x - 21, y);
         if (counter.type != "S") {
             context.fillText(counter.fatigue, x, y);
          } else {
             context.fillText("--", x, y);
          }
 
-        x = 29;
-        y += rowSpace - 1;
+        x = 34;
+        y += rowSpace - 4;
         context.fillStyle = "black";
-        context.fillText(counter.weapon,x,y);
+        if (counter.weapon != null) {
+            context.fillText(counter.weapon,x,y);
+        }
 
-        imageIndex = wego.SpriteUtil.getFormationSpriteIndex(counter.formation, counter.facing);
-        wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 10, y - 20);
-
+        if (counter.formation != -1) {
+            imageIndex = wego.SpriteUtil.getFormationSpriteIndex(counter.formation, counter.facing);
+            wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 16, y - 24);
+        }
 
         if (counter.moraleStatus == 2) {
             imageIndex = wego.SpriteUtil.routedSpriteIndex;
-            wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 23, y - 20);
+            wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 34, y - 26);
         }
 
         if (counter.fixed) {
             imageIndex = wego.SpriteUtil.fixedSpriteIndex;
-            wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x - 4, y - 20);
+            wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x - 1, y - 25);
         }
 
-        wego.SpriteUtil.drawSprite(context, "Icons2d", 155, x + 43, y - 20);
+        //spotted sprite
+        wego.SpriteUtil.drawSprite(context, "Icons2d", 155, x + 57, y - 24);
 
-
-        wego.SpriteUtil.drawSprite(context, "Icons2d", 180, 0, y - 5);
+        //unit symbol
+        if (side == 1) {
+            wego.SpriteUtil.drawSprite(context, "Icons2d", counter.unitSymbolIndex + 171, 0, y - 5);
+        } else {
+            wego.SpriteUtil.drawSprite(context, "Icons2d", counter.unitSymbolIndex + 156, 0, y - 5); 
+        }
 
         context.fillStyle = "black";
-        context.font = "8px Arial";
+        context.font = "9px Arial";
         context.textAlign = "center";
-        context.fillText(counter.name, 63, y + 12);
-        context.fillText("", 63, y + 20);
+        context.fillText(counter.name, 72, y + 14);
+
+        if (counter.parentName != null) {
+            context.fillText(counter.parentName, 72, y + 24);
+        }
+	}
+
+	function getLetterValue(intValue) {
+	console.log("quality: " + intValue);
+	    returnValue = "";
+	    switch(intValue) {
+	        case 1:
+	            returnValue = "F";
+	            break;
+	        case 2:
+	        	returnValue = "E";
+            	break;
+	        case 3:
+	        	returnValue = "D";
+            	break;
+	        case 4:
+	        	returnValue = "C";
+            	break;
+	        case 5:
+	        	returnValue = "B";
+            	break;
+            case 6:
+                returnValue = "A";
+                break;
+	    }
+
+	    return returnValue;
 	}
 	
 	function updateTaskList() {
@@ -228,38 +396,6 @@ wego.UnitPanelController = (function() {
 		}
 	}
 
-//	function drawUnitBox(context, spriteNumber, x, y) {
-//        var spriteSheet = wego.ImageCache["UnitBox"].image;
-//        var spritesPerRow = 3;
-//        var spritesRows = 2;
-//        var spriteWidth = 101;
-//        var spriteHeight = 109;
-//
-//        var spriteRow = Math.floor(spriteNumber / spritesPerRow);
-//        var spriteColumn = spriteNumber % spritesPerRow;
-//
-//        var spriteX = (spriteColumn * spriteWidth);
-//        var spriteY = (spriteRow * spriteHeight);
-//
-//        context.drawImage(spriteSheet, spriteX, spriteY, spriteWidth, spriteHeight, x, y, spriteWidth, spriteHeight);
-//    }
-
-//    function drawUnit(context, spriteNumber, x, y) {
-//        var spriteSheet = wego.ImageCache["Units"].image;
-//        var spritesPerRow = 10;
-//        var spritesRows = 5;
-//        var spriteWidth = 66;
-//        var spriteHeight = 74;
-//
-//        var spriteRow = Math.floor(spriteNumber / spritesPerRow);
-//        var spriteColumn = spriteNumber % spritesPerRow;
-//
-//        var spriteX = (spriteColumn * spriteWidth);
-//        var spriteY = (spriteRow * spriteHeight);
-//
-//        context.drawImage(spriteSheet, spriteX, spriteY, spriteWidth, spriteHeight, x, y, spriteWidth, spriteHeight);
-//    }
-	
 	return {
 		deleteTask : deleteTask,
 		initialize : initialize

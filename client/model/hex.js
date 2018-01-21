@@ -64,8 +64,8 @@ wego.Hex.prototype = {
 		var stack = this.getStack(false);
 		var coord = wego.Map.hexToPoint(this.mColumn, this.mRow);
 		if (this.mSelected) {
-			var adjX = coord.x; // - 35;
-			var adjY = coord.y; // - 30;
+			var adjX = coord.x + 3; // - 35;
+			var adjY = coord.y + 3; // - 30;
 			var image = wego.ImageCache["Current Hex"].image;
 			context.drawImage(image,adjX,adjY);
 		}

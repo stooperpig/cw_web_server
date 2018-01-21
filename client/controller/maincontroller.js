@@ -68,7 +68,7 @@ wego.MainController = (function() {
 
 		wego.Game.initialize(data.game);
 
-        window.document.title = "Panzer Blitz: " + wego.Scenario.getName();
+        window.document.title = "Civil War: " + wego.Scenario.getName();
         $("#footerTurnDiv").html("Turn " + wego.Game.getTurn());
 
 		loadImages(wego.ImageCache, initializeMap);

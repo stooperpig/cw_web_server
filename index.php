@@ -3,7 +3,7 @@
 <head>
 	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 	<meta content="utf-8" http-equiv="encoding">
-	<title>Panzer Blitz</title>
+	<title>Civil War</title>
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/mint-choc/jquery-ui.min.css" />
 	<link rel="stylesheet" type="text/css" href="/civilwar/client/css/game.css">
 	

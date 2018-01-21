@@ -99,7 +99,8 @@ wego.TaskType = {
 wego.Topic = {
 	CURRENT_HEX : "currentHex",
 	GAME_MODE : "gameMode",
-	STATUS_MESSAGE : "statusMessage"
+	STATUS_MESSAGE : "statusMessage",
+	SELECTED_COUNTERS : "selectedCounters"
 }
 
 wego.CommandMode = {

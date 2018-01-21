@@ -1,10 +1,12 @@
 var wego = wego || {};
 
+wego.ImageScale = 1.25;
+
 wego.SpriteUtil = (function() {
 
  var stackSpriteIndices = {
     union: [66, 68, 72, 80],
-    confederate: [36,38,42,50]
+    confederate: [36, 38, 42, 50]
  };
 
  var milSymbolSpriteIndices = {
@@ -25,23 +27,35 @@ wego.SpriteUtil = (function() {
  sprites.Icons2d = {
     columns: 12,
     rows: 20,
-    width: 32,
-    height: 32,
+    width: 32 * wego.ImageScale,
+    height: 32 * wego.ImageScale,
  }
 
  sprites.UnitBox = {
     columns: 3,
     rows: 2,
-    width: 101,
-    height: 109
+    width: 101 * wego.ImageScale,
+    height: 109 * wego.ImageScale
  }
+
+ unitBoxHeight = sprites.UnitBox.height;
 
  sprites.Units = {
     columns: 10,
     rows: 5,
-    width: 66,
-    height: 74
+    width: 66 * wego.ImageScale,
+    height: 74 * wego.ImageScale
  }
+
+ sprites.Leaders = {
+    columns: 12,
+    rows: 4,
+    width: 47 * wego.ImageScale,
+    height: 52 * wego.ImageScale
+ }
+
+ leaderBoxHeight = sprites.Leaders.height;
+ leaderBoxWidth = sprites.Leaders.width;
 
  var routedSpriteIndex = 152;
  var disruptedSpriteIndex = 154;
@@ -154,6 +168,9 @@ return {
     getUnitSpriteIndex: getUnitSpriteIndex,
     getFormationSpriteIndex: getFormationSpriteIndex,
     routedSpriteIndex: routedSpriteIndex,
-    fixedSpriteIndex: fixedSpriteIndex
+    fixedSpriteIndex: fixedSpriteIndex,
+    unitBoxHeight: unitBoxHeight,
+    leaderBoxHeight: leaderBoxHeight,
+    leaderBoxWidth : leaderBoxWidth
 }
 })();

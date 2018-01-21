@@ -26,10 +26,10 @@ function saveGame($gameId, $playerId, $data) {
 }
 
 function sendGame($gameId, $playerId) {
-    $filename = 'C:\\sites\\wego\\panzerblitz\\server\\data\\scenarios\\scenario'.$gameId.'.json';
+    $filename = 'C:\\sites\\wego\\civilwar\\server\\data\\scenarios\\scenario'.$gameId.'.json';
     $cfile = getCurlValue($filename,'text/html','scenario'.$gameId.'.json');
 
-    $filename0 = 'C:\\sites\\wego\\panzerblitz\\server\\data\\games\\game'.$gameId.'_0.json';
+    $filename0 = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\game'.$gameId.'_0.json';
     $cfile0 = getCurlValue($filename0,'text/html','game'.$gameId.'_0.json');
  
     //NOTE: The top level key in the array is important, as some apis will insist that it is 'file'.

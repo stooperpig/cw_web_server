@@ -23,8 +23,8 @@ wego.CounterStack.prototype = {
 	},
 	
 	draw:function(context, x, y) {
-		var adjX = x; // + 19 - 16; // (map.DX + (map.HEX_SIDE/2)) - (COUNTER_WIDTH/2)
-		var adjY = y; // + 15 - 16; // (map.DY) - (COUNTER_WIDTH/2)
+		var adjX = x + 4; // + 19 - 16; // (map.DX + (map.HEX_SIDE/2)) - (COUNTER_WIDTH/2)
+		var adjY = y + 3 // + 15 - 16; // (map.DY) - (COUNTER_WIDTH/2)
 
 		if (this.mCounters.length > 0) {
 		    var counterCount = 0;
