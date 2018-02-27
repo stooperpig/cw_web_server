@@ -51,7 +51,9 @@ wego.SpriteUtil = (function() {
     columns: 12,
     rows: 4,
     width: 47 * wego.ImageScale,
-    height: 52 * wego.ImageScale
+    height: 52 * wego.ImageScale,
+    protraitWidth: 33,
+    protraitHeight: 48
  }
 
  leaderBoxHeight = sprites.Leaders.height;
@@ -74,11 +76,45 @@ wego.SpriteUtil = (function() {
         context.drawImage(spriteSheet, spriteX, spriteY, sprite.width, sprite.height, x, y, sprite.width, sprite.height);
  }
 
+ function drawLeaderSprite(context, spriteNumber, side, selected, x, y) {
+    var sprite = sprites["Leaders"];
+    var spriteSheet = wego.ImageCache["Leaders"].image;
+
+    if (selected) {
+        var boxNumber = 15;
+        if (side == 1) {
+            ++boxNumber;
+        }
+
+        var spriteRow = Math.floor(boxNumber / sprite.columns);
+        var spriteColumn = boxNumber % sprite.columns;
+    
+        var spriteX = (spriteColumn * sprite.width);
+        var spriteY = (spriteRow * sprite.height);
+        context.drawImage(spriteSheet, spriteX, spriteY, sprite.width, sprite.height, x, y, sprite.width, sprite.height);
+
+        var spriteRow = Math.floor(spriteNumber / sprite.columns);
+        var spriteColumn = spriteNumber % sprite.columns;
+    
+        var spriteX = (spriteColumn * sprite.width);
+        var spriteY = (spriteRow * sprite.height);
+        context.drawImage(spriteSheet, spriteX, spriteY, sprites.Leaders.protraitWidth, sprites.Leaders.protraitHeight, x + 1, y + 1, sprites.Leaders.protraitWidth,
+            sprites.Leaders.protraitHeight);
+    } else {
+        var spriteRow = Math.floor(spriteNumber / sprite.columns);
+        var spriteColumn = spriteNumber % sprite.columns;
+
+        var spriteX = (spriteColumn * sprite.width);
+        var spriteY = (spriteRow * sprite.height);
+        context.drawImage(spriteSheet, spriteX, spriteY, sprite.width, sprite.height, x, y, sprite.width, sprite.height);    
+    }
+ }
+
  function getMilSymbolSpriteIndex(type, formation, facing) {
     var index = 0;
     switch(type) {
         case "I":
-            if (formation == 0) {
+            if (formation == wego.Formation.LINE) {
                 index = milSymbolSpriteIndices.infantry_line;
             } else {
                 index = milSymbolSpriteIndices.infantry_column;
@@ -86,7 +122,7 @@ wego.SpriteUtil = (function() {
             index += facing;
         break;
         case "C":
-            if (formation == 0) {
+            if (formation == wego.Formation.LINE) {
                 index = milSymbolSpriteIndices.cavalry_line;
             } else {
                 index = milSymbolSpriteIndices.cavalry_column;
@@ -94,7 +130,7 @@ wego.SpriteUtil = (function() {
             index += facing;
         break;
         case "A":
-            if (formation == 0) {
+            if (formation == wego.Formation.LINE) {
                index = milSymbolSpriteIndices.artillery_limbered;
             } else {
                 index = milSymbolSpriteIndices.artillery_unlimbered;
@@ -135,6 +171,10 @@ wego.SpriteUtil = (function() {
         index = 0;
     }
 
+    if (selected) {
+        ++index;
+    }
+
     return index;
  }
 
@@ -162,6 +202,7 @@ wego.SpriteUtil = (function() {
 
 return {
     drawSprite: drawSprite,
+    drawLeaderSprite: drawLeaderSprite,
     getStackSpriteIndex: getStackSpriteIndex,
     getMilSymbolSpriteIndex: getMilSymbolSpriteIndex,
     getUnitBoxSpriteIndex: getUnitBoxSpriteIndex,

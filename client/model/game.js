@@ -86,6 +86,7 @@ wego.Game = (function() {
 			}
 		}
 		
+		//initialize global counters (non-player)
 		counters = data.counters;
 		if (counters != null) {
 		    for (var i = 0; i < counters.length; ++i) {
@@ -112,6 +113,7 @@ wego.Game = (function() {
 	
 	function initializeCounter(counter,data) {
 		var tasks = data.tasks;
+
 		for(var m = 0; m < tasks.length; ++m) {
 			var hex = null;
 			var hexX = tasks[m].hexX;
@@ -121,25 +123,16 @@ wego.Game = (function() {
 			}
 			
 			var taskType = wego.TaskType.getType(tasks[m].type);
-			var task = new wego.Task(taskType,hex,tasks[m].movementFactor, null, tasks[m].id);
-			
-			var passengerIds = tasks[m].passengerIds;
-			if (passengerIds != null) {
-				var passengers = new Array();
-				for(var i = 0; i < passengerIds.length; ++i) {
-					var passenger = getCounter(passengerIds[i]);
-					passengers.push(passenger);
-				}
-				
-				task.setPassengers(passengers);
-			}
-			
-			var transportId = tasks[m].transportId;
-			if (transportId != null) {
-				var transport = getCounter(transportId);
-				task.setTransport(transport);
-			}
-			
+			var task = new wego.Task(taskType, tasks[m].cost, tasks[m].movementFactor);
+			task.hex = hex;
+			task.id = tasks[m].id;
+			task.strength = tasks[m].strength;
+			task.facing = tasks[m].facing;
+			task.fatigue = tasks[m].fatigue;
+			task.formation = tasks[m].formation;
+			task.moraleStatus = tasks[m].moraleStatus;
+			task.fixed = tasks[m].fixed;
+								
 			var targetIds = tasks[m].targetIds;
 			if (targetIds != null) {
 				var targets = new Array();
@@ -148,7 +141,7 @@ wego.Game = (function() {
 					targets.push(target);
 				}
 				
-				task.setTargets(targets);
+				task.targets = targets;
 			}
 			
 			counter.addTask(task);
@@ -165,25 +158,10 @@ wego.Game = (function() {
 				}
 				
 				var taskType = wego.TaskType.getType(tasks[m].type);
-				var task = new wego.Task(taskType,hex,tasks[m].movementFactor, null, tasks[m].id);
-				
-				var passengerIds = tasks[m].passengerIds;
-				if (passengerIds != null) {
-					var passengers = new Array();
-					for(var i = 0; i < passengerIds; ++i) {
-						var passenger = getCounter(passengerIds[i]);
-						passengers.push(passenger);
-					}
-					
-					task.setPassenger(passengers);
-				}
-				
-				var transportId = tasks[m].transportId;
-				if (transportId != null) {
-					var transport = getCounter(transportId);
-					task.setTransport(transport);
-				}
-				
+				var task = new wego.Task(taskType, tasks[m].cost, tasks[m].movementFactor);
+				task.hex = hex;
+				task.id = tasks[m].id;
+							
 				var targetIds = tasks[m].targetIds;
 				if (targetIds != null) {
 					var targets = new Array();
@@ -192,7 +170,7 @@ wego.Game = (function() {
 						targets.push(target);
 					}
 					
-					task.setTargets(targets);
+					task.targets = targets;
 				}
 				
 				counter.addReplayTask(task);

@@ -1,9 +1,9 @@
 $(document).ready(function (e) {
-	wego.ClockController.initialize();
-	wego.UnitPanelController.initialize();
-	wego.MapController.initialize();
+	wego.UnitPanelComponent.initialize(wego.UiState);
+	wego.ClockComponent.initialize(wego.UiState);
+	wego.MapComponent.initialize(wego.UiState);
 	wego.MenuController.initialize();
 	wego.StatusBarController.initialize();
-	wego.ToolbarController.initialize();
-	wego.MainController.initialize();
+	wego.ToolbarComponent.initialize(wego.UiState);
+	wego.Application.initialize();
 });

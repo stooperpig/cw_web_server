@@ -64,3 +64,8 @@ nav ul ul ul {left: 100%; position: absolute; top: 0;}
 #mainToolbar .ui-button {position:static;}
 .ui-widget {font-size:.9em;}
 .ui-widget-overlay {background:#ffffff; -moz-opacity:0.99; filter:alpha(opacity=99);}
+
+#rotateLeftButton {width:38px; height:32px; background: url('/civilwar/server/images/icons/toolbar.png') -0px -30px}
+#rotateRightButton {width:38px; height:32px; background: url('/civilwar/server/images/icons/toolbar.png') -37px -30px}
+#reverseButton {width:38px; height:32px; background: url('/civilwar/server/images/icons/toolbar.png') -0px -59px}
+#formationButton {width:38px; height:32px; background: url('/civilwar/server/images/icons/toolbar.png') -37px -59px}

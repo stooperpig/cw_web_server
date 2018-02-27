@@ -1,6 +1,6 @@
 var wego = wego || {};
 
-wego.MainController = (function() {
+wego.Application = (function() {
 	function adjustSize() { 
 		var windowHeight = $(window).height(); 
 		var headerHeight = $('#header').height(); 
@@ -17,14 +17,7 @@ wego.MainController = (function() {
 		$("#stackDiv").height(stackHeight);
 	}
 	
-	function drawMap() {
-		var canvas = document.getElementById('mainMapCanvas');
-		var context = canvas.getContext('2d');
-		context.clearRect(0,0,canvas.width,canvas.height);
-		
-		wego.Map.draw(context);
-		adjustSize();
-	}
+
 	
 	function getCurrentHex() {
 		return wego.UiState.getCurrentHex();
@@ -35,6 +28,7 @@ wego.MainController = (function() {
 		$(window).resize(adjustSize);
 		
 		adjustSize();
+		wego.UiState.setGame(wego.Game);
 		wego.Game.setId(gGameId);
 		wego.GameApi.retrieveGame(gGameId, gPlayerId, loadData);
 	}
@@ -49,7 +43,7 @@ wego.MainController = (function() {
 		console.log("mapPixel width: " + wego.Map.getPixelWidth());
 		console.log("context width: " + context.canvas.width);
 		console.log("context height: " + context.canvas.height);
-		drawMap();
+		wego.UiState.setCurrentHex(null);
 
 		//var r = confirm("View Replay");
         //if (r == true) {
@@ -72,8 +66,6 @@ wego.MainController = (function() {
         $("#footerTurnDiv").html("Turn " + wego.Game.getTurn());
 
 		loadImages(wego.ImageCache, initializeMap);
-
-
 	}
 	
 	function loadImages(images, callback) {
@@ -102,7 +94,7 @@ wego.MainController = (function() {
 		if (hex != null){
 			var stack = hex.getStack();
 			if (stack != null && !stack.isEmpty()) {
-				var counters = stack.getCounters();
+				var counters = stack.counters;
 				for(var i = 0; i < counters.length; ++i) {
 					var counter = counters[i];
 					var selected = false;
@@ -153,11 +145,9 @@ wego.MainController = (function() {
 	
 	function setCurrentHex(hex,counters) {
 		wego.UiState.setCurrentHex(hex,counters);
-		drawMap();
 	} 
 	
 	return {
-		drawMap: drawMap,
 		initialize: initialize,
 		updateCounterList: updateCounterList
 	}

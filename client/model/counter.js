@@ -1,11 +1,10 @@
 var wego = wego || {};
 
 wego.Counter = function() {
-	this.mTasks = new Array();
-	this.mReplayTasks = new Array();
-	this.mPlayer = null;
-	this.mCurrentTask = null;
-	this.mRemainingMovementFactor = 0;
+	this.tasks = new Array();
+	this.replayTasks = new Array();
+	this.player = null;
+	this.currentTask = null;
 
     this.type = "";
     this.quality = 0;
@@ -13,190 +12,149 @@ wego.Counter = function() {
 	this.unitImageIndex = 3;
 	this.unitSymbolIndex = 0;
 	this.name = "";
+	this.shortName = "";
 	this.parentName = "";
-	this.facing = "";
-	this.strength = 0;
+	this.originalStrength = 0;
 	this.id = "";
-	this.fatigue = "";
-	this.formation = 0;
-	this.fixed = false;
-	this.moraleStatus = 0;
 	this.leadership = 0;
 	this.command = 0;
 	this.range = 0;
-	this.lineMovement = 0;
-	this.columnMovement = 0;
 	this.canChangeFormation = true;
 	this.canMoveInLine = true;
 };
 
 wego.Counter.prototype = {
-		
 	addReplayTask:function(task) {
-		this.mReplayTasks.push(task);
+		this.replayTasks.push(task);
 	},
 	
 	addTask:function(task) {
-		var cost = task.getMovementFactor();
-		this.mRemainingMovementFactor -= cost;
-		if (this.mRemainingMovementFactor < 0) {
-			this.mRemainingMovementFactor = 0;
+		var currentHex = null;
+		if (this.currentTask != null) {
+			currentHex = this.currentTask.hex;
 		}
 		
-		var currentHex = this.getHex();
-		var newHex = task.getHex();
+		var newHex = task.hex;
 		if (currentHex != newHex) {
 			if (currentHex != null) {
 				currentHex.removeCounter(this);
 			}
 			
-			if (task.getTransport() == null) {
-				console.log("add to hex " + newHex);
-				if (newHex != null) {
-					newHex.addCounter(this);
-				}
-			} else {
-				console.log(this.toString() + " not adding to hex because I am loaded.  currentHex:" + currentHex);
+			console.log("add to hex " + newHex);
+			if (newHex != null) {
+				newHex.addCounter(this);
 			}
 		}
 		
-		this.mTasks.push(task);
-		this.mCurrentTask = task;
-	},
-	
-	canMoveTo:function(toHex) {
-		var returnValue = false;
-		
-		if (this.mRemainingMovementFactor > 0) {
-			var fromHex = this.getHex();
-			var movementCost = this.getMoveCost(fromHex,toHex);
-			if (movementCost <= this.mRemainingMovementFactor) {
-				returnValue = true;
-			}
-		}
-		
-		return returnValue;
-	},
-	
-	canOpportunityFire:function() {
-		return this.canDirectFire(null);
+		this.currentTask = task;
+		this.tasks.push(task);
 	},
 
-	deleteTask:function(time,adjustPassengersOrTransport) {
-		var length = this.mTasks.length;
+	getFacing:function() {
+		return this.currentTask.facing;
+	},
+
+	getFatigue:function() {
+		return this.currentTask.fatigue;
+	},
+
+	getFixed:function() {
+		return this.currentTask.fixed;
+	},
+
+	getFormation:function() {
+		return this.currentTask.formation;
+	},
+	
+	// canMoveTo:function(toHex) {
+	// 	var returnValue = false;
 		
-		//fixme need to detect if current unit is carrier or not
+	// 	if (this.mRemainingMovementFactor > 0) {
+	// 		var fromHex = this.getHex();
+	// 		var movementCost = this.getMoveCost(fromHex,toHex);
+	// 		if (movementCost <= this.mRemainingMovementFactor) {
+	// 			returnValue = true;
+	// 		}
+	// 	}
 		
-		for(var i = time; i < length; ++i) {
-			var task = this.mTasks[i];
-			this.mRemainingMovementFactor += task.getMovementFactor();
-			if (adjustPassengersOrTransport) {
-				switch(task.getType()) {
-					case wego.TaskType.LOAD:
-						var secondCounter = this.mTasks[i-1].getSecondCounter();   
-						secondCounter.deleteTask(i,false);
-						break;
-					case wego.TaskType.UNLOAD:
-						var secondCounter = this.mTasks[i-1].getSecondCounter();
-						secondCounter.deleteTask(i,false);
-						break;
-				}
-			}
-		}
+	// 	return returnValue;
+	// },
+	
+	// canOpportunityFire:function() {
+	// 	return this.canDirectFire(null);
+	// },
+
+	// deleteTask:function(time) {
+	// 	var length = this.mTasks.length;
 		
-		this.mTasks.splice(time,length-time);
-		this.update(time-1,wego.GameMode.PLAN);
-	},
-	
-	directFire:function(hex,targets) {
-		var currentHex = this.getHex();
-		var cost = this.getMovementFactor();
-		var task = new wego.Task(wego.TaskType.DIRECT_FIRE,currentHex,cost);
-		task.setOtherHex(hex);
-		task.setTargets(targets);
-		this.addTask(task);
-	},
-	
-	getCounterName: function () {
-		return this.name;
-	},
-	
-	getId:function () {
-		return this.id;
-	},
-	
-	getImage:function () {
-		return null;
-	},
-	
-	getImageSrc:function () {
-		return "";
-	},
-	
-	getHex:function () {
-		var returnValue = null;
+	// 	//fixme need to detect if current unit is carrier or not
 		
-		if (this.mCurrentTask != null) {
-			returnValue = this.mCurrentTask.getHex();
-		}
+	// 	for(var i = time; i < length; ++i) {
+	// 		var task = this.mTasks[i];
+	// 		this.mRemainingMovementFactor += task.movementFactor;
+	// 	}
 		
-		return returnValue;
+	// 	this.mTasks.splice(time,length-time);
+	// 	this.update(time-1,wego.GameMode.PLAN);
+	// },
+	
+	// directFire:function(hex,targets) {
+	// 	var currentHex = this.getHex();
+	// 	var cost = this.getMovementFactor();
+	// 	var task = new wego.Task(wego.TaskType.DIRECT_FIRE,currentHex,cost);
+	// 	task.otherHex = hex;
+	// 	task.targets = targets;
+	// 	this.addTask(task);
+	// },
+	
+	getHex:function() {
+		return this.currentTask.hex;
 	},
 	
 	getLastTask:function() {
 		var returnValue = null;
-		if (this.mTasks.length > 0) {
-			returnValue = this.mTasks[this.mTasks.length - 1];
+		if (this.tasks.length > 0) {
+			returnValue = this.tasks[this.tasks.length - 1];
 		}
 		
 		return returnValue;
 	},
 	
-	getMoveCost:function(fromHex,toHex) {
-		var hexCost = wego.MovementCostTable.getHexCost(this, fromHex, toHex);
-		return hexCost;
-	},
+	// getMoveCost:function(fromHex,toHex) {
+	// 	var hexCost = wego.MovementCostTable.getHexCost(this, fromHex, toHex);
+	// 	return hexCost;
+	// },
 	
+	getMoraleStatus:function() {
+		return this.currentTask.moraleStatus;
+	},
+
 	getMovementFactor:function() {
-		return this.movementFactor;
+		return this.currentTask.movementFactor;
+	},
+
+	getStrength:function() {
+		return this.currentTask.strength;
 	},
 	
-	getPassengers:function() {
-		var returnValue = null;
-		
-		if (this.mCurrentTask != null) {
-			returnValue = this.mCurrentTask.getPassengers();
-		}
-		
-		return returnValue;
-	},
-	
-	getPlayer:function () {
-		return this.mPlayer;
-	},
-	
-	getRemainingMovementFactor:function() {
-		return this.mRemainingMovementFactor;
-	},
-	
-	getTaskDataAtTime:function(time, mode) {
+	getTaskDataAtTime:function(mode, time) {
 		var returnValue = {};
 		returnValue.hasMoreTasks = true;
 		
 		switch(mode) {
 			case wego.GameMode.PLAN:
-				if (time < this.mTasks.length - 1) {
-					returnValue.task = this.mTasks[time]; 
+				if (time < this.tasks.length) {
+					returnValue.task = this.tasks[time]; 
 				} else {
-					returnValue.task = this.mTasks[this.mTasks.length - 1];
+					returnValue.task = this.tasks[this.tasks.length - 1];
 					returnValue.hasMoreTasks = false;
 				}
 				break;
 			case wego.GameMode.REPLAY:
-				if (time < this.mReplayTasks.length - 1) {
-					returnValue.task = this.mReplayTasks[time]; 
+				if (time < this.replayTasks.length) {
+					returnValue.task = this.replayTasks[time]; 
 				} else {
-					returnValue.task = this.mReplayTasks[this.mReplayTasks.length - 1];
+					returnValue.task = this.replayTasks[this.replayTasks.length - 1];
 					returnValue.hasMoreTasks = false;
 				}
 				break;
@@ -210,185 +168,118 @@ wego.Counter.prototype = {
 		
 		switch(gameMode) {
 		case wego.GameMode.PLAN:
-			returnValue = this.mTasks;
+			returnValue = this.tasks;
 			break;
 		case wego.GameMode.REPLAY:
-			returnValue = this.mReplayTasks;
+			returnValue = this.replayTasks;
 			break;
 		}
 		
 		return returnValue;
 	},
 		
-	getTransport:function() {
-		var task = this.getLastTask();
-		return task.getTransport();
-	},
-	
-	hasPassenger:function() {
-		var returnValue = false;
-		var passengers = this.getPassengers();
-		if (passengers != null && passengers.length > 0) {
-			returnValue = true;
-		}
-		
-		return returnValue;
-	},
-	
-	indirectFire:function(hex) {
-		var currentHex = this.getHex();
-		var cost = this.getMovementFactor();
-		var task = new wego.Task(wego.TaskType.INDIRECT_FIRE,currentHex,cost);
-		task.setOtherHex(hex);
-		this.addTask(task);
-	},
-	
 	isFinished:function() {
 		var returnValue = true;
-		var movementFactor = this.getMovementFactor();
-		
-		if (this.mTasks.length < wego.Clock.getMaxTime()) {
-			if (movementFactor > 0) {
-				if (this.mRemainingMovementFactor > 0) {
-					returnValue = false;
-				}
-			} else {
-				if (this.mTasks.length == 1) {
-					returnValue = false;
-				}
-			}
+		var lastTask = this.getLastTask();
+
+		if (lastTask.movementFactor > 0) {
+			returnValue = false;
 		}
 		
 		return returnValue;
 	},
-	
 
 	isReady:function() {
 		var returnValue = false;
 		
-		var task = this.getLastTask();
-		if (task == this.mCurrentTask) {
+		var lastTask = this.getLastTask();
+		if (lastTask == this.currentTask) {
 			returnValue = true;
 		}
 		
 		return returnValue;
 	}, 
 	
-	moveTo:function(toHex) {
-		var fromHex = this.getHex();
-		var movementCost = this.getMoveCost(fromHex, toHex);
-		if (movementCost <= this.mRemainingMovementFactor) {
-			var lastTask = this.getLastTask();
-			var task = new wego.Task(wego.TaskType.MOVE,toHex,movementCost,lastTask);
-			this.addTask(task);
-		}
-	},
+	// moveTo:function(toHex) {
+	// 	var fromHex = this.getHex();
+	// 	var movementCost = this.getMoveCost(fromHex, toHex);
+	// 	if (movementCost <= this.mRemainingMovementFactor) {
+	// 		var lastTask = this.getLastTask();
+	// 		var task = new wego.Task(wego.TaskType.MOVE,toHex,movementCost,lastTask);
+	// 		this.addTask(task);
+	// 	}
+	// },
 	
-	opportunityFire:function() {
-		var currentHex = this.getHex();
-		var cost = this.getMovementFactor();
-		var task = new wego.Task(wego.TaskType.OPPORTUNITY_FIRE,currentHex,cost);
-		this.addTask(task);
-	},
+	// opportunityFire:function() {
+	// 	var currentHex = this.getHex();
+	// 	var cost = this.getMovementFactor();
+	// 	var task = new wego.Task(wego.TaskType.OPPORTUNITY_FIRE,currentHex,cost);
+	// 	this.addTask(task);
+	// },
 	
-	padWithWaitTasks:function(numberOfWaitTasks, startingTask) {
-		var hex = startingTask.getHex();
-		for(var i = 0; i < numberOfWaitTasks; ++i) {
-			newTask = new wego.Task(wego.TaskType.WAIT,hex,0,startingTask);
-			this.addTask(newTask);
-		}
-	},
-	
+	// padWithWaitTasks:function(numberOfWaitTasks, startingTask) {
+	// 	var hex = startingTask.getHex();
+	// 	for(var i = 0; i < numberOfWaitTasks; ++i) {
+	// 		newTask = new wego.Task(wego.TaskType.WAIT,hex,0,startingTask);
+	// 		this.addTask(newTask);
+	// 	}
+	// },
 
 	save:function() {
 		var returnValue = {};
 		returnValue.id = this.id;
 		//returnValue.type = this.mCounterType.getCounterName();
 		returnValue.tasks = new Array();
-		for(var i = 0; i < this.mTasks.length; ++i) {
-			var result = this.mTasks[i].save();
+		for(var i = 0; i < this.tasks.length; ++i) {
+			var result = this.tasks[i].save();
 			returnValue.tasks[i] = result;
 		}
 		
 		returnValue.replayTasks = new Array();
-		for(var i = 0; i < this.mReplayTasks.length; ++i) {
-			var result = this.mReplayTasks[i].save();
+		for(var i = 0; i < this.replayTasks.length; ++i) {
+			var result = this.replayTasks[i].save();
 			returnValue.replayTasks[i] = result;
 		}
 		
 		return returnValue;
 	},
 	
-	setPlayer:function(value) {
-		this.mPlayer = value;
-	},
-	
 	toString:function() {
 		return ""; //this.mCounterType.getCounterName();
 	},
 	
-	unload:function() {
-		var movementCost = 0;
-		var task = this.getLastTask();
-		var hex = task.getHex();
-		var transport = task.getTransport();
-		console.log(this.toString() + " unloading. hex: " + hex + " transport: " + transport + " currentHex: " + this.getHex());
-		if (transport != null) {
-			hex = transport.getHex();
-			movementCost = this.getMovementFactor();
-			var transportsTasks = transport.getTasks(wego.GameMode.PLAN);
-			var numberOfTasks = transportsTasks.length;
-			var lastTask = transportsTasks[numberOfTasks-1];
-			
-			var numberOfWaitTasks = 0;
-			if (lastTask.getType() == wego.TaskType.UNLOAD) {
-				numberOfWaitTasks = numberOfTasks - 2;
-			} else {
-				numberOfWaitTasks = numberOfTasks - 1;
-			}
-			
-			var startingTask = this.getLastTask();
-			this.padWithWaitTasks(numberOfWaitTasks, startingTask);
-		} 
-		
-		var newTask = new wego.Task(wego.TaskType.UNLOAD,hex,movementCost);
-		this.addTask(newTask);
-	},
-	
-	update:function(time, mode) {
-		var taskData = this.getTaskDataAtTime(time, mode);
+	update:function(mode, time) {
+		var taskData = this.getTaskDataAtTime(mode, time);
 		var task = taskData.task;
 		
-		var hex = task.getHex();
-		var currentHex = this.getHex();
+		var hex = task.hex;
+		var currentHex = this.getHex(mode, time);
 		if (hex != currentHex) {
 			if (currentHex != null) {
 				currentHex.removeCounter(this);
 			}
 			
-			if (hex != null && task.getTransport() == null) {
+			if (hex != null) {
 				hex.addCounter(this);
 			}
 		}
-		
-		this.mCurrentTask = task;
-		
+				
 		return taskData.hasMoreTasks;
 	},
 	
-	wait:function() {
-		var movementFactor = this.getMovementFactor();
+	// wait:function() {
+	// 	var movementFactor = this.getMovementFactor();
 		
-		if (movementFactor > 0) {
-			if (this.mRemainingMovementFactor > 0) {
-				var task = new wego.Task(wego.TaskType.WAIT,this.getHex(),0.0);
-				this.addTask(task);
-			}
-		} else {
-			if (this.mTasks.length == 1) {
-				var task = new wego.Task(wego.TaskType.WAIT,this.getHex(),0);
-				this.addTask(task);
-			}
-		}
-	},
+	// 	if (movementFactor > 0) {
+	// 		if (this.mRemainingMovementFactor > 0) {
+	// 			var task = new wego.Task(wego.TaskType.WAIT,this.getHex(),0.0);
+	// 			this.addTask(task);
+	// 		}
+	// 	} else {
+	// 		if (this.mTasks.length == 1) {
+	// 			var task = new wego.Task(wego.TaskType.WAIT,this.getHex(),0);
+	// 			this.addTask(task);
+	// 		}
+	// 	}
+	// },
 }

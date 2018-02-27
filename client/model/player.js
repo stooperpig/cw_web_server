@@ -1,24 +1,24 @@
 var wego = wego || {};
 
 wego.Player = function(id,name) {
-	this.mCounters = new Array();
-	this.mId = id;
-	this.mName = name;
-	this.mTeam;
+	this.counters = new Array();
+	this.id = id;
+	this.name = name;
+	this.team;
 }
 
 wego.Player.prototype = {	
 	addCounter:function(counter) {
-		counter.setPlayer(this);
-		this.mCounters.push(counter);
+		counter.player = this;
+		this.counters.push(counter);
 	},
 	
 	getCounter:function(id) {
 		var returnValue = null;
 		
-		for(var i = 0; i < this.mCounters.length; ++i) {
-			if (this.mCounters[i].getId() == id) {
-				returnValue = this.mCounters[i];
+		for(var i = 0; i < this.counters.length; ++i) {
+			if (this.counters[i].id == id) {
+				returnValue = this.counters[i];
 				break;
 			}
 		}
@@ -26,24 +26,12 @@ wego.Player.prototype = {
 		return returnValue;
 	},
 	
-	getCounters:function() {
-		return this.mCounters;
-	},
-	
-	getId:function() {
-		return this.mId;
-	},
-	
-	getName:function() {
-		return this.mName;
-	},
-	
-	getNextUnit:function(index) {
+	getNextUnit:function(mode, time, index) {
 		var newIndex = index + 1;
 		var counter = null;
-		for(var i = newIndex; i < this.mCounters.length; ++i) {
-			if (!this.mCounters[i].isFinished() && this.mCounters[i].getHex() != null) {
-				counter = this.mCounters[i];
+		for(var i = newIndex; i < this.counters.length; ++i) {
+			if (!this.counters[i].isFinished() && this.counters[i].getHex(mode, time) != null) {
+				counter = this.counters[i];
 				newIndex = i;
 				break;
 			}
@@ -51,8 +39,8 @@ wego.Player.prototype = {
 		
 		if (counter == null) {
 			for(var i = 0; i < newIndex; ++i) {
-				if (!this.mCounters[i].isFinished() && this.mCounters[i].getHex() != null) {
-					counter = this.mCounters[i];
+				if (!this.counters[i].isFinished() && this.counters[i].getHex(mode, time) != null) {
+					counter = this.counters[i];
 					newIndex = i;
 					break;
 				}
@@ -62,21 +50,21 @@ wego.Player.prototype = {
 		return ({nextIndex:newIndex, unit:counter});
 	},
 	
-	getPrevUnit:function(index) {
+	getPrevUnit:function(mode, time, index) {
 		var newIndex = index - 1;
 		var counter = null;
 		for(var i = newIndex; i >= 0; --i) {
-			if (!this.mCounters[i].isFinished() && this.mCounters[i].getHex() != null) {
-				counter = this.mCounters[i];
+			if (!this.counters[i].isFinished() && this.counters[i].getHex(mode, time) != null) {
+				counter = this.counters[i];
 				newIndex = i;
 				break;
 			}
 		}
 		
 		if (counter == null) {
-			for(var i = this.mCounters.length - 1; i > newIndex; --i) {
-				if (!this.mCounters[i].isFinished() && this.mCounters[i].getHex() != null) {
-					counter = this.mCounters[i];
+			for(var i = this.counters.length - 1; i > newIndex; --i) {
+				if (!this.counters[i].isFinished() && this.counters[i].getHex(mode, time) != null) {
+					counter = this.counters[i];
 					newIndex = i;
 					break;
 				}
@@ -86,24 +74,16 @@ wego.Player.prototype = {
 		return ({nextIndex:newIndex, unit:counter});
 	},
 	
-	getTeam:function() {
-		return this.mTeam;
-	},
-	
 	save:function() {
 		var returnValue = {};
-		returnValue.id = this.mId;
-		returnValue.name = this.mName;
+		returnValue.id = this.id;
+		returnValue.name = this.name;
 		returnValue.counters = new Array();
-		for(var i = 0; i < this.mCounters.length; ++i) {
-			var result = this.mCounters[i].save();
+		for(var i = 0; i < this.counters.length; ++i) {
+			var result = this.counters[i].save();
 			returnValue.counters[i] = result;
 		}
 		
 		return returnValue;
-	},
-	
-	setTeam:function(value) {
-		this.mTeam = value;
 	}
 }

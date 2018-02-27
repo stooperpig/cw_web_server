@@ -1,71 +1,50 @@
 var wego = wego || {};
 
 wego.Team = function(id,name) {
-	var mName = name;
-	var mId = id;
-	var mPlayers = new Array();
-	
-	function getName() {
-		return mName;
-	}
-	
-	function getId() {
-		return mId;
-	}
-	
-	function getPlayers() {
-		return mPlayers;
-	}
-	
-	function getPlayer(id) {
+	this.name = name;
+	this.id = id;
+	this.players = new Array();
+}
+
+wego.Team.prototype = {
+	getPlayer:function(id) {
 		var returnValue = null;
 		
-		for(var i = 0; i < mPlayers.length; ++i) {
-			if (mPlayers[i].getId() == id) {
-				returnValue = mPlayers[i];
+		for(var i = 0; i < this.players.length; ++i) {
+			if (this.players[i].id == id) {
+				returnValue = this.players[i];
 				break;
 			}
 		}
 		
-		
 		return returnValue;
-	}
+	},
 	
-	function getCounter(id) {
+	getCounter:function(id) {
 		var returnValue = null;
 		
-		for(var i = 0; i < mPlayers.length && returnValue == null; ++i) {
-			returnValue = mPlayers[i].getCounter(id);
+		for(var i = 0; i < this.players.length && returnValue == null; ++i) {
+			returnValue = this.players[i].getCounter(id);
 		}
 		
 		return returnValue;
-	}
+	},
 	
-	function addPlayer(player) {
-		player.setTeam(this);
-		mPlayers.push(player);
-	}
+	addPlayer:function(player) {
+		player.team = this;
+		this.players.push(player);
+	},
 	
-	function save() {
+	save:function() {
 		var returnValue = {};
-		returnValue.id = mId;
-		returnValue.name = mName;
+		returnValue.id = this.id;
+		returnValue.name = this.name;
 		returnValue.players = new Array();
-		for(var i = 0; i < mPlayers.length; ++i) {
-			var result = mPlayers[i].save();
+		for(var i = 0; i < this.players.length; ++i) {
+			var result = this.players[i].save();
 			returnValue.players[i] = result;
 		}
 		
 		return returnValue;
-	}
-	
-	return {
-		save: save,
-		getName: getName,
-		getId: getId,
-		getPlayers: getPlayers,
-		addPlayer: addPlayer,
-		getPlayer: getPlayer,
-		getCounter: getCounter
 	}
 }

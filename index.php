@@ -39,17 +39,24 @@
 	<script src="/civilwar/client/model/team.js"></script>
 	<script src="/civilwar/client/model/game.js"></script>
 	<script src="/civilwar/client/model/uistate.js"></script>
-	<script src="/civilwar/client/model/clock.js"></script>
 	<script src="/civilwar/client/model/table.js"></script>
     <script src="/civilwar/client/model/scenario.js"></script>
     <script src="/civilwar/client/model/imagecache.js"></script>
-	<script src="/civilwar/client/controller/clockcontroller.js"></script>
-	<script src="/civilwar/client/controller/unitpanelcontroller.js"></script>
-	<script src="/civilwar/client/controller/mapcontroller.js"></script>
+	<script src="/civilwar/client/component/clock/clockcontroller.js"></script>
+	<script src="/civilwar/client/component/clock/clockview.js"></script>
+	<script src="/civilwar/client/component/clock/clockcomponent.js"></script>
+	<script src="/civilwar/client/component/unitpanel/unitpanelcontroller.js"></script>
+	<script src="/civilwar/client/component/unitpanel/unitpanelview.js"></script>
+	<script src="/civilwar/client/component/unitpanel/unitpanelcomponent.js"></script>
+	<script src="/civilwar/client/component/mappanel/mapcontroller.js"></script>
+	<script src="/civilwar/client/component/mappanel/mapview.js"></script>
+	<script src="/civilwar/client/component/mappanel/mapcomponent.js"></script>
 	<script src="/civilwar/client/controller/menucontroller.js"></script>
 	<script src="/civilwar/client/controller/statusbarcontroller.js"></script>
-	<script src="/civilwar/client/controller/toolbarcontroller.js"></script>
-	<script src="/civilwar/client/controller/maincontroller.js"></script>
+	<script src="/civilwar/client/component/toolbar/toolbarcontroller.js"></script>
+	<script src="/civilwar/client/component/toolbar/toolbarview.js"></script>
+	<script src="/civilwar/client/component/toolbar/toolbarcomponent.js"></script>
+	<script src="/civilwar/client/application.js"></script>
 	<script src="/civilwar/client/util/api.js"></script>
 	<script src="/civilwar/client/util/spriteutil.js"></script>
 	<script src="/civilwar/client/main.js"></script>
@@ -95,11 +102,13 @@
 		<button id="losButton">LOS</button>
 		<button id="prevUnitButton">Prev Unit</button>
 		<button id="nextUnitButton">Next Unit</button>
-		<button id="loadUnloadButton">Load/Unload</button>
 		<button id="opFireButton">OpFire</button>
 		<button id="directFireButton">DirectFire</button>
-		<button id="indirectFireButton">IndirectFire</button>
 		<button id="waitButton">Wait</button>
+		<button id="rotateLeftButton"></button>
+		<button id="rotateRightButton"></button>
+		<button id="reverseButton"></button>
+		<button id="formationButton"></button>
 		<button id="gameModeButton">Plan Mode</button>
 		<div class="clear"></div>
 	</div>
@@ -115,7 +124,7 @@
 		
 		<div id="sidebarTabs">
 			<ul>
-				<li><a href="#taskListDiv">Tasks</a></li>
+				<li><a href="#taskListDiv">Task</a></li>
 				<li><a href="#hexInfo">Hex</a></li>
 			</ul>
 			<div id="taskListDiv">

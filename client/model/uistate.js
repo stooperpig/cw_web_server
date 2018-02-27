@@ -1,12 +1,13 @@
 var wego = wego || {};
 
 wego.UiState = (function() {
-	var mCurrentHex = null;
+	var currentHex = null;
 	var mTargetHex =  null;
 	var mCommandMode = wego.CommandMode.NONE;
 	var mGameMode = wego.GameMode.PLAN; 
 	var selectedCounters = new Array();
-	//var currentUnitIndex = -1;
+	var game = null;
+	var time = 0;
 	
 	function clearStatusMessage() {
 		amplify.publish(wego.Topic.STATUS_MESSAGE,null);
@@ -21,41 +22,11 @@ wego.UiState = (function() {
 	}
 	
 	function getCurrentHex() {
-		return mCurrentHex;
+		return currentHex;
 	}
 	
 	function getSelectedCounters() {
 		return selectedCounters;
-		// var returnValue = new Array();
-		// var selectedItems = $("#counterList").find(".ui-selected");
-		// if (selectedItems.length > 0) {
-		// 	console.log(selectedItems.length + " units selected");
-		// 	var selectedCounters = new Array();
-		// 	var stack = mCurrentHex.getStack();
-		// 	var counters = stack.getCounters();
-		// 	for(var i = 0; i < selectedItems.length; ++i) {
-		// 		var counterId = parseInt(selectedItems[i].getAttribute("data-counter-id"));
-		// 		for(var j = 0; j < counters.length; ++j) {
-		// 			if (counters[j].getId() == counterId) {
-		// 				returnValue.push(counters[j]);
-		// 				break;
-		// 			} else if (counters[j].isFort()) {
-		// 				var passengers = counters[j].getPassengers();
-		// 				if (passengers != null) {
-		// 					for(var k = 0; k < passengers.length; ++k) {
-		// 						if (passengers[k].getId() == counterId) {
-		// 							returnValue.push(passengers[k]);
-		// 							break;
-		// 						}
-		// 					}
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// } else {
-		// 	console.log("no units selected");
-		// }
-		// return returnValue;
 	}
 	
 	function getTargetHex() {
@@ -66,17 +37,22 @@ wego.UiState = (function() {
 		mCommandMode = mode;
 	}
 	
-	function setCurrentHex(hex,counters) {
-		if (mCurrentHex != null) {
-			mCurrentHex.setSelected(false);
+	function setCurrentHex(hex, counters, newTime) {
+		if (currentHex != null) {
+			currentHex.selected = false;
 		}
 				
-		mCurrentHex = hex;
+		currentHex = hex;
 		
-		if (mCurrentHex != null) {
-			mCurrentHex.setSelected(true);
+		if (currentHex != null) {
+			currentHex.selected = true;
 		}
-		
+
+		if (newTime != null) {
+			time = newTime;
+		}
+
+		selectedCounters = counters;
 		amplify.publish(wego.Topic.CURRENT_HEX,{hex:hex, selectedCounters:counters});
 	}
 	
@@ -98,6 +74,23 @@ wego.UiState = (function() {
 		targetHex = hex;
 	}
 
+	function setGame(value) {
+		game = value;
+	}
+
+	function getGame() {
+		return game;
+	}
+
+	function getTime() {
+		return time;
+	}
+
+	function setTime(value) {
+		time = value;
+		amplify.publish(wego.Topic.TIME,null);
+	}
+
 	return {
 		clearStatusMessage : clearStatusMessage,
 		getCommandMode : getCommandMode,
@@ -105,11 +98,15 @@ wego.UiState = (function() {
 		getGameMode : getGameMode,
 		getSelectedCounters: getSelectedCounters,
 		getTargetHex : getTargetHex,
+		getTime : getTime,
 		setCommandMode : setCommandMode,
 		setCurrentHex : setCurrentHex,
 		setGameMode : setGameMode,
 		setSelectedCounters : setSelectedCounters,
 		setStatusMessage : setStatusMessage,
-		setTargetHex : setTargetHex
+		setTargetHex : setTargetHex,
+		setTime : setTime,
+		setGame : setGame,
+		getGame : getGame
 	}
 })();
