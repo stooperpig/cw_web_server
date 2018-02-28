@@ -53,7 +53,7 @@ wego.UiState = (function() {
 		}
 
 		selectedCounters = counters;
-		amplify.publish(wego.Topic.CURRENT_HEX,{hex:hex, selectedCounters:counters});
+		amplify.publish(wego.Topic.CURRENT_HEX,{hex:currentHex, selectedCounters:counters});
 	}
 	
 	function setGameMode(value) {
@@ -67,7 +67,7 @@ wego.UiState = (function() {
 
 	function setSelectedCounters(value) {
 		selectedCounters = value;
-		amplify.publish(wego.Topic.SELECTED_COUNTERS,{hex:hex, selectedCounters:selectedCounters});
+		amplify.publish(wego.Topic.SELECTED_COUNTERS,{hex:currentHex, selectedCounters:selectedCounters});
 	}
 	
 	function setTargetHex(hex) {

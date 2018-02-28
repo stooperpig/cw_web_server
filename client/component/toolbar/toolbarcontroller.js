@@ -160,12 +160,15 @@ wego.ToolbarController.prototype = {
 					var lastTask = counter.getLastTask();
 					var facing = lastTask.facing;
 					var newFacing = facing;
+					var task = null;
 					if (direction == "left") {
 						newFacing = (facing == 0)?5:facing - 1;
+						task = lastTask.clone(wego.TaskType.ROTATE_LEFT, 2, lastTask.movementFactor - 2);
 					} else {
 						newFacing = (facing == 5)?0:facing + 1;
+						task = lastTask.clone(wego.TaskType.ROTATE_RIGHT, 2, lastTask.movementFactor - 2);
 					}
-					var task = lastTask.clone(wego.TaskType.ROTATE_LEFT, 2, lastTask.movementFactor - 2);
+
 					task.facing = newFacing;
 					counter.addTask(task);
 				}

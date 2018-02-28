@@ -39,7 +39,7 @@ wego.Task.prototype = {
 		} else {
 			hex = this.hex
 		}
-		var returnValue = this.type + "-" + ((hex != null)?hex.toString():"loaded") + "-" + this.movementFactor;
+		var returnValue = this.type + "-" + ((hex != null)?hex.toString():"loaded") + "-" + this.cost;
 		return returnValue;
 	},
 	

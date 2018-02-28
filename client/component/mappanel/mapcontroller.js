@@ -209,10 +209,14 @@ wego.MapController.prototype = {
 	canMove:function(counter, toHex) {
 		var returnValue = false;
 		if (counter.isReady()) {
-			var cost = this.getMovementCost(counter, toHex);
-			var lastTask = counter.getLastTask();
-			if (lastTask.movementFactor >= cost) {
-				returnValue = true;
+			if (counter.type == wego.CounterType.ARTILLERY && counter.getFormation() == wego.Formation.LINE) {
+				returnValue = false;
+			} else {
+				var cost = this.getMovementCost(counter, toHex);
+				var lastTask = counter.getLastTask();
+				if (lastTask.movementFactor >= cost) {
+					returnValue = true;
+				}
 			}
 		}
 		return returnValue;
@@ -235,7 +239,6 @@ wego.MapController.prototype = {
 				var task = lastTask.clone(wego.TaskType.MOVE, 2, lastTask.movementFactor - 2);
 				switch(lastTask.formation) {
 					case wego.Formation.COLUMN:
-						debugger;
 						task.facing = task.hex.getSharedHexSideIndex(toHex);
 					break;
 				}

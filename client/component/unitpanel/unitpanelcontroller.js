@@ -7,16 +7,21 @@ wego.UnitPanelController = function(component) {
 
 wego.UnitPanelController.prototype = {
 	deleteTask:function(counterId,taskSlot) {
-		var selectedCounters = wego.UiState.getSelectedCounters();
-		for(var j = 0; j < selectedCounters.length; ++j) {
-			var counter = selectedCounters[j];
-			if (counter.getId() == counterId) {
-				counter.deleteTask(taskSlot,true);
-				var hex = counter.getHex();
-				wego.UiState.setCurrentHex(hex,[counter]);
-				//wego.MainController.drawMap();
+        var selectedCounters = this.state.getSelectedCounters();
+		 for(var j = 0; j < selectedCounters.length; ++j) {
+		 	var counter = selectedCounters[j];
+		 	if (counter.id == counterId) {
+                var lastTask = counter.getLastTask();
+                var lastHex = lastTask.hex;
+                counter.deleteTask(taskSlot);
+                var hex = counter.getHex();
+                if (hex != lastHex) {
+                    lastHex.removeCounter(counter);
+                    hex.addCounter(counter);
+                }
+		        this.state.setCurrentHex(hex,[counter]);
 				break;
-			}
+		 	}
 		}
 	},
 	

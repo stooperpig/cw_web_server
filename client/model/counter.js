@@ -84,19 +84,11 @@ wego.Counter.prototype = {
 	// 	return this.canDirectFire(null);
 	// },
 
-	// deleteTask:function(time) {
-	// 	var length = this.mTasks.length;
-		
-	// 	//fixme need to detect if current unit is carrier or not
-		
-	// 	for(var i = time; i < length; ++i) {
-	// 		var task = this.mTasks[i];
-	// 		this.mRemainingMovementFactor += task.movementFactor;
-	// 	}
-		
-	// 	this.mTasks.splice(time,length-time);
-	// 	this.update(time-1,wego.GameMode.PLAN);
-	// },
+	deleteTask:function(time) {
+	 	var length = this.tasks.length;
+		this.tasks.splice(time, length-time);
+		this.currentTask = this.tasks[this.tasks.length - 1];
+	},
 	
 	// directFire:function(hex,targets) {
 	// 	var currentHex = this.getHex();

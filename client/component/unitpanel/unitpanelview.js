@@ -1,6 +1,7 @@
 var wego = wego || {};
 
-wego.UnitPanelView = function() {
+wego.UnitPanelView = function(component) {
+    this.component = component;
     this.state = null;
 };
 
@@ -9,34 +10,32 @@ wego.UnitPanelView.prototype = {
         this.state = state;
 
 		$("#sidebarTabs").tabs();
-		var that = this;
+		var view = this;
 		amplify.subscribe(wego.Topic.CURRENT_HEX, function(data) {
-			that.updateStack(data.hex,data.selectedCounters);
-			that.updateHexInfo(data.hex);
+            view.updateStack(data.hex,data.selectedCounters);
+            view.updateTaskList(data.selectedCounters);
+			view.updateHexInfo(data.hex);
         });
         
         amplify.subscribe(wego.Topic.SELECTED_COUNTERS, function(data) {
-			that.updateStack(data.hex,data.selectedCounters);
+            view.updateStack(data.hex,data.selectedCounters);
+            view.updateTaskList(data.selectedCounters);
 		});		
 	},
 
 	updateHexInfo:function(hex) {
 		var hexInfo = $("#hexInfo");
 		if (hex != null) {
-			var info = hex.hexType.name;
-			
-			info += " (" + hex.column + "," + hex.row + ")<br>";
-			info += "elev: " + hex.elevation + "<br>";
-			
-			info += "<table>"
-			var hexSides = hex.hexSides;
-			
-			info += "<tr><td></td><td>" + hexSides[0].toString() + "</td><td></td></tr>";
-			info += "<tr><td>" + hexSides[5].toString() + "</td><td></td><td>" + hexSides[1].toString() + "</td></tr>";
-			info += "<tr><td>" + hexSides[4].toString() + "</td><td></td><td>" + hexSides[2].toString() + "</td></tr>";
-			info += "<tr><td></td><td>" + hexSides[3].toString() + "</td><td></td></tr>";
-			info += "</table>";
-			
+            var hexSides = hex.hexSides;
+            var info = `${hex.hexType.name}
+                (${hex.column},${hex.row})<br>
+                elev: ${hex.elevation}<br>
+                <table>
+                    <tr><td></td><td>${hexSides[0].toString()}</td><td></td></tr>
+                    <tr><td>${hexSides[5].toString()}</td><td></td><td>${hexSides[1].toString()}</td></tr>
+                    <tr><td>${hexSides[4].toString()}</td><td></td><td>${hexSides[2].toString()}</td></tr>
+                    <tr><td></td><td>${hexSides[3].toString()}</td><td></td></tr>
+                </table>`;
 			hexInfo.html(info);
 		} else {
 			hexInfo.html("");
@@ -56,7 +55,7 @@ wego.UnitPanelView.prototype = {
                     var numCounters = counters.length;
                     var leaders = new Array();
                     for(var i = 0; i < numCounters; ++i) {
-                        if (counters[i].type == "L") {
+                        if (counters[i].type == wego.CounterType.LEADER) {
                             leaders.push(counters[i]);
                         }
                     }
@@ -72,7 +71,7 @@ wego.UnitPanelView.prototype = {
 
                     var unitCount = 0;
                     for(var i = 0; i < numCounters; ++i) {
-                        if (counters[i].type != "L") {
+                        if (counters[i].type != wego.CounterType.LEADER) {
                             var baseY = unitCount * (wego.SpriteUtil.unitBoxHeight + 2) + (leaderRows * wego.SpriteUtil.leaderBoxHeight + 2);
                             var selected = (selectedCounters != null) ?this.containsObject(counters[i], selectedCounters):false;
                             console.log("unit selected: " + selected);
@@ -253,31 +252,35 @@ wego.UnitPanelView.prototype = {
 	    return returnValue;
 	},
 	
-	updateTaskList:function() {
-		$("#taskList").html("");
-		var selectedCounters = wego.UiState.getSelectedCounters();
-		var gameMode = wego.UiState.getGameMode();
-		var displayCounterName = (selectedCounters.length > 1)?true:false;
-		for(var i = 0; i < selectedCounters.length; ++i) {
-			var tasks = selectedCounters[i].getTasks(gameMode);
-			
-			if (displayCounterName) {
-				var html = '<li class="ui-widget-content ui-state-disabled">';
-				html += selectedCounters[i].getCounterName();
-				html += "</li>";
-				$("#taskList").append(html);
-			}
-			
-			for(var j = 0; j < tasks.length; ++j) {
-				var html = '<li class="ui-widget-content ui-state-enabled" data-counter-id="' + selectedCounters[i].getId() + '" data-task-slot="' + j + '" >';
-				var task = tasks[j];
-				if (j > 0 && gameMode == wego.GameMode.PLAN) {
-					html += '<input type="button" value="x" onclick="wego.UnitPanelController.deleteTask(' + selectedCounters[i].getId() + ',' + j + ')">&nbsp;';
-				}
-				html += task.toString();
-				html += "</li>";
-				$("#taskList").append(html);
-			}
-		}
-	}
+	updateTaskList:function(selectedCounters) {
+        $("#taskList").html("");
+        if (selectedCounters != null) {
+            var gameMode = this.state.getGameMode();
+            var displayCounterName = (selectedCounters.length > 1)?true:false;
+            for(var i = 0; i < selectedCounters.length; ++i) {
+                var tasks = selectedCounters[i].getTasks(gameMode);
+                
+                if (displayCounterName) {
+                     var html = `<li class="ui-widget-content ui-state-disabled">${selectedCounters[i].name}</li>`;
+                 	$("#taskList").append(html);
+                }
+                
+                for(var j = 0; j < tasks.length; ++j) {
+                    var task = tasks[j];
+                    var showDeleteButton = j > 0 && gameMode == wego.GameMode.PLAN;
+
+                    var html = `<li class="ui-widget-content ui-state-enabled" data-counter-id="${selectedCounters[i].id}" data-task-slot="${j}">
+                        ${(showDeleteButton)?this.buildDeleteTaskLink(selectedCounters[i].id,j):''}
+                        ${task.type}-${task.hex.column}:${task.hex.row}</li>`;
+                    $("#taskList").append(html);
+                }
+            }
+        }
+    },
+    
+    buildDeleteTaskLink:function(counterId,taskIndex) {
+        //todo: i really hate this binding assuming global unitpanel component. maybe use jquery to bind after doc element is created.
+        //either way I hate the fact the view is doing the binding for the controller.
+        return `<input type="button" value="x" onclick="wego.UnitPanelComponent.controller.deleteTask('${counterId}','${taskIndex}')">&nbsp;`
+    }
 };

@@ -59,10 +59,29 @@ wego.TaskType = {
 	WAIT:"Wt",
 	INITIAL:"In",
 	MOVE:"Mv",
-	ROTATE_LEFT:"RL",
+	ROTATE_LEFT:"Rl",
 	ROTATE_RIGHT:"Rr",
 	DIRECT_FIRE:"Df",
 	OPPORTUNITY_FIRE:"Of",
+	getType:function getType(name) {
+		var returnValue = null;
+		for(var i in this) {
+			if (this[i] == name) {
+				returnValue = this[i];
+				break;
+			}
+		}
+		
+		return returnValue;
+	}
+}
+
+wego.CounterType = {
+	INFANTRY: "I",
+	CALAVRY: "C",
+	LEADER: "L",
+	SUPPLY: "S",
+	ARTILLERY: "A",
 	getType:function getType(name) {
 		var returnValue = null;
 		for(var i in this) {
