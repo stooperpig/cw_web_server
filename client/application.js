@@ -28,19 +28,32 @@ wego.Application = (function() {
 		$(window).resize(adjustSize);
 		
 		adjustSize();
-		wego.UiState.setGame(wego.Game);
-		wego.Game.setId(gGameId);
+		var game = new wego.Game();
+		game.id = gGameId;
+		wego.UiState.setGame(game);
+
+		var scenario = new wego.Scenario();
+		wego.UiState.setScenario(scenario);
+
+		var map = new wego.Map();
+		wego.UiState.setMap(map);
+
+		var parametricData = new wego.ParametricData();
+		wego.UiState.setParametricData(parametricData);
+
 		wego.GameApi.retrieveGame(gGameId, gPlayerId, loadData);
 	}
 	
-	function initializeMap(images) {
+	function initializeMapCanvas(images) {
 		var mapCanvas = $("#mainMapCanvas");
 		var context = mapCanvas[0].getContext('2d');
-		context.canvas.height = wego.Map.getPixelHeight();
-		context.canvas.width = wego.Map.getPixelWidth();
+
+		var map = wego.UiState.getMap();
+		context.canvas.height = map.getPixelHeight();
+		context.canvas.width = map.getPixelWidth();
 		
-		console.log("mapPixel height: " + wego.Map.getPixelHeight());
-		console.log("mapPixel width: " + wego.Map.getPixelWidth());
+		console.log("mapPixel height: " + map.getPixelHeight());
+		console.log("mapPixel width: " + map.getPixelWidth());
 		console.log("context width: " + context.canvas.width);
 		console.log("context height: " + context.canvas.height);
 		wego.UiState.setCurrentHex(null);
@@ -53,19 +66,30 @@ wego.Application = (function() {
 	
 	function loadData(data) {
 		console.log(data);
-		wego.Scenario.initialize(data.scenario);
-		
-		var images = wego.Scenario.getImages(); //data.scenario.images;
+		var scenario = wego.UiState.getScenario();
+		scenario.initialize(data.scenario);
+		var images = scenario.getImageNames(); //data.scenario.images;
 		for(var name in images) {
 			wego.ImageCache[name] = {src:images[name]};
 		}
 
-		wego.Game.initialize(data.game);
+		var map = wego.UiState.getMap();
+		map.initialize(data.map);
+		images = map.getImageNames();
+		for(var name in images) {
+			wego.ImageCache[name] = {src:images[name]};
+		}
 
-        window.document.title = "Civil War: " + wego.Scenario.getName();
-        $("#footerTurnDiv").html("Turn " + wego.Game.getTurn());
+		var game = wego.UiState.getGame();
+		game.initialize(data.game, map);
 
-		loadImages(wego.ImageCache, initializeMap);
+		var parametricData = wego.UiState.getParametricData();
+		parametricData.initialize(data.parametricData);
+
+        window.document.title = "Civil War: " + scenario.name;
+        $("#footerTurnDiv").html("Turn " + game.turn);
+
+		loadImages(wego.ImageCache, initializeMapCanvas);
 	}
 	
 	function loadImages(images, callback) {
@@ -85,6 +109,11 @@ wego.Application = (function() {
 			};
 			image.src = src;
 			images[imageName].image = image;
+		}
+
+		var game = wego.UiState.getGame();
+		if (game.showReplay) {
+			wego.StatusReportComponent.showReport();
 		}
 	}
 	

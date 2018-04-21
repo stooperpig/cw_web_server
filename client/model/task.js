@@ -10,7 +10,7 @@ wego.Task = function(type, cost, movementFactor) {
 	this.facing = 0;
 	this.strength = 0;
 	this.fatigue = 0;
-	this.formation = 0;
+	this.formation = wego.Formation.LINE;
 	this.moraleStatus = 0;
 	this.fixed = false;
 	this.id = ++wego.Task.counter;
@@ -48,30 +48,37 @@ wego.Task.prototype = {
 		returnValue.id = this.id;
 		returnValue.type = this.type;
 		
-		if (this.mHex != null) {
-			returnValue.hexX = this.hex.getColumn();
-			returnValue.hexY = this.hex.getRow();
+		if (this.hex != null) {
+			returnValue.hexX = this.hex.column;
+			returnValue.hexY = this.hex.row;
 		}
 			
-		if (this.mOtherHex != null) {
-			returnValue.otherHexX = this.otherHex.getColumn();
-			returnValue.otherHexY = this.otherHex.getRow();
+		if (this.otherHex != null) {
+			returnValue.otherHexX = this.otherHex.column;
+			returnValue.otherHexY = this.otherHex.row;
 		}
 		
-		if (this.movementFactor != null && this.movementFactor != 0) {
+		if (this.movementFactor != null) {
 			returnValue.movementFactor = this.movementFactor;
 		}
 
-		if (this.remainingMovementFactor != null && this.remainingMovementFactor != 0) {
-			returnValue.remainingMovementFactor = this.remainingMovementFactor;
+		if (this.cost != null && this.cost != 0) {
+			returnValue.cost = this.cost;
 		}
 		
 		if (this.targets != null) {
 			returnValue.targets = new Array();
 			for(var i = 0; i < this.targets.length; ++i) {
-				returnValue.targetIds[i] = this.targets[i].getId();
+				returnValue.targetIds[i] = this.targets[i].id;
 			}
 		}
+		
+		returnValue.facing = this.facing;
+		returnValue.strength = this.strength;
+		returnValue.fatigue = this.fatigue;
+		returnValue.formation = this.formation;
+		returnValue.moraleStatus = this.moraleStatus;
+		returnValue.fixed = this.fixed;
 		
 		return returnValue;
 	}

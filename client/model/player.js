@@ -12,6 +12,10 @@ wego.Player.prototype = {
 		counter.player = this;
 		this.counters.push(counter);
 	},
+
+	addRelease:function(release) {
+		this.releases.push(release);
+	},
 	
 	getCounter:function(id) {
 		var returnValue = null;

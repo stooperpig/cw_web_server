@@ -174,7 +174,7 @@ wego.Counter.prototype = {
 		var returnValue = true;
 		var lastTask = this.getLastTask();
 
-		if (lastTask.movementFactor > 0) {
+		if (!lastTask.fixed && lastTask.movementFactor > 0) {
 			returnValue = false;
 		}
 		
@@ -185,29 +185,12 @@ wego.Counter.prototype = {
 		var returnValue = false;
 		
 		var lastTask = this.getLastTask();
-		if (lastTask == this.currentTask) {
+		if (!lastTask.fixed && lastTask == this.currentTask) {
 			returnValue = true;
 		}
 		
 		return returnValue;
 	}, 
-	
-	// moveTo:function(toHex) {
-	// 	var fromHex = this.getHex();
-	// 	var movementCost = this.getMoveCost(fromHex, toHex);
-	// 	if (movementCost <= this.mRemainingMovementFactor) {
-	// 		var lastTask = this.getLastTask();
-	// 		var task = new wego.Task(wego.TaskType.MOVE,toHex,movementCost,lastTask);
-	// 		this.addTask(task);
-	// 	}
-	// },
-	
-	// opportunityFire:function() {
-	// 	var currentHex = this.getHex();
-	// 	var cost = this.getMovementFactor();
-	// 	var task = new wego.Task(wego.TaskType.OPPORTUNITY_FIRE,currentHex,cost);
-	// 	this.addTask(task);
-	// },
 	
 	// padWithWaitTasks:function(numberOfWaitTasks, startingTask) {
 	// 	var hex = startingTask.getHex();
@@ -220,7 +203,21 @@ wego.Counter.prototype = {
 	save:function() {
 		var returnValue = {};
 		returnValue.id = this.id;
-		//returnValue.type = this.mCounterType.getCounterName();
+		returnValue.type = this.type;
+		returnValue.quality = this.quality;
+		returnValue.weapon = this.weapon;
+		returnValue.unitImageIndex = this.unitImageIndex;
+		returnValue.unitSymbolIndex = this.unitSymbolIndex;
+		returnValue.name = this.name;
+		returnValue.shortName = this.shortName;
+		returnValue.parentName = this.parentName;
+		returnValue.originalStrength = this.originalStrength;
+		returnValue.leadership = this.leadership;
+		returnValue.command = this.command;
+		returnValue.range = this.range;
+		returnValue.canChangeFormation = this.canChangeFormation;
+		returnValue.canMoveInLine = this.canMoveInLine;
+
 		returnValue.tasks = new Array();
 		for(var i = 0; i < this.tasks.length; ++i) {
 			var result = this.tasks[i].save();
@@ -237,15 +234,15 @@ wego.Counter.prototype = {
 	},
 	
 	toString:function() {
-		return ""; //this.mCounterType.getCounterName();
+		return this.id; //this.mCounterType.getCounterName();
 	},
 	
-	update:function(mode, time) {
+	updateCurrentTask:function(mode, time) {
 		var taskData = this.getTaskDataAtTime(mode, time);
 		var task = taskData.task;
 		
 		var hex = task.hex;
-		var currentHex = this.getHex(mode, time);
+		var currentHex = this.getHex();
 		if (hex != currentHex) {
 			if (currentHex != null) {
 				currentHex.removeCounter(this);
@@ -255,7 +252,8 @@ wego.Counter.prototype = {
 				hex.addCounter(this);
 			}
 		}
-				
+
+		this.currentTask = task;			
 		return taskData.hasMoreTasks;
 	},
 	

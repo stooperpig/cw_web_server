@@ -1,58 +1,33 @@
 var wego = wego || {};
 
-wego.Scenario = (function() {
-	var mName = null;
-	//var mCounterTypes = null;
-	var mMapData = null;
-	var mOtherImages = null;
-	
-	function getName() {
-		return mName;
-	}
-	
-	function initialize(data) {
-		mName = data.name;
-		mMapData = data.mapData;
-		//mCounterTypes = data.counterTypes;
-		mOtherImages = data.otherImages;
+wego.Scenario = function() {
+	this.name = null;
+	this.otherImages = null;
+	this.title = null;
+	this.description = null;
+	this.startTime = null;
+	this.numberOfTurns = 0;
+	this.minutesPerTurn = 0;
+}
 
-		wego.Map.initialize(mMapData);
-		//wego.CounterFactory.initialize(mCounterTypes);
-	}
+wego.Scenario.prototype= {
+	initialize:function(data) {
+		this.name = data.name;
+		this.otherImages = data.otherImages;
+		this.title = data.title;
+		this.description = data.description;
+		this.startTime = data.startTime;
+		this.numberOfTurns = data.numberOfTurns;
+		this.minutesPerTurn = data.minutesPerTurn;
+	},
 	
-//	function getCounterTypes() {
-//		return mCounterTypes;
-//	}
-	
-	function getImages() {
+	getImageNames:function() {
 		var returnValue = new Array();
-//		for(var i = 0; i < mCounterTypes.length; ++i) {
-//		    if (mCounterTypes[i].image != null) {
-//			    returnValue[mCounterTypes[i].name] = mCounterTypes[i].image;
-//			}
-//		}
 
-		var boards = mMapData.boards;
-		//for (var i = 0; i < boards.length; ++i) {
-		    returnValue['main1'] = boards.main1;
-		//}
-
-		for (var name in mOtherImages) {
-		    returnValue[name] = mOtherImages[name];
+		for (var name in this.otherImages) {
+		    returnValue[name] = this.otherImages[name];
 		}
 		
 		return returnValue;
 	}
-	
-	function getMapData() {
-		return mMapData;
-	}
-	
-	return {
-		//getCounterTypes: getCounterTypes,
-		getImages: getImages,
-		getMapData: getMapData,
-		getName: getName,
-		initialize: initialize
-	}
-})();
+}

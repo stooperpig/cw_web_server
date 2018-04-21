@@ -191,7 +191,7 @@ wego.SpriteUtil = (function() {
 
   function getFormationSpriteIndex(formation, facing) {
     var index = 0;
-    if (formation == 0) {
+    if (formation == wego.Formation.LINE) {
         index = 204 + facing;
     } else {
         index = 210 + facing;

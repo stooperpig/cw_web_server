@@ -86,7 +86,7 @@ wego.MapController.prototype = {
 	// },
 	
 	getHex:function(event) {
-		var hexMap = wego.Map;
+		var hexMap = this.state.getMap();
 		var posX = $(event.target).offset().left;
 		var posY = $(event.target).offset().top;
 		var coord = hexMap.pointToHex((event.pageX - posX) , (event.pageY - posY));
@@ -166,7 +166,7 @@ wego.MapController.prototype = {
 			var counters = stack.counters;
 			var selectedCounters = new Array();
 			if (counters != null) {
-				var currentPlayer = this.state.getGame().getCurrentPlayer();
+				var currentPlayer = this.state.getGame().currentPlayer;
 				for(var i = 0; i < counters.length; ++i) {
 					if (currentPlayer == counters[i].player) {
 						selectedCounters.push(counters[i]);

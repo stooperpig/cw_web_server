@@ -17,26 +17,24 @@ function getCurlValue($filename, $contentType, $postname) {
 }
 
 function saveGame($gameId, $playerId, $data) {
-		$date = date('YmdHis');
-		$file = '../data/games/game'.$gameId.'_'.$playerId.'.dat';
-		$newFile = '../data/games/archive/game'.$gameId.'_'.$playerId.'_'.$date.'.json';
-		copy($file,$newFile);
-		file_put_contents('../data/games/game'.$gameId.'_'.$playerId.'.dat',$data);
+	$date = date('YmdHis');
+	$file = '../data/games/game'.$gameId.'-'.$playerId.'.json';
+	$newFile = '../data/games/archive/game'.$gameId.'-'.$playerId.'-'.$date.'.json';
+	copy($file,$newFile);
+	file_put_contents('../data/games/game'.$gameId.'-'.$playerId.'.json',$data);
     echo "successfully saved game";
 }
 
 function sendGame($gameId, $playerId) {
-    $filename = 'C:\\sites\\wego\\civilwar\\server\\data\\scenarios\\scenario'.$gameId.'.json';
-    $cfile = getCurlValue($filename,'text/html','scenario'.$gameId.'.json');
-
-    $filename0 = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\game'.$gameId.'_0.json';
-    $cfile0 = getCurlValue($filename0,'text/html','game'.$gameId.'_0.json');
- 
+    echo "\nmonkey shit";
+    $filename = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\game'.$gameId.'-0.json';
+    $cfile = getCurlValue($filename,'text/html','game'.$gameId.'-0.json');
+    echo "\nb";
     //NOTE: The top level key in the array is important, as some apis will insist that it is 'file'.
-    $data = array('file' => $cfile, 'file0' => $cfile0);
+    $data = array('game' => $cfile);
  
     $ch = curl_init();
-    $options = array(CURLOPT_URL => 'http://localhost:8080/wego/receiveSim',
+    $options = array(CURLOPT_URL => 'http://localhost:8080/game',
                  CURLOPT_RETURNTRANSFER => true,
                  CURLINFO_HEADER_OUT => true, //Request header
                  CURLOPT_HEADER => true, //Return header
@@ -46,6 +44,7 @@ function sendGame($gameId, $playerId) {
                 );
  
     curl_setopt_array($ch, $options);
+    echo "\nc";
     $result = curl_exec($ch);
     $header_info = curl_getinfo($ch,CURLINFO_HEADER_OUT);
     $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
@@ -53,6 +52,7 @@ function sendGame($gameId, $playerId) {
     $body = substr($result, $header_size);
     curl_close($ch);
     echo $result;
+    echo "\nd";
 }
 
 if (isset($_GET["action"])) {
@@ -65,10 +65,13 @@ if ($action == "retrieveGame") {
 	if (isset($_GET["gameId"])) {
 		$gameId = $_GET["gameId"];
 		$playerId = $_GET["playerId"];
-		//$scenario = file_get_contents('../data/scenarios/scenario0.json');
-		$game = file_get_contents('../data/games/game'.$gameId.'-'.$playerId.'.json');
+        $scenario = file_get_contents('../data/scenarios/scenario_wc_a.json');
+        $map = file_get_contents('../data/maps/map_wc.json');
+        $parametricData = file_get_contents('../data/parametric/parametric_wc.json');
+        $game = file_get_contents('../data/games/game'.$gameId.'-'.$playerId.'.json');
+        
 		//	header('Content-type: application/json');
-		echo $game;
+		echo '{"scenario":'.$scenario.',"map":'.$map.',"parametricData":'.$parametricData.',"game":'.$game.'}';
 	} else {
 		echo '{"message":"Game id missing on request"}';
 	}
@@ -81,9 +84,8 @@ if ($action == "retrieveGame") {
 	$gameId = $_POST["gameId"];
 	$playerId = $_POST["playerId"];
 	$data = $_POST["data"];
-  
-  saveGame($gameId, $playerId, $data);
-  sendGame($gameId, $playerId);
+    saveGame($gameId, $playerId, $data);
+    sendGame($gameId, $playerId);
 } else {
 	echo "no action specified";
 }

@@ -1,6 +1,6 @@
 var wego = wego || {};
 
-wego.MapClass = function () {
+wego.Map = function () {
     this.LEFT = 1;
     this.RIGHT = -1;
     this.STRAIGHT = 0;
@@ -21,7 +21,7 @@ wego.MapClass = function () {
 	this.boards;
 }
 
-wego.MapClass.prototype = {
+wego.Map.prototype = {
 	getHex: function(col, row) {
 		var returnValue = null;
 		
@@ -47,6 +47,12 @@ wego.MapClass.prototype = {
 		}
 		
 		return this.images;
+	},
+
+	getImageNames:function() {
+		var returnValue = new Array();
+		returnValue['main1'] = this.boards.main1;
+		return returnValue;
 	},
 	
 	getPixelHeight:function() {
@@ -215,5 +221,3 @@ wego.MapClass.prototype = {
 		return returnValue;
 	}
 };
-
-wego.Map = new wego.MapClass();

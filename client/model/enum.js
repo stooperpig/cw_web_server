@@ -20,8 +20,9 @@ wego.HexType = {
 }
 
 wego.Formation = {
-	COLUMN:1,
-	LINE:0,
+	COLUMN:"C",
+	LINE:"L",
+	NONE:"N",
 	getType:function getType(name) {
 		var returnValue = null;
 		for(var i in this) {
@@ -61,8 +62,10 @@ wego.TaskType = {
 	MOVE:"Mv",
 	ROTATE_LEFT:"Rl",
 	ROTATE_RIGHT:"Rr",
+	CHANGE_FORMATION:"Cf",
 	DIRECT_FIRE:"Df",
 	OPPORTUNITY_FIRE:"Of",
+	ABOUT_FACE: "Af",
 	getType:function getType(name) {
 		var returnValue = null;
 		for(var i in this) {
@@ -78,7 +81,7 @@ wego.TaskType = {
 
 wego.CounterType = {
 	INFANTRY: "I",
-	CALAVRY: "C",
+	CAVALRY: "C",
 	LEADER: "L",
 	SUPPLY: "S",
 	ARTILLERY: "A",
@@ -93,6 +96,38 @@ wego.CounterType = {
 		
 		return returnValue;
 	}
+}
+
+wego.WeaponType = {
+	NONE: "X",
+	getType:function getType(name) {
+		var returnValue = null;
+		for(var i in this) {
+			if (this[i] == name) {
+				returnValue = this[i];
+				break;
+			}
+		}
+		
+		return returnValue;
+	}
+}
+
+wego.MoraleType = {
+	GOOD: "G",
+	DISRUPTED: "D",
+	ROUTED: "R",
+	getType:function getType(name) {
+		var returnValue = null;
+		for(var i in this) {
+			if (this[i] == name) {
+				returnValue = this[i];
+				break;
+			}
+		}
+		
+		return returnValue;
+	}	
 }
 
 wego.Topic = {

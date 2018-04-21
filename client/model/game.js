@@ -1,58 +1,49 @@
 var wego = wego || {};
 
-wego.Game = (function() {
-	var mTeams = new Array();
-	var mCurrentPlayer;
-	var mTurn;
-	var mId;
-	var mCounters = new Array();
+wego.Game = function() {
+	this.teams = new Array();
+	this.currentPlayer;
+	this.turn = 0;
+	this.id;
+	this.counters = new Array();
+	this.scenarioId = 0;
+	this.showReplay = false;
+}
+
+wego.Game.prototype = {
 	
-	function getCounter(id) {
+	getCounter:function(id) {
 		var returnValue = null;
 		
-		for(var i = 0; i < mTeams.length && returnValue == null; ++i) {
-			returnValue = mTeams[i].getCounter(id);
+		for(var i = 0; i < this.teams.length && returnValue == null; ++i) {
+			returnValue = this.teams[i].getCounter(id);
 		}
 		
 		if (returnValue == null) {
-			for(var i = 0; i < mCounters.length && returnValue == null; ++i) {
-				if (id == mCounters[i].getId()) {
-					returnValue = mCounters[i];
+			for(var i = 0; i < counters.length && returnValue == null; ++i) {
+				if (id == counters[i].getId()) {
+					returnValue = counters[i];
 				}
 			}
 		}
 		
 		return returnValue;
-	}
+	},
 	
-	function getCurrentPlayer() {
-		return mCurrentPlayer;
-	}
-	
-	function getId() {
-		return mId;
-	}
-	
-	function getPlayer(id) {
+	getPlayer:function(id) {
 		var returnValue = null;
 		
-		for(var i = 0; i < mTeams.length && returnValue == null; ++i) {
-			returnValue = mTeams[i].getPlayer(id);
+		for(var i = 0; i < this.teams.length && returnValue == null; ++i) {
+			returnValue = this.teams[i].getPlayer(id);
 		}
 		
 		return returnValue;
-	}
+	},
 	
-	function getTeams() {
-		return mTeams;
-	}
-	
-	function getTurn() {
-		return mTurn;
-	}
-	
-	function initialize(data) {
-		mTurn = data.currentTurn;
+	initialize:function(data, map) {
+		this.turn = data.currentTurn;
+		this.scenarioId = data.scenarioId;
+		this.showReplay = data.showReplay;
 		console.log("currentPlayer: " + data.currentPlayerId);
 		wego.Task.counter = data.taskCounter;
 
@@ -60,18 +51,18 @@ wego.Game = (function() {
 		if (counters != null) {
 		    for (var i = 0; i < counters.length; ++i) {
 		        var counter = wego.CounterFactory.buildCounter(counters[i].id, counters[i].type);
-		        mCounters.push(counter);
+		        counters.push(counter);
 		    }
 		}
 
 		//First pass thru data creates all the teams, players, and
 		//counters. The next pass will handle tasks.  There are two
 		//passes because some tasks have references to other counters
-		var teams = data.teams;
-		for(var i = 0; i < teams.length; ++i) {
-			var team = new wego.Team(teams[i].id,teams[i].name);
-			mTeams.push(team);
-			var players = teams[i].players;
+		var dataTeams = data.teams;
+		for(var i = 0; i < dataTeams.length; ++i) {
+			var team = new wego.Team(dataTeams[i].id,dataTeams[i].name);
+			this.teams.push(team);
+			var players = dataTeams[i].players;
 			for(var j = 0; j < players.length; ++j) {
 				var player = new wego.Player(players[j].id,players[j].name);
 				team.addPlayer(player);
@@ -90,120 +81,89 @@ wego.Game = (function() {
 		counters = data.counters;
 		if (counters != null) {
 		    for (var i = 0; i < counters.length; ++i) {
-		        var counter = getCounter(counters[i].id);
-		        initializeCounter(counter, counters[i]);
+		        var counter = this.getCounter(counters[i].id);
+		        this.initializeCounter(counter, counters[i], map);
 		    }
 		}
 		
 		//Second pass creates tasks for each counter
-		for(var i = 0; i < teams.length; ++i) {
-			var players = teams[i].players;
+		for(var i = 0; i < dataTeams.length; ++i) {
+			var players = dataTeams[i].players;
 			for(var j = 0; j < players.length; ++j) {
-				var player = getPlayer(players[j].id);
+				var player = this.getPlayer(players[j].id);
 				var counters = players[j].counters;
 				for(var k = 0; k < counters.length; ++k) {
-					var counter = getCounter(counters[k].id);
-					initializeCounter(counter,counters[k]);
+					var counter = this.getCounter(counters[k].id);
+					this.initializeCounter(counter, counters[k], map);
 				}
 			}
 		}
 		
-		mCurrentPlayer = getPlayer(data.currentPlayerId);
-	}
+		this.currentPlayer = this.getPlayer(data.currentPlayerId);
+	},
 	
-	function initializeCounter(counter,data) {
+	initializeCounter:function(counter,data, map) {
 		var tasks = data.tasks;
-
 		for(var m = 0; m < tasks.length; ++m) {
-			var hex = null;
-			var hexX = tasks[m].hexX;
-			var hexY = tasks[m].hexY;
-			if (hexX != null) {
-				hex = wego.Map.getHex(hexX,hexY);
-			}
-			
-			var taskType = wego.TaskType.getType(tasks[m].type);
-			var task = new wego.Task(taskType, tasks[m].cost, tasks[m].movementFactor);
-			task.hex = hex;
-			task.id = tasks[m].id;
-			task.strength = tasks[m].strength;
-			task.facing = tasks[m].facing;
-			task.fatigue = tasks[m].fatigue;
-			task.formation = tasks[m].formation;
-			task.moraleStatus = tasks[m].moraleStatus;
-			task.fixed = tasks[m].fixed;
-								
-			var targetIds = tasks[m].targetIds;
-			if (targetIds != null) {
-				var targets = new Array();
-				for(var i = 0; i < targetIds.length; ++i) {
-					var target = getCounter(targetIds[i]);
-					targets.push(target);
-				}
-				
-				task.targets = targets;
-			}
-			
+			var task = this.buildTask(tasks[m], map);	
 			counter.addTask(task);
 		}
 		
 		tasks = data.replayTasks;
 		if (tasks != null) {
 			for(var m = 0; m < tasks.length; ++m) {
-				var hex = null;
-				var hexX = tasks[m].hexX;
-				var hexY = tasks[m].hexY;
-				if (hexX != null) {
-					hex = wego.Map.getHex(hexX,hexY);
-				}
-				
-				var taskType = wego.TaskType.getType(tasks[m].type);
-				var task = new wego.Task(taskType, tasks[m].cost, tasks[m].movementFactor);
-				task.hex = hex;
-				task.id = tasks[m].id;
-							
-				var targetIds = tasks[m].targetIds;
-				if (targetIds != null) {
-					var targets = new Array();
-					for(var i = 0; i < targetIds.length; ++i) {
-						var target = getCounter(targetIds[i]);
-						targets.push(target);
-					}
-					
-					task.targets = targets;
-				}
-				
+				var task = this.buildTask(tasks[m], map);		
 				counter.addReplayTask(task);
 			}
 		}		
-	}
+	},
+
+	buildTask:function(task, map) {
+		var hex = null;
+		var hexX = task.hexX;
+		var hexY = task.hexY;
+		if (hexX != null) {
+			hex = map.getHex(hexX,hexY);
+		}
+		
+		var taskType = wego.TaskType.getType(task.type);
+		var newTask = new wego.Task(taskType, task.cost, task.movementFactor);
+		newTask.hex = hex;
+		newTask.id = task.id;
+		newTask.strength = task.strength;
+		newTask.facing = task.facing;
+		newTask.fatigue = task.fatigue;
+		newTask.formation = task.formation;
+		newTask.moraleStatus = task.moraleStatus;
+		newTask.fixed = task.fixed;
+							
+		var targetIds = task.targetIds;
+		if (targetIds != null) {
+			var targets = new Array();
+			for(var i = 0; i < targetIds.length; ++i) {
+				var target = this.getCounter(targetIds[i]);
+				targets.push(target);
+			}
+			
+			newTask.targets = targets;
+		}
+
+		return newTask;
+	},
 	
-	function save() {
+	save:function() {
 		var returnValue = {};
 		
-		returnValue.currentTurn = mTurn;
-		returnValue.currentPlayerId = mCurrentPlayer.getId();
+		returnValue.currentTurn = this.turn;
+		returnValue.scenarioId = this.scenarioId;
+		returnValue.currentPlayerId = this.currentPlayer.id;
 		returnValue.taskCounter = wego.Task.counter;
 		returnValue.teams = new Array();
-		for(var i = 0; i < mTeams.length; ++i) {
-			var result = mTeams[i].save();
+		for(var i = 0; i < this.teams.length; ++i) {
+			var result = this.teams[i].save();
 			returnValue.teams[i] = result;
 		}
 		
 		return returnValue;
 	}
-	
-	function setId(id) {
-		mId = id;
-	}
-	
-	return {
-		getCurrentPlayer: getCurrentPlayer,
-		getId: getId,
-		getTeams: getTeams,
-		getTurn: getTurn,
-		initialize: initialize,
-		save: save,
-		setId: setId
-	}
-})();
+}

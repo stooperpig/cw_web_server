@@ -61,12 +61,14 @@ wego.UnitPanelView.prototype = {
                     }
 
                     var leaderRows = Math.ceil(leaders.length / 2)
-
                     context.canvas.height = (wego.SpriteUtil.unitBoxHeight * numCounters) + 20 + (leaderRows * wego.SpriteUtil.leaderBoxHeight);
                     for(var i = 0; i < leaders.length; ++i) {
-                        var baseY = 0;
+                        var row = Math.floor(i / 2);
+                        var column = (i % 2);
+                        var baseY = row * wego.SpriteUtil.leaderBoxHeight;
+                        var baseX = 60 * column;
                         var selected = (selectedCounters != null)?this.containsObject(leaders[i], selectedCounters):false;
-                        this.drawLeader(context, baseY, leaders[i], selected);
+                        this.drawLeader(context, baseX, baseY, leaders[i], selected);
                     }
 
                     var unitCount = 0;
@@ -95,8 +97,8 @@ wego.UnitPanelView.prototype = {
         return false;
     },
 
-	drawLeader:function(context, baseY, counter, selected) {
-        var x = 2;
+	drawLeader:function(context, baseX, baseY, counter, selected) {
+        var x = baseX + 2;
         var side = counter.player.team.id;
         wego.SpriteUtil.drawLeaderSprite(context, counter.unitImageIndex, side, selected, x, baseY);
 
@@ -104,22 +106,22 @@ wego.UnitPanelView.prototype = {
         context.textAlign = "right";
         context.fillStyle = "white";
 
-        x = 58;
-        x0 = 45;
+        x = baseX + 58;
+        x0 = baseX + 45;
         context.fillText("C", x0, 12);
         context.fillText("L", x0, 28);
 
-        context.fillText(this.getLetterValue(counter.command), x, 12);
-        context.fillText(this.getLetterValue(counter.leadership), x, 28);
+        context.fillText(this.getLetterValue(counter.command), x, baseY + 12);
+        context.fillText(this.getLetterValue(counter.leadership), x, baseY + 28);
 
-        y = 44;
+        y = baseY + 44;
         context.fillText("M", x0, y);
         context.fillText(counter.getMovementFactor(), x, y);
 
         context.fillStyle = "black";
         context.font = "10px Arial bold";
         context.textAlign = "center";
-        context.fillText(counter.shortName, 30, 60);
+        context.fillText(counter.shortName, baseX + 30, baseY + 60);
         console.log("shortName " + counter.shortName);
 	},
 
@@ -153,8 +155,9 @@ wego.UnitPanelView.prototype = {
 
         y += rowSpace;
         context.fillText("RG", x - 21, y);
-        if (counter.range != 0) {
-            context.fillText(counter.range, x, y);
+        var range = this.state.getParametricData().getWeaponRange(counter.weapon);
+        if (range != 0) {
+            context.fillText(range, x, y);
         } else {
             context.fillText("--", x, y);
         }
@@ -184,18 +187,18 @@ wego.UnitPanelView.prototype = {
         x = 34;
         y += rowSpace - 4;
         context.fillStyle = "black";
-        if (counter.weapon != null) {
+        if (counter.weapon != wego.WeaponType.NONE) {
             context.fillText(counter.weapon,x,y);
         }
 
         var formation = counter.getFormation();
-        if (formation != -1) {
+        if (formation != wego.Formation.NONE) {
             imageIndex = wego.SpriteUtil.getFormationSpriteIndex(formation, counter.getFacing());
             wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 16, y - 24);
         }
 
         var moraleStatus = counter.getMoraleStatus();
-        if (moraleStatus == 2) {
+        if (moraleStatus == wego.MoraleType.ROUTED) {
             imageIndex = wego.SpriteUtil.routedSpriteIndex;
             wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 34, y - 26);
         }

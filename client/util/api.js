@@ -6,17 +6,19 @@ wego.GameApi = (function() {
 	}
 	
 	function saveGame() {
-		var result = wego.Game.save();
+		var game = wego.UiState.getGame();
+		var result = game.save();
 		alert(JSON.stringify(result));
-		$.post("/civilwar/server/api/gameApi.php", {action:"saveGame", gameId:wego.Game.getId(), playerId:wego.Game.getCurrentPlayer().getId(), data:JSON.stringify(result)}).done(function( data ) {
+		$.post("/civilwar/server/api/gameApi.php", {action:"saveGame", gameId:game.id, playerId:game.currentPlayer.id, data:JSON.stringify(result)}).done(function( data ) {
 			alert( "Data Loaded: " + data );
 		});
 	}
 	
-	function submitTurn(game) {
-		var result = wego.Game.save();
+	function submitTurn() {
+		var game = wego.UiState.getGame();
+		var result = game.save();
 		alert(JSON.stringify(result));
-		$.post("/civilwar/server/api/gameApi.php", {action:"submitTurn", gameId:wego.Game.getId(), playerId:wego.Game.getCurrentPlayer().getId(), data:JSON.stringify(result)}).done(function( data ) {
+		$.post("/civilwar/server/api/gameApi.php", {action:"submitTurn", gameId:game.id, playerId:game.currentPlayer.id, data:JSON.stringify(result)}).done(function( data ) {
 			alert( "Data Loaded: " + data );
 		});		
 	}

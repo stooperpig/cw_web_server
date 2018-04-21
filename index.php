@@ -41,6 +41,7 @@
 	<script src="/civilwar/client/model/table.js"></script>
     <script src="/civilwar/client/model/scenario.js"></script>
     <script src="/civilwar/client/model/imagecache.js"></script>
+	<script src="/civilwar/client/model/parametricdata.js"></script>
 	<script src="/civilwar/client/component/clock/clockcontroller.js"></script>
 	<script src="/civilwar/client/component/clock/clockview.js"></script>
 	<script src="/civilwar/client/component/clock/clockcomponent.js"></script>
@@ -50,8 +51,15 @@
 	<script src="/civilwar/client/component/mappanel/mapcontroller.js"></script>
 	<script src="/civilwar/client/component/mappanel/mapview.js"></script>
 	<script src="/civilwar/client/component/mappanel/mapcomponent.js"></script>
-	<script src="/civilwar/client/controller/menucontroller.js"></script>
-	<script src="/civilwar/client/controller/statusbarcontroller.js"></script>
+	<script src="/civilwar/client/component/statusbar/statusbarcontroller.js"></script>
+	<script src="/civilwar/client/component/statusbar/statusbarview.js"></script>
+	<script src="/civilwar/client/component/statusbar/statusbarcomponent.js"></script>
+	<script src="/civilwar/client/component/statusreport/statusreportcontroller.js"></script>
+	<script src="/civilwar/client/component/statusreport/statusreportview.js"></script>
+	<script src="/civilwar/client/component/statusreport/statusreportcomponent.js"></script>
+	<script src="/civilwar/client/component/mainmenu/mainmenucontroller.js"></script>
+	<script src="/civilwar/client/component/mainmenu/mainmenuview.js"></script>
+	<script src="/civilwar/client/component/mainmenu/mainmenucomponent.js"></script>	
 	<script src="/civilwar/client/component/toolbar/toolbarcontroller.js"></script>
 	<script src="/civilwar/client/component/toolbar/toolbarview.js"></script>
 	<script src="/civilwar/client/component/toolbar/toolbarcomponent.js"></script>
@@ -67,9 +75,8 @@
 			<ul>
 				<li><a href="#">Game</a>
 					<ul>
-						<li><a href="javascript:wego.MenuController.saveGame();">Save Game</a></li>
-						<li><a href="#">Restart Turn</a></li>
-						<li><a href="javascript:wego.MenuController.submitTurn();">Submit Turn</a></li>
+						<li><a id="menuItemSaveGame">Save Game</a></li>
+						<li><a id="menuItemSubmitTurn">Submit Turn</a></li>
 					</ul>
 				</li>
 				<li><a href="#">Scenario</a>
@@ -106,7 +113,7 @@
 		<button id="waitButton">Wait</button>
 		<button id="rotateLeftButton"></button>
 		<button id="rotateRightButton"></button>
-		<button id="reverseButton"></button>
+		<button id="aboutFaceButton"></button>
 		<button id="formationButton"></button>
 		<button id="gameModeButton">Plan Mode</button>
 		<div class="clear"></div>
@@ -141,7 +148,7 @@
 </div>
 <div id="footer">
 	<div id="footerClockDiv">
-		<div id="currentTimeDiv">99</div>
+		<div id="currentTimeDiv">0</div>
 		<div id="clockControlsDiv">
 			<button id="seekFirstButton"></button>
 			<button id="seekPrevButton"></button>
@@ -156,9 +163,8 @@
 	<div id="footerTurnDiv"></div>
 	<div class="clear"></div>
 </div>
-<div id="dialog-form" title="Target Selection">
-<p class="validateTips">Select units from list.</p>
-<ol id="targetList"></ol>
+<div id="dialog" title="Status Report">
+	<input id="viewReplayButton" type="button" value="Press to View Replay"/>
 </div>
 </body>
 </html>

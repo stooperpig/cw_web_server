@@ -19,7 +19,7 @@ wego.MapView.prototype = {
 		var context = canvas.getContext('2d');
         context.clearRect(0,0,canvas.width,canvas.height);
         
-        var map = wego.Map;
+        var map = this.state.getMap();
         //map.draw(context);
         
         var images = map.getImages();
@@ -83,7 +83,7 @@ wego.MapView.prototype = {
 				wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, adjX, adjY);
 				
 				var moraleStatus = firstCounter.getMoraleStatus();
-                var type = (moraleStatus == 2) ? "R" : firstCounter.type;
+                var type = (moraleStatus == wego.MoraleType.ROUTED) ? "R" : firstCounter.type;
 
                 imageIndex = wego.SpriteUtil.getMilSymbolSpriteIndex(type, firstCounter.getFormation(), firstCounter.getFacing());
                 wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex,  adjX - counterCount + 1, adjY - counterCount + 1);

@@ -4,6 +4,7 @@ wego.Team = function(id,name) {
 	this.name = name;
 	this.id = id;
 	this.players = new Array();
+	this.releases = new Array();
 }
 
 wego.Team.prototype = {
@@ -39,6 +40,7 @@ wego.Team.prototype = {
 		var returnValue = {};
 		returnValue.id = this.id;
 		returnValue.name = this.name;
+		returnValue.releases = this.releases;
 		returnValue.players = new Array();
 		for(var i = 0; i < this.players.length; ++i) {
 			var result = this.players[i].save();

@@ -16,7 +16,7 @@ function reArrayFiles(&$file_post) {
 }
 
 	echo 'Receive Sim ';
-	$uploaddir = 'C:\\sites\\wego\\panzerblitz\\server\\data\\games\\';
+	$uploaddir = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\';
 
     $file_ary = reArrayFiles($_FILES['file']);
 

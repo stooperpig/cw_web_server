@@ -22,17 +22,18 @@ function getCurlValue($filename, $contentType, $postname)
     return $value;
 }
  
-$filename = 'C:\\sites\\wego\\panzerblitz\\server\\data\\scenarios\\scenario0.dat';
-$cfile = getCurlValue($filename,'text/html','scenario0.dat');
+//$filename = 'C:\\sites\\wego\\civilwar\\server\\data\\scenarios\\scenario0.json';
+//$cfile = getCurlValue($filename,'text/html','scenario0.json');
 
-$filename0 = 'C:\\sites\\wego\\panzerblitz\\server\\data\\games\\game0_0.dat';
-$cfile0 = getCurlValue($filename0,'text/html','ferrule02.txt');
+$filename = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\game0-0.json';
+$cfile = getCurlValue($filename,'text/html','game0-0.json');
  
 //NOTE: The top level key in the array is important, as some apis will insist that it is 'file'.
-$data = array('file' => $cfile, 'file0' => $cfile0);
+//$data = array('file' => $cfile, 'file0' => $cfile0);
+$data = array('game' => $cfile);
  
 $ch = curl_init();
-$options = array(CURLOPT_URL => 'http://localhost:8080/wego/receiveSim',
+$options = array(CURLOPT_URL => 'http://localhost:8080/game/',
              CURLOPT_RETURNTRANSFER => true,
              CURLINFO_HEADER_OUT => true, //Request header
              CURLOPT_HEADER => true, //Return header
@@ -48,6 +49,8 @@ $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 $header = substr($result, 0, $header_size);
 $body = substr($result, $header_size);
 curl_close($ch);
+
+echo $options
  
 ?>
  

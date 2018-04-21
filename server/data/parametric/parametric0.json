@@ -1,0 +1,1 @@
+{"movementAllowance":{"I:C":12,"I:L":12,"C:C":24,"C:L":12,"L:C":24,"L:L":12,"A:C":12,"A:L":12,"S:C":10},"weaponRange":{"M":2,"C":3,"N":12,"L":10,"H":9,"X":0},"formationChangeCost":{"I":4,"C":6,"L":0,"A":6,"S":99},"rotationCost":{"I":2,"C":2,"L":0,"A":2,"S":0},"aboutFaceCost":{"I":2,"C":2,"L":0,"A":2,"S":0}}

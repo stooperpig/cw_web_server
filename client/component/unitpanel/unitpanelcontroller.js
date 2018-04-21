@@ -57,7 +57,7 @@ wego.UnitPanelController.prototype = {
 	        console.log("click event: " + e);
 	        var counter = controller.getCounter(e);
             console.log("clicked counter: " + counter);
-            var currentPlayer = controller.state.getGame().getCurrentPlayer();
+            var currentPlayer = controller.state.getGame().currentPlayer;
             if (counter != null && counter.player.id == currentPlayer.id) {
                 var selectedCounters = controller.state.getSelectedCounters();
                 if (selectedCounters != null) {
