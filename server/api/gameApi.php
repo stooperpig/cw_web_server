@@ -26,12 +26,12 @@ function saveGame($gameId, $playerId, $data) {
 }
 
 function sendGame($gameId, $playerId) {
-    echo "\nmonkey shit";
-    $filename = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\game'.$gameId.'-0.json';
-    $cfile = getCurlValue($filename,'text/html','game'.$gameId.'-0.json');
+    echo "\nmonkey shit ".$gameId."  ".$playerId;
+    $filename = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\game'.$gameId.'-'.$playerId.'.json';
+    $cfile = getCurlValue($filename,'text/html','game'.$gameId.'-'.$playerId.'.json');
     echo "\nb";
     //NOTE: The top level key in the array is important, as some apis will insist that it is 'file'.
-    $data = array('game' => $cfile);
+    $data = array('game' => $cfile, 'gameId' => $gameId, 'playerId' => $playerId);
  
     $ch = curl_init();
     $options = array(CURLOPT_URL => 'http://localhost:8080/game',

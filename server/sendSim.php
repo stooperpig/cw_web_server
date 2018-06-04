@@ -30,7 +30,7 @@ $cfile = getCurlValue($filename,'text/html','game0-0.json');
  
 //NOTE: The top level key in the array is important, as some apis will insist that it is 'file'.
 //$data = array('file' => $cfile, 'file0' => $cfile0);
-$data = array('game' => $cfile);
+$data = array('game' => $cfile, 'gameId');
  
 $ch = curl_init();
 $options = array(CURLOPT_URL => 'http://localhost:8080/game/',

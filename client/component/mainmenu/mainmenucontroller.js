@@ -10,12 +10,25 @@ wego.MainMenuController.prototype = {
 		this.state = state;
 		var controller = this;
 		
-		$("#menuItemSaveGame").click(function() {controller.saveGame()});
-		$("#menuItemSubmitTurn").click(function() {controller.submitTurn});
+		$("#menuItemSaveGameMenuItem").click(function() {controller.saveGame()});
+		$("#menuItemSubmitTurnMenuItem").click(function() {controller.submitTurn()});
+		$("#statusReportMenuItem").click(function() {controller.showStatusReport()});
+		$("#releasesReportMenuItem").click(function() {controller.showUnitsReport("releases")});
+		$("#reinforcementsReportMenuItem").click(function() {controller.showUnitsReport("reinforcements")});
 	},
+
 	saveGame:function() {
 		wego.GameApi.saveGame();
 	},
+
+	showStatusReport:function() {
+		wego.StatusReportComponent.showReport();
+	},
+
+	showUnitsReport:function(type) {
+		wego.UnitsReportComponent.showReport(type);
+	},
+
 	submitTurn:function() {
 		wego.GameApi.submitTurn();
 	}

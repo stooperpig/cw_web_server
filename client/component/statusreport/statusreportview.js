@@ -9,17 +9,16 @@ wego.StatusReportView.prototype = {
 	initialize: function(state) {
 		this.state = state;
 		var view = this;
-		
-		// amplify.subscribe(wego.Topic.STATUS_MESSAGE,function(data) {
-		// 	view.setStatusMessage(data);
-		// });
+	},
+	loadContent: function() {
+		var template = $("#statusReport-template").html();
+		var templateScript = Handlebars.compile(template);
+		var game = this.state.getGame();
+		var team = game.currentPlayer.team;
+		var context = {"releases": team.messageMap.releases,
+					   "reinforcements": team.messageMap.reinforcements};
+		var html = templateScript(context);
+		var controller = this;
+		$("#content-placeholder").html(html);
 	}
-	
-	// setStatusMessage:function(message) {
-	// 	if (message != null) {
-	// 		$("#footerStatusDiv").html(message);
-	// 	} else {
-	// 		$("#footerStatusDiv").html("");
-	// 	}
-	// }
 }

@@ -62,6 +62,7 @@ wego.SpriteUtil = (function() {
  var routedSpriteIndex = 152;
  var disruptedSpriteIndex = 154;
  var fixedSpriteIndex = 138;
+ var blockedSpriteIndex = 26;
 
  function drawSprite(context, sheetName, spriteNumber, x, y) {
         var sprite = sprites[sheetName];
@@ -82,7 +83,7 @@ wego.SpriteUtil = (function() {
 
     if (selected) {
         var boxNumber = 15;
-        if (side == 1) {
+        if (side === "Union") {
             ++boxNumber;
         }
 
@@ -154,7 +155,7 @@ wego.SpriteUtil = (function() {
  function getStackSpriteIndex(side, count) {
     var index = 0;
 
-    if(side == 1) {
+    if(side === "Union") {
         index = (count > 4) ? stackSpriteIndices.union[3] : stackSpriteIndices.union[count - 1];
     } else {
         index = (count > 4) ? stackSpriteIndices.confederate[3] : stackSpriteIndices.confederate[count - 1];
@@ -165,7 +166,7 @@ wego.SpriteUtil = (function() {
 
  function getUnitBoxSpriteIndex(side, selected, known) {
     var index = 0;
-    if(side == 1) {
+    if(side === "Union") {
         index = 3;
     } else {
         index = 0;
@@ -180,7 +181,7 @@ wego.SpriteUtil = (function() {
 
   function getUnitSpriteIndex(side, baseIndex) {
      var index = 0;
-     if(side == 1) {
+     if(side === "Union") {
          index = 3;
      } else {
          index = 0;
@@ -210,6 +211,7 @@ return {
     getFormationSpriteIndex: getFormationSpriteIndex,
     routedSpriteIndex: routedSpriteIndex,
     fixedSpriteIndex: fixedSpriteIndex,
+    blockedSpriteIndex: blockedSpriteIndex,
     unitBoxHeight: unitBoxHeight,
     leaderBoxHeight: leaderBoxHeight,
     leaderBoxWidth : leaderBoxWidth

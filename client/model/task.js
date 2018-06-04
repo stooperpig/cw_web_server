@@ -13,6 +13,7 @@ wego.Task = function(type, cost, movementFactor) {
 	this.formation = wego.Formation.LINE;
 	this.moraleStatus = 0;
 	this.fixed = false;
+	this.spotted = false;
 	this.id = ++wego.Task.counter;
 }
 
@@ -79,6 +80,7 @@ wego.Task.prototype = {
 		returnValue.formation = this.formation;
 		returnValue.moraleStatus = this.moraleStatus;
 		returnValue.fixed = this.fixed;
+		returnValue.spotted = this.spotted;
 		
 		return returnValue;
 	}

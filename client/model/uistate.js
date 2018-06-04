@@ -13,7 +13,18 @@ wego.UiState = (function() {
 	var time = 0;
 	var lastPlanTime = 0;
 	var lastReplayTime = 0;
+	var displayLos = false;
+	var los = null;
 	
+	function getDisplayLos() {
+		return displayLos;
+	}
+
+	function toggleDisplayLos() {
+		displayLos = !displayLos;
+		amplify.publish(wego.Topic.CURRENT_HEX,{hex:currentHex, selectedCounters:[]});
+	}
+
 	function clearStatusMessage() {
 		amplify.publish(wego.Topic.STATUS_MESSAGE,null);
 	}
@@ -161,6 +172,14 @@ wego.UiState = (function() {
 		return areThereMoreTasks;
 	}
 
+	function getLos() {
+		return los;
+	}
+
+	function setLos(value) {
+		los = value;
+	}
+
 	return {
 		clearStatusMessage : clearStatusMessage,
 		getCommandMode : getCommandMode,
@@ -183,6 +202,10 @@ wego.UiState = (function() {
 		setMap : setMap,
 		getMap : getMap,
 		setParametricData : setParametricData,
-		getParametricData : getParametricData
+		getParametricData : getParametricData,
+		getDisplayLos : getDisplayLos,
+		toggleDisplayLos : toggleDisplayLos,
+		getLos : getLos,
+		setLos : setLos
 	}
 })();

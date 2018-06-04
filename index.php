@@ -25,6 +25,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 	<script src="/civilwar/client/lib/amplify-1.1.2/amplify.min.js"></script>
+	<script src="/civilwar/client/lib/handlebars/handlebars-v4.0.11.js"></script>
 	<script src="/civilwar/client/util/json2.js"></script>
 	<script src="/civilwar/client/model/enum.js"></script>
 	<script src="/civilwar/client/model/task.js"></script>
@@ -42,6 +43,7 @@
     <script src="/civilwar/client/model/scenario.js"></script>
     <script src="/civilwar/client/model/imagecache.js"></script>
 	<script src="/civilwar/client/model/parametricdata.js"></script>
+	<script src="/civilwar/client/model/los.js"></script>
 	<script src="/civilwar/client/component/clock/clockcontroller.js"></script>
 	<script src="/civilwar/client/component/clock/clockview.js"></script>
 	<script src="/civilwar/client/component/clock/clockcomponent.js"></script>
@@ -57,6 +59,9 @@
 	<script src="/civilwar/client/component/statusreport/statusreportcontroller.js"></script>
 	<script src="/civilwar/client/component/statusreport/statusreportview.js"></script>
 	<script src="/civilwar/client/component/statusreport/statusreportcomponent.js"></script>
+	<script src="/civilwar/client/component/unitsreport/unitsreportcontroller.js"></script>
+	<script src="/civilwar/client/component/unitsreport/unitsreportview.js"></script>
+	<script src="/civilwar/client/component/unitsreport/unitsreportcomponent.js"></script>	
 	<script src="/civilwar/client/component/mainmenu/mainmenucontroller.js"></script>
 	<script src="/civilwar/client/component/mainmenu/mainmenuview.js"></script>
 	<script src="/civilwar/client/component/mainmenu/mainmenucomponent.js"></script>	
@@ -75,14 +80,18 @@
 			<ul>
 				<li><a href="#">Game</a>
 					<ul>
-						<li><a id="menuItemSaveGame">Save Game</a></li>
-						<li><a id="menuItemSubmitTurn">Submit Turn</a></li>
+						<li><a id="menuItemSaveGameMenuItem">Save Game</a></li>
+						<li><a id="menuItemSubmitTurnMenuItem">Submit Turn</a></li>
 					</ul>
 				</li>
 				<li><a href="#">Scenario</a>
 					<ul>
 						<li><a href="#">View Scenario</a></li>
+						<li><a id="statusReportMenuItem" href="#">Status Report</a></li>
+						<li><a id="releasesReportMenuItem" href="#">View Releases</a></li>
+						<li><a id="reinforcementsReportMenuItem" href="#">View Reinforcements</a></li>
 					</ul>
+					
 				</li>
 				<li><a href="#">Units</a>
 					<ul>
@@ -163,8 +172,35 @@
 	<div id="footerTurnDiv"></div>
 	<div class="clear"></div>
 </div>
-<div id="dialog" title="Status Report">
-	<input id="viewReplayButton" type="button" value="Press to View Replay"/>
+<div id="dialog">
+	<div id="content-placeholder"></div>
 </div>
+<script id="statusReport-template" type="text/x-handlers-template">
+	{{#if releases}}
+		<b>Releases</b></br>
+		{{#each releases}}
+			&nbsp{{this}}<br>
+		{{/each}}
+	{{/if}}
+	<br>
+	{{#if reinforcements}}
+		<b>Reinforcements</b></br>
+		{{#each reinforcements}}
+			&nbsp{{this}}<br>
+		{{/each}}
+	{{/if}}
+	<br>
+	<input id="viewReplayButton" type="button" value="Press to View Replay"/>
+</script>
+<script id="releasesReport-template" type="text/x-handlers-template">
+		{{#each releases}}
+			&nbsp[{{turnHelper turn}}] {{timeHelper time}} {{description}}<br>
+		{{/each}}
+</script>
+<script id="reinforcementsReport-template" type="text/x-handlers-template">
+		{{#each reinforcements}}
+			&nbsp[{{turnHelper turn}}] {{timeHelper time}} {{description}} ({{hexX}},{{hexY}})<br>
+		{{/each}}
+</script>
 </body>
 </html>

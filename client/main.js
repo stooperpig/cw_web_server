@@ -5,6 +5,7 @@ $(document).ready(function (e) {
 	wego.StatusbarComponent.initialize(wego.UiState);
 	wego.ToolbarComponent.initialize(wego.UiState);
 	wego.StatusReportComponent.initialize(wego.UiState);
+	wego.UnitsReportComponent.initialize(wego.UiState);
 	wego.MainMenuComponent.initialize(wego.UiState);
 	wego.Application.initialize();
 });

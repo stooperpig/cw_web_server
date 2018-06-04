@@ -58,10 +58,6 @@ wego.Counter.prototype = {
 		return this.currentTask.fatigue;
 	},
 
-	getFixed:function() {
-		return this.currentTask.fixed;
-	},
-
 	getFormation:function() {
 		return this.currentTask.formation;
 	},
@@ -123,6 +119,10 @@ wego.Counter.prototype = {
 
 	getMovementFactor:function() {
 		return this.currentTask.movementFactor;
+	},
+
+	getSpotted:function() {
+		return this.currentTask.spotted;
 	},
 
 	getStrength:function() {
@@ -191,6 +191,15 @@ wego.Counter.prototype = {
 		
 		return returnValue;
 	}, 
+
+	isFixed:function() {
+		return this.currentTask.fixed;
+	},
+
+	isRouted:function() {
+		var lastTask = this.getLastTask();
+		return lastTask.moraleStatus == wego.MoraleType.ROUTED;
+	},
 	
 	// padWithWaitTasks:function(numberOfWaitTasks, startingTask) {
 	// 	var hex = startingTask.getHex();

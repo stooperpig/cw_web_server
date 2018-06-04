@@ -25,8 +25,8 @@ wego.Application = (function() {
 	
 	function initialize() {	
 		console.log("maincontroller:initialize " + gGameId);
+		$("#dialog").dialog({autoOpen:false});
 		$(window).resize(adjustSize);
-		
 		adjustSize();
 		var game = new wego.Game();
 		game.id = gGameId;
@@ -86,10 +86,24 @@ wego.Application = (function() {
 		var parametricData = wego.UiState.getParametricData();
 		parametricData.initialize(data.parametricData);
 
-        window.document.title = "Civil War: " + scenario.name;
-        $("#footerTurnDiv").html("Turn " + game.turn);
+        window.document.title = "Civil War: " + scenario.title;
+        $("#footerTurnDiv").html("Turn " + (game.turn + 1));
 
 		loadImages(wego.ImageCache, initializeMapCanvas);
+
+		var oReq = new XMLHttpRequest();
+		oReq.open("GET","/civilwar/server/data/maps/wc.los");
+		oReq.responseType = "arraybuffer";
+		oReq.onload = function(event) {
+			var arrayBuffer = oReq.response; // Note: not oReq.responseText
+
+			if (arrayBuffer) {
+				var los = new wego.Los(map.columns, map.rows, arrayBuffer);
+				wego.UiState.setLos(los);
+			}
+		};
+		
+		oReq.send(null);
 	}
 	
 	function loadImages(images, callback) {

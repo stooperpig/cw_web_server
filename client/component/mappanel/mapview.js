@@ -54,6 +54,17 @@ wego.MapView.prototype = {
 			var y = coord.y;
 			this.drawStack(context, stack, x, y);
 		}
+
+		var state = this.state;
+		if (state.getDisplayLos()) {
+			var currentHex = state.getCurrentHex();
+			if (currentHex != null) {
+				var los = state.getLos();
+				if(!los.checkLos(currentHex, hex)) {
+					wego.SpriteUtil.drawSprite(context, "Icons2d", wego.SpriteUtil.blockedSpriteIndex,  coord.x + 3, coord.y + 3);
+				}
+			}
+		}
 	},
 	
 	drawStack:function(context, stack, x, y) {
@@ -64,7 +75,7 @@ wego.MapView.prototype = {
 		    var counterCount = 0;
 			var firstCounter = null;
 			var firstLeader = null;
-		    var side = stack.counters[0].player.team.id;
+		    var side = stack.counters[0].player.team.name;
 
 		    for(var i = 0; i < stack.counters.length; ++i) {
 		        var counter = stack.counters[i];

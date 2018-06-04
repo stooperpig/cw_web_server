@@ -2,10 +2,8 @@ var wego = wego || {};
 
 wego.HexType = {
 	CLEAR:{code:" ",name:"Clear"},
-	TOWN:{code:"t",name:"Town"},
+	ROUGH:{code:"r",name:"Rough"},
 	FOREST:{code:"f",name:"Forest"},
-	SWAMP:{code:"w",name:"Swamp"},
-	WATER:{code:"a",name:"Water"},
 	getType:function getType(code) {
 		var returnValue = null;	
 		for(var i in this) {
@@ -38,11 +36,15 @@ wego.Formation = {
 
 wego.HexSideType = {
 	CLEAR:{type:"Clear",code:" ",mask:0},
-	SLOPE:{type:"Slope",code:"s",mask:2},
-	FOREST:{type:"Forest",code:"f",mask:4},
-	TOWN:{type:"Town",code:"t",mask:8},
-	ROAD:{type:"Road",code:"r",mask:16},
-	GULLY:{type:"Gully",code:"g",mask:32},
+	TRAIL:{type:"Trail",code:"t",mask:2},
+	ROAD:{type:"Road",code:"r",mask:4},
+	PIKE:{type:"Pike",code:"p",mask:8},
+	RAILROAD:{type:"Railroad",code:"a",mask:16},
+	STREAM:{type:"Stream",code:"s",mask:32},
+	CREEK:{type:"Creek",code:"c",mask:64},
+	EMBANKMENT:{type:"Embankment",code:"e",mask:128},
+	WALL:{type:"Wall",code:"w",mask:256},
+	RAILROAD_CUT:{type:"Railroad Cut",code:"i",mask:512},
 	getType:function getType(code) {
 		var returnValue = null;
 		for(var i in this) {

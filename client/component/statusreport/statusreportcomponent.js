@@ -10,6 +10,7 @@ wego.StatusReportComponent = (function() {
     }
 
     function showReport() {
+        view.loadContent();
         controller.showReport();
     }
 

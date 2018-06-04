@@ -99,7 +99,7 @@ wego.UnitPanelView.prototype = {
 
 	drawLeader:function(context, baseX, baseY, counter, selected) {
         var x = baseX + 2;
-        var side = counter.player.team.id;
+        var side = counter.player.team.name;
         wego.SpriteUtil.drawLeaderSprite(context, counter.unitImageIndex, side, selected, x, baseY);
 
         context.font = "10px Arial";
@@ -115,8 +115,13 @@ wego.UnitPanelView.prototype = {
         context.fillText(this.getLetterValue(counter.leadership), x, baseY + 28);
 
         y = baseY + 44;
-        context.fillText("M", x0, y);
-        context.fillText(counter.getMovementFactor(), x, y);
+        if(counter.isFixed()) {
+            imageIndex = wego.SpriteUtil.fixedSpriteIndex;
+            wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x-29, y-24);
+        } else {
+            context.fillText("M", x0, y);
+            context.fillText(counter.getMovementFactor(), x, y);
+        }
 
         context.fillStyle = "black";
         context.font = "10px Arial bold";
@@ -129,7 +134,7 @@ wego.UnitPanelView.prototype = {
 	    var rowSpace = 19
 	    var x = 3;
 
-	    var side = counter.player.team.id;
+	    var side = counter.player.team.name;
 
 	    var imageIndex = wego.SpriteUtil.getUnitBoxSpriteIndex(side, selected, false);
 	    wego.SpriteUtil.drawSprite(context, "UnitBox", imageIndex, x, baseY);
@@ -203,13 +208,15 @@ wego.UnitPanelView.prototype = {
             wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 34, y - 26);
         }
 
-        if (counter.getFixed()) {
+        if (counter.isFixed()) {
             imageIndex = wego.SpriteUtil.fixedSpriteIndex;
             wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x - 1, y - 25);
         }
 
         //spotted sprite
-        wego.SpriteUtil.drawSprite(context, "Icons2d", 155, x + 57, y - 24);
+        if (counter.getSpotted()) {
+            wego.SpriteUtil.drawSprite(context, "Icons2d", 155, x + 57, y - 24);
+        }
 
         //unit symbol
         if (side == 1) {

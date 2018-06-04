@@ -202,10 +202,6 @@ wego.MapController.prototype = {
 	// 	return returnValue;
 	// },
 
-	getMovementCost(counter, toHex) {
-		return 2;
-	},
-
 	canMove:function(counter, toHex) {
 		var returnValue = false;
 		if (counter.isReady()) {
@@ -236,7 +232,7 @@ wego.MapController.prototype = {
 				var counter = counters[i];
 				var cost = this.getMovementCost(counter, toHex);
 				var lastTask = counter.getLastTask();
-				var task = lastTask.clone(wego.TaskType.MOVE, 2, lastTask.movementFactor - 2);
+				var task = lastTask.clone(wego.TaskType.MOVE, cost, lastTask.movementFactor - cost);
 				switch(lastTask.formation) {
 					case wego.Formation.COLUMN:
 						task.facing = task.hex.getSharedHexSideIndex(toHex);
@@ -251,5 +247,62 @@ wego.MapController.prototype = {
 		} else {
 			this.state.setStatusMessage("One or more of the counters can not complete the move");
 		}
+	},
+
+	getMovementCost(counter, toHex) {
+		var parametricData = this.state.getParametricData();
+		var hexType = toHex.hexType;
+		var lastTask = counter.getLastTask();
+		var formation = lastTask.formation;
+		var fromHex = lastTask.hex;
+		var direction = fromHex.getSharedHexSideIndex(toHex);
+		var hexSide = fromHex.hexSides[direction];
+		let cost = 0;
+
+		if (formation === wego.Formation.COLUMN || formation === wego.Formation.NONE) {
+			if (hexSide.isTrail()) {
+				cost += parametricData.getHexSideCost(counter.type, formation, wego.HexSideType.TRAIL.code);
+			} else if (hexSide.isRoad()) {
+				cost += parametricData.getHexSideCost(counter.type, formation, wego.HexSideType.ROAD.code);
+			} else if (hexSide.isPike()) {
+				cost += parametricData.getHexSideCost(counter.type, formation, wego.HexSideType.PIKE.code);
+			} else {
+				if (hexSide.isCreek()) {
+					cost = 99;
+				} else {
+					if (hexSide.isStream()) {
+						cost += parametricData.getHexSideCost(counter.type, formation, wego.HexSideType.STREAM.code);
+					}
+
+					cost += parametricData.getHexCost(counter.type, formation, hexType.code);
+				}
+
+			}
+		} else {
+			if (hexSide.isCreek()) {
+				cost = 99;
+			} else {
+				if (hexSide.isStream()) {
+					cost += parametricData.getHexSideCost(counter.type, formation, wego.HexSideType.STREAM.code);
+				}
+				
+				cost += parametricData.getHexCost(counter.type, formation, hexType.code);
+				var facing = lastTask.facing;
+				var direction = fromHex.getSharedHexSideIndex(toHex);
+				var delta = Math.abs(facing - direction);
+				if (delta != 0 && delta != 1 && delta != 5) {
+					cost += parametricData.getRearwardMovementCost();
+				}
+			}
+		}
+
+		let elevationChange = toHex.elevation - fromHex.elevation;
+		if (elevationChange > 0) {
+			cost += elevationChange * parametricData.getUpElevationCost(counter.type, formation);
+		} else if (elevationChange < 0) {
+			cost += Math.abs(elevationChange) * parametricData.getDownElevationCost(counter.type, formation);
+		}
+
+		return cost;
 	}
 };

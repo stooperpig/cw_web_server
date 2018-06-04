@@ -71,7 +71,7 @@ wego.ToolbarController.prototype = {
 	initialize:function(state) {
 		this.state = state;
 		var controller = this;
-		$("#losButton").button();
+		$("#losButton").button().click(function() {controller.losCommand();});
 		$("#prevUnitButton").button().click(function() {controller.prevNextUnitCommand("prev");});
 		$("#nextUnitButton").button().click(function() {controller.prevNextUnitCommand("next");});
 		$("#opFireButton").button().click(controller.opportunityFireCommand);
@@ -84,6 +84,10 @@ wego.ToolbarController.prototype = {
 		$("#directFireButton").button().click(function() {controller.directFireCommand()});
 		
 		$('#gameModeButton').button().click(function() {controller.gameModeCommand()});
+	},
+
+	losCommand:function() {
+		this.state.toggleDisplayLos();
 	},
 	
 	opportunityFireCommand:function() {
@@ -101,7 +105,6 @@ wego.ToolbarController.prototype = {
 	},
 	
 	prevNextUnitCommand:function(direction) {
-		debugger;
 		var player = this.state.getGame().currentPlayer;
 		var mode = this.state.getGameMode();
 		var time = this.state.getTime();
@@ -207,7 +210,7 @@ wego.ToolbarController.prototype = {
 
 	canChangeFormation:function(counter) {
 		var returnValue = false;
-		if (counter.isReady()) {
+		if (counter.isReady() && !counter.isRouted()) {
 			var lastTask = counter.getLastTask();
 			switch(counter.type) {
 				case wego.CounterType.SUPPLY:
@@ -230,7 +233,6 @@ wego.ToolbarController.prototype = {
 	},
 
 	formationCommand:function() {
-		debugger;
 		this.state.setStatusMessage("");
 		var gameMode = this.state.getGameMode();
 		var time = this.state.getTime();

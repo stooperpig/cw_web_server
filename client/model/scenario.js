@@ -1,9 +1,8 @@
 var wego = wego || {};
 
 wego.Scenario = function() {
-	this.name = null;
-	this.otherImages = null;
 	this.title = null;
+	this.otherImages = null;
 	this.description = null;
 	this.startTime = null;
 	this.numberOfTurns = 0;

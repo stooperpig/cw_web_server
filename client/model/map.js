@@ -13,7 +13,8 @@ wego.Map = function () {
 	this.INTERNAL_TOP_MARGIN =  15;
 	this.INTERNAL_LEFT_MARGIN = 8;
 	this.HEX_SIDE = 0;
-	this.mapData;
+	this.columns;
+	this.rows;
 	this.hexGrid;
 	this.images;
 	this.boardHeight;
@@ -119,36 +120,51 @@ wego.Map.prototype = {
 	    this.HEX_SIDE = mapData.boardProperties.hexSide;
 
 		this.boards = mapData.boards;
-		var columns = mapData.columns;
-		var rows = mapData.rows;
+		this.columns = mapData.columns;
+		this.rows = mapData.rows;
 		var hexTypes = mapData.hexTypes;
 		var elevations = mapData.elevations;
-		var gullies = mapData.gully;
-		var forests = mapData.forest;
-		var slopes = mapData.slope;
-		var roads = mapData.road;
-		var towns = mapData.town;
-		for(i = 0; i < columns; ++i) {
+
+		var trails = mapData.trails;
+		var roads = mapData.roads;
+		var pikes = mapData.pikes;
+		var railroads = mapData.railroads;
+		var streams = mapData.streams;
+		var creeks = mapData.creeks;
+		var embankments = mapData.embankments;
+		var walls = mapData.walls;
+		var railroadCuts = mapData.railroadCuts;
+
+		for(i = 0; i < this.columns; ++i) {
 			this.hexGrid[i] = new Array();
-			for(j = 0; j < rows; ++j) {
+			for(j = 0; j < this.rows; ++j) {
 				var type = hexTypes[j].charAt(i);
 				var hexType = wego.HexType.getType(type);
 				var elevation = elevations[j].charAt(i);
-				var gullyMask = gullies[j].charCodeAt(i) - 32;
-				var forestMask = forests[j].charCodeAt(i) - 32;
-				var slopeMask = slopes[j].charCodeAt(i) - 32;
-				var roadMask = roads[j].charCodeAt(i) - 32;
-				var townMask = towns[j].charCodeAt(i) - 32;
+
 				var hex = new wego.Hex(i,j);
 				hex.hexType = hexType;
 				hex.elevation = elevation;
-				hex.setHexSideType(wego.HexSideType.FOREST,forestMask);
-				hex.setHexSideType(wego.HexSideType.GULLY,gullyMask);
-				hex.setHexSideType(wego.HexSideType.SLOPE,slopeMask);
-				hex.setHexSideType(wego.HexSideType.ROAD,roadMask);
-				hex.setHexSideType(wego.HexSideType.TOWN,townMask);
+
+				this.updateHexSides(hex, trails, i, j, wego.HexSideType.TRAIL);
+				this.updateHexSides(hex, roads, i, j, wego.HexSideType.ROAD);
+				this.updateHexSides(hex, pikes, i, j, wego.HexSideType.PIKE);
+				this.updateHexSides(hex, railroads, i, j, wego.HexSideType.RAILROAD);
+				this.updateHexSides(hex, streams, i, j, wego.HexSideType.STREAM);												
+				this.updateHexSides(hex, creeks, i, j, wego.HexSideType.CREEK);
+				this.updateHexSides(hex, embankments, i, j, wego.HexSideType.EMBANKMENT);
+				this.updateHexSides(hex, walls, i, j, wego.HexSideType.WALL);
+				this.updateHexSides(hex, railroadCuts, i, j, wego.HexSideType.RAIDROAD_CUT);
+
 				this.hexGrid[i][j] = hex;
 			}
+		}
+	},
+
+	updateHexSides(hex, values, column, row, type) {
+		if (values != null) {
+			var mask = values[row].charCodeAt(column) - 32;
+			hex.setHexSideType(type, mask);
 		}
 	},
 	

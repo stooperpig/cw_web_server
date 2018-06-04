@@ -8,6 +8,7 @@ wego.Game = function() {
 	this.counters = new Array();
 	this.scenarioId = 0;
 	this.showReplay = false;
+	this.messageMap = {};
 }
 
 wego.Game.prototype = {
@@ -44,6 +45,7 @@ wego.Game.prototype = {
 		this.turn = data.currentTurn;
 		this.scenarioId = data.scenarioId;
 		this.showReplay = data.showReplay;
+		this.messageMap = data.messageMap;
 		console.log("currentPlayer: " + data.currentPlayerId);
 		wego.Task.counter = data.taskCounter;
 
@@ -61,6 +63,9 @@ wego.Game.prototype = {
 		var dataTeams = data.teams;
 		for(var i = 0; i < dataTeams.length; ++i) {
 			var team = new wego.Team(dataTeams[i].id,dataTeams[i].name);
+			team.releases = dataTeams[i].releases;
+			team.reinforcements = dataTeams[i].reinforcements;
+			team.messageMap = dataTeams[i].messageMap;
 			this.teams.push(team);
 			var players = dataTeams[i].players;
 			for(var j = 0; j < players.length; ++j) {
@@ -70,7 +75,6 @@ wego.Game.prototype = {
 				for (var k = 0; k < counters.length; ++k) {
 				    var counter = wego.CounterFactory.buildCounter(counters[k]);
 				    if (counter == null) {
-				        debugger;
 				    }
 					player.addCounter(counter);
 				}
@@ -136,6 +140,7 @@ wego.Game.prototype = {
 		newTask.formation = task.formation;
 		newTask.moraleStatus = task.moraleStatus;
 		newTask.fixed = task.fixed;
+		newTask.spotted = task.spotted;
 							
 		var targetIds = task.targetIds;
 		if (targetIds != null) {
@@ -157,6 +162,7 @@ wego.Game.prototype = {
 		returnValue.currentTurn = this.turn;
 		returnValue.scenarioId = this.scenarioId;
 		returnValue.currentPlayerId = this.currentPlayer.id;
+		returnValue.messageMap = this.messageMap;
 		returnValue.taskCounter = wego.Task.counter;
 		returnValue.teams = new Array();
 		for(var i = 0; i < this.teams.length; ++i) {

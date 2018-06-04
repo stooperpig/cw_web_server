@@ -9,11 +9,11 @@ wego.StatusReportController.prototype = {
 	initialize: function(state) {
 		this.state = state;
 		var controller = this;
-		
-		$("#dialog").dialog({autoOpen:false});
-		$("#viewReplayButton").click(function() {controller.showReplay()});
 	},
 	showReport: function() {
+		var controller = this;
+		$("#viewReplayButton").click(function() {controller.showReplay()});  //need to clean up bindings on repeated open/close
+		$("#dialog").dialog({title:"Status Report"});
 		$("#dialog").dialog("open");
 	},
 	showReplay: function() {
