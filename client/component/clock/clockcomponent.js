@@ -13,5 +13,5 @@ wego.ClockComponent = (function() {
         controller: controller,
         initialize : initialize,
         view: view
-	}
+	};
 })();

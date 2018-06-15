@@ -15,6 +15,7 @@ wego.UiState = (function() {
 	var lastReplayTime = 0;
 	var displayLos = false;
 	var los = null;
+	var enableFow = true;
 	
 	function getDisplayLos() {
 		return displayLos;
@@ -180,6 +181,15 @@ wego.UiState = (function() {
 		los = value;
 	}
 
+	function isFowEnabled() {
+		return enableFow;
+	}
+
+	function setEnableFow(value) {
+		enableFow = value; 
+		amplify.publish(wego.Topic.CURRENT_HEX,{hex:currentHex, selectedCounters:[]});
+	}
+
 	return {
 		clearStatusMessage : clearStatusMessage,
 		getCommandMode : getCommandMode,
@@ -206,6 +216,8 @@ wego.UiState = (function() {
 		getDisplayLos : getDisplayLos,
 		toggleDisplayLos : toggleDisplayLos,
 		getLos : getLos,
-		setLos : setLos
+		setLos : setLos,
+		isFowEnabled : isFowEnabled,
+		setEnableFow : setEnableFow
 	}
 })();

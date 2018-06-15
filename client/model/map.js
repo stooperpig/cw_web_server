@@ -24,7 +24,7 @@ wego.Map = function () {
 
 wego.Map.prototype = {
 	getHex: function(col, row) {
-		var returnValue = null;
+		let  returnValue = null;
 		
 		if (col > -1 && row > -1) {
 			returnValue = this.hexGrid[col][row];
@@ -33,9 +33,9 @@ wego.Map.prototype = {
 	},
 
 	getHexCenterPoint:function(col, row) {
-        var coord = hexToPoint(col,row);
-        var adjX = coord.x + this.DX + (this.HEX_SIDE / 2);
-        var adjY = coord.y + this.DY;
+        let  coord = hexToPoint(col,row);
+        let  adjX = coord.x + this.DX + (this.HEX_SIDE / 2);
+        let  adjY = coord.y + this.DY;
 	},
 	
 	getImages:function() {
@@ -51,13 +51,13 @@ wego.Map.prototype = {
 	},
 
 	getImageNames:function() {
-		var returnValue = new Array();
+		let  returnValue = new Array();
 		returnValue['main1'] = this.boards.main1;
 		return returnValue;
 	},
 	
 	getPixelHeight:function() {
-		var images = this.getImages();
+		let  images = this.getImages();
 		return (this.boardHeight * images.length) + (2 * this.TOP_MARGIN);
 	},
 	
@@ -66,18 +66,18 @@ wego.Map.prototype = {
 	},
 	
 	getRange:function(hex0, hex1) {
-		var hexX0 = Math.ceil((hex0.getColumn()+1)/2)-hex0.getRow();
-		var hexY0 = Math.floor(hex0.getColumn()/2) + hex0.getRow();
-		var hexX1 = Math.ceil((hex1.getColumn()+1)/2)-hex1.getRow();
-		var hexY1 = Math.floor(hex1.getColumn()/2) + hex1.getRow();
+		let  hexX0 = Math.ceil((hex0.getColumn()+1)/2)-hex0.getRow();
+		let  hexY0 = Math.floor(hex0.getColumn()/2) + hex0.getRow();
+		let  hexX1 = Math.ceil((hex1.getColumn()+1)/2)-hex1.getRow();
+		let  hexY1 = Math.floor(hex1.getColumn()/2) + hex1.getRow();
 		
-		var dx = hexX1 - hexX0;
-		var dy = hexY1 - hexY0;
+		let  dx = hexX1 - hexX0;
+		let  dy = hexY1 - hexY0;
 		
-		var xSign = (dx > 0)?1:((dx == 0)?0:-1);
-		var ySign = (dy > 0)?1:((dy == 0)?0:-1);
+		let  xSign = (dx > 0)?1:((dx == 0)?0:-1);
+		let  ySign = (dy > 0)?1:((dy == 0)?0:-1);
 		
-		var range = -1;
+		let  range = -1;
 		
 		if (xSign != ySign) {
 			range = Math.max(Math.abs(dx),Math.abs(dy));
@@ -91,8 +91,8 @@ wego.Map.prototype = {
 	//returns the coord of the upper left corner of square that
 	//would enclose the hexagon
 	hexToPoint:function(col, row) {
-		var x = 0;
-		var y = 0;
+		let  x = 0;
+		let  y = 0;
 		if (col % 2 == 0) {
 			x = col * this.HEX_WIDTH;
 			y = this.DY; // - 1;
@@ -102,7 +102,7 @@ wego.Map.prototype = {
 			y = row * this.HEX_HEIGHT;
 		}
 		
-		var returnValue = {};
+		let  returnValue = {};
 		returnValue.x = x + this.LEFT_MARGIN + this.INTERNAL_LEFT_MARGIN;
 		returnValue.y = y + this.TOP_MARGIN + this.INTERNAL_TOP_MARGIN;
 		
@@ -122,27 +122,27 @@ wego.Map.prototype = {
 		this.boards = mapData.boards;
 		this.columns = mapData.columns;
 		this.rows = mapData.rows;
-		var hexTypes = mapData.hexTypes;
-		var elevations = mapData.elevations;
+		let  hexTypes = mapData.hexTypes;
+		let  elevations = mapData.elevations;
 
-		var trails = mapData.trails;
-		var roads = mapData.roads;
-		var pikes = mapData.pikes;
-		var railroads = mapData.railroads;
-		var streams = mapData.streams;
-		var creeks = mapData.creeks;
-		var embankments = mapData.embankments;
-		var walls = mapData.walls;
-		var railroadCuts = mapData.railroadCuts;
+		let  trails = mapData.trails;
+		let  roads = mapData.roads;
+		let  pikes = mapData.pikes;
+		let  railroads = mapData.railroads;
+		let  streams = mapData.streams;
+		let  creeks = mapData.creeks;
+		let  embankments = mapData.embankments;
+		let  walls = mapData.walls;
+		let  railroadCuts = mapData.railroadCuts;
 
 		for(i = 0; i < this.columns; ++i) {
 			this.hexGrid[i] = new Array();
 			for(j = 0; j < this.rows; ++j) {
-				var type = hexTypes[j].charAt(i);
-				var hexType = wego.HexType.getType(type);
-				var elevation = elevations[j].charAt(i);
+				let  type = hexTypes[j].charAt(i);
+				let  hexType = wego.HexType.getType(type);
+				let  elevation = elevations[j].charAt(i);
 
-				var hex = new wego.Hex(i,j);
+				let  hex = new wego.Hex(i,j);
 				hex.hexType = hexType;
 				hex.elevation = elevation;
 
@@ -163,58 +163,78 @@ wego.Map.prototype = {
 
 	updateHexSides(hex, values, column, row, type) {
 		if (values != null) {
-			var mask = values[row].charCodeAt(column) - 32;
+			let  mask = values[row].charCodeAt(column) - 32;
 			hex.setHexSideType(type, mask);
 		}
 	},
 	
 	pointToHex:function(x, y) {
-	    y -= this.INTERNAL_TOP_MARGIN;
+		//console.log(`original x,y: ${x},${y}`);
 
-		var col = Math.floor(x/this.HEX_WIDTH);
-		var row = -1;
+		y -= this.INTERNAL_TOP_MARGIN;
+		x -= this.INTERNAL_LEFT_MARGIN;
+		
+		//console.log(`hex_width: ${this.HEX_WIDTH}`);
+		//console.log(`internal_top_margin: ${this.INTERNAL_TOP_MARGIN}`);
+		//console.log(`internal_left_margin: ${this.INTERNAL_LEFT_MARGIN}`);
+		//console.log(`dx: ${this.DX}`);
+		//console.log(`dy: ${this.DY}`);
+		//console.log(`hex_height: ${this.HEX_HEIGHT}`);
+		//console.log(`x,y adjusted for internal margins: ${x},${y}`);
+
+		let  col = Math.floor(x/this.HEX_WIDTH);
+		let  row = -1;
 			
+		//console.log(`column: ${col}`);
+
 		if (col % 2 == 0) {
+			//console.log("even column");
 			y = y - this.DY;
+			//console.log(`y adjusted for DY: ${x},${y}`);
+
 			row = Math.floor(y/this.HEX_HEIGHT);
-			var modX = x % this.HEX_WIDTH;
+			//console.log(`row: ${row}`);
+
+			let  modX = x % this.HEX_WIDTH;
+			//console.log(`modX: ${modX}`);
+
 			if (modX < this.DX) {
-				var modY = y % this.HEX_HEIGHT;
-				var cross = this.turns(this.DX,0,0,this.DY,modX,modY);
+				let  modY = y % this.HEX_HEIGHT;
+				let  cross = this.turns(this.DX,0,0,this.DY,modX,modY);
 				if (cross == this.LEFT) {
-					console.log("up to the left");
+					//console.log("up to the left");
 					--col;
 				} else if (cross == this.RIGHT) {
 					cross = this.turns(0,this.DY,this.DX,this.HEX_HEIGHT,modX,modY);
 					if (cross == this.LEFT) {
-						console.log("down to the left");
+						//console.log("down to the left");
 						--col;
 						++row;
 					}
 				}
 			}
 		} else {
+			//console.log("odd column");
 			row = Math.floor(y/this.HEX_HEIGHT);
-			var modX = x % this.HEX_WIDTH;
+			let  modX = x % this.HEX_WIDTH;
 			if (modX < this.DX) {
-				var modY = y % this.HEX_HEIGHT;
-				var cross = this.turns(this.DX,0,0,this.DY,modX,modY);
+				let  modY = y % this.HEX_HEIGHT;
+				let  cross = this.turns(this.DX,0,0,this.DY,modX,modY);
 				if (cross == this.LEFT) {
-					console.log("up to the left");
+					//console.log("up to the left");
 					--row;
 					--col;
 				} else if (cross == this.RIGHT) {
 					cross = this.turns(0,this.DY,this.DX,this.HEX_HEIGHT,modX,modY);
 					if (cross == this.LEFT) {
-						console.log("down to the left");
+						//console.log("down to the left");
 						--col;
 					}
 				}
 			}
-			console.log("odd column");
 		}
 		
-		var returnValue = {};
+		let  returnValue = {};
 		returnValue.row = row;
 		returnValue.col = col;
 		
@@ -222,8 +242,8 @@ wego.Map.prototype = {
 	},
 
 	turns:function(x0, y0, x1, y1, x2, y2) {
-		var returnValue;
-		var cross = (x1-x0)*(y2-y0) - (x2-x0)*(y1-y0);
+		let  returnValue;
+		let  cross = (x1-x0)*(y2-y0) - (x2-x0)*(y1-y0);
 		if(cross > 1.0) {
 			returnValue = this.LEFT;
 		} else {

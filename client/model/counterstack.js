@@ -10,7 +10,7 @@ wego.CounterStack.prototype = {
 	},
 	
 	removeCounter:function(counter) {
-		var index = this.counters.indexOf(counter);
+		let index = this.counters.indexOf(counter);
 		if (index > -1) {
 			this.counters.splice(index,1);
 		}

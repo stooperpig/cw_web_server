@@ -10,7 +10,7 @@ wego.UnitPanelView.prototype = {
         this.state = state;
 
 		$("#sidebarTabs").tabs();
-		var view = this;
+		let view = this;
 		amplify.subscribe(wego.Topic.CURRENT_HEX, function(data) {
             view.updateStack(data.hex,data.selectedCounters);
             view.updateTaskList(data.selectedCounters);
@@ -24,10 +24,10 @@ wego.UnitPanelView.prototype = {
 	},
 
 	updateHexInfo:function(hex) {
-		var hexInfo = $("#hexInfo");
+		let hexInfo = $("#hexInfo");
 		if (hex != null) {
-            var hexSides = hex.hexSides;
-            var info = `${hex.hexType.name}
+            let hexSides = hex.hexSides;
+            let info = `${hex.hexType.name}
                 (${hex.column},${hex.row})<br>
                 elev: ${hex.elevation}<br>
                 <table>
@@ -43,42 +43,60 @@ wego.UnitPanelView.prototype = {
     },
     	
 	updateStack:function(hex, selectedCounters) {
-		var canvas = document.getElementById('unitBoxCanvas');
-        var context = canvas.getContext('2d');
+		let canvas = document.getElementById('unitBoxCanvas');
+        let context = canvas.getContext('2d');
         context.clearRect(0,0,canvas.width,canvas.height);
 
         if (hex != null) {
-            var stack = hex.stack;
-            if (stack != null) {
-                var counters = stack.counters;
-                if (counters != null) {
-                    var numCounters = counters.length;
-                    var leaders = new Array();
-                    for(var i = 0; i < numCounters; ++i) {
-                        if (counters[i].type == wego.CounterType.LEADER) {
-                            leaders.push(counters[i]);
+            let stack = hex.stack;
+            if (stack !== null) {
+                let currentTeam = this.state.getGame().currentPlayer.team;
+                let isFowEnabled = this.state.isFowEnabled();
+
+                let counters = stack.counters;
+                if (counters !== null) {
+                    let numCounters = counters.length;
+                    let leaders = new Array();
+                    for(let i = 0; i < numCounters; ++i) {
+                        if (counters[i].type === wego.CounterType.LEADER) {
+                            if (isFowEnabled) {
+                                if (counters[i].getSpotted() || counters[i].player.team === currentTeam) {
+                                    leaders.push(counters[i]);
+                                }
+                            } else {
+                                leaders.push(counters[i]);
+                            }
                         }
                     }
 
-                    var leaderRows = Math.ceil(leaders.length / 2)
-                    context.canvas.height = (wego.SpriteUtil.unitBoxHeight * numCounters) + 20 + (leaderRows * wego.SpriteUtil.leaderBoxHeight);
-                    for(var i = 0; i < leaders.length; ++i) {
-                        var row = Math.floor(i / 2);
-                        var column = (i % 2);
-                        var baseY = row * wego.SpriteUtil.leaderBoxHeight;
-                        var baseX = 60 * column;
-                        var selected = (selectedCounters != null)?this.containsObject(leaders[i], selectedCounters):false;
+                    let leaderRows = Math.ceil(leaders.length / 2)
+                    context.canvas.height = (wego.SpriteUtil.unitBoxHeight * numCounters) + 20 + (leaderRows * wego.SpriteUtil.leaderBoxHeight); //todo: do I really need to resize? could just set a max based on rules
+                    for(let i = 0; i < leaders.length; ++i) {
+                        let row = Math.floor(i / 2);
+                        let column = (i % 2);
+                        let baseY = row * wego.SpriteUtil.leaderBoxHeight;
+                        let baseX = 60 * column;
+                        let selected = (selectedCounters != null)?this.containsObject(leaders[i], selectedCounters):false;
                         this.drawLeader(context, baseX, baseY, leaders[i], selected);
                     }
 
-                    var unitCount = 0;
-                    for(var i = 0; i < numCounters; ++i) {
+                    let unitCount = 0;
+                    for(let i = 0; i < numCounters; ++i) {
                         if (counters[i].type != wego.CounterType.LEADER) {
-                            var baseY = unitCount * (wego.SpriteUtil.unitBoxHeight + 2) + (leaderRows * wego.SpriteUtil.leaderBoxHeight + 2);
-                            var selected = (selectedCounters != null) ?this.containsObject(counters[i], selectedCounters):false;
-                            console.log("unit selected: " + selected);
-                            this.drawCounter(context, baseY, counters[i], selected);
-                            ++unitCount;
+                            let displayCounter = true;
+                            if (isFowEnabled) {
+                                if (!counters[i].getSpotted() && counters[i].player.team !== currentTeam) {
+                                    displayCounter = false;
+                                }
+                            }
+                            
+                            if (displayCounter) {
+                                let baseY = unitCount * (wego.SpriteUtil.unitBoxHeight + 2) + (leaderRows * wego.SpriteUtil.leaderBoxHeight + 2);
+                                let selected = (selectedCounters != null) ?this.containsObject(counters[i], selectedCounters):false;
+                                console.log("unit selected: " + selected);
+                                this.drawCounter(context, baseY, counters[i], selected);
+                                ++unitCount;
+                            }
                         }
                     }
                 }
@@ -87,7 +105,7 @@ wego.UnitPanelView.prototype = {
     },
     
     containsObject:function(obj, list) {
-        var i;
+        let i;
         for (i = 0; i < list.length; i++) {
             if (list[i] === obj) {
                 return true;
@@ -98,8 +116,8 @@ wego.UnitPanelView.prototype = {
     },
 
 	drawLeader:function(context, baseX, baseY, counter, selected) {
-        var x = baseX + 2;
-        var side = counter.player.team.name;
+        let x = baseX + 2;
+        let side = counter.player.team.name;
         wego.SpriteUtil.drawLeaderSprite(context, counter.unitImageIndex, side, selected, x, baseY);
 
         context.font = "10px Arial";
@@ -131,12 +149,12 @@ wego.UnitPanelView.prototype = {
 	},
 
 	drawCounter:function(context, baseY, counter, selected) {
-	    var rowSpace = 19
-	    var x = 3;
+	    let rowSpace = 19
+	    let x = 3;
 
-	    var side = counter.player.team.name;
+	    let side = counter.player.team.name;
 
-	    var imageIndex = wego.SpriteUtil.getUnitBoxSpriteIndex(side, selected, false);
+	    let imageIndex = wego.SpriteUtil.getUnitBoxSpriteIndex(side, selected, false);
 	    wego.SpriteUtil.drawSprite(context, "UnitBox", imageIndex, x, baseY);
 
 	    wego.SpriteUtil.drawSprite(context, "Units", counter.unitImageIndex, x + 1, baseY + 1);
@@ -146,7 +164,7 @@ wego.UnitPanelView.prototype = {
         context.fillStyle = "white";
 
         x = 124;
-        var y = baseY + 16;
+        let y = baseY + 16;
         context.fillText("S", x - 28, y);
         switch(counter.type) {
             case "I":
@@ -160,7 +178,7 @@ wego.UnitPanelView.prototype = {
 
         y += rowSpace;
         context.fillText("RG", x - 21, y);
-        var range = this.state.getParametricData().getWeaponRange(counter.weapon);
+        let range = this.state.getParametricData().getWeaponRange(counter.weapon);
         if (range != 0) {
             context.fillText(range, x, y);
         } else {
@@ -196,13 +214,13 @@ wego.UnitPanelView.prototype = {
             context.fillText(counter.weapon,x,y);
         }
 
-        var formation = counter.getFormation();
+        let formation = counter.getFormation();
         if (formation != wego.Formation.NONE) {
             imageIndex = wego.SpriteUtil.getFormationSpriteIndex(formation, counter.getFacing());
             wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 16, y - 24);
         }
 
-        var moraleStatus = counter.getMoraleStatus();
+        let moraleStatus = counter.getMoraleStatus();
         if (moraleStatus == wego.MoraleType.ROUTED) {
             imageIndex = wego.SpriteUtil.routedSpriteIndex;
             wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 34, y - 26);
@@ -265,21 +283,21 @@ wego.UnitPanelView.prototype = {
 	updateTaskList:function(selectedCounters) {
         $("#taskList").html("");
         if (selectedCounters != null) {
-            var gameMode = this.state.getGameMode();
-            var displayCounterName = (selectedCounters.length > 1)?true:false;
-            for(var i = 0; i < selectedCounters.length; ++i) {
-                var tasks = selectedCounters[i].getTasks(gameMode);
+            let gameMode = this.state.getGameMode();
+            let displayCounterName = (selectedCounters.length > 1)?true:false;
+            for(let i = 0; i < selectedCounters.length; ++i) {
+                let tasks = selectedCounters[i].getTasks(gameMode);
                 
                 if (displayCounterName) {
-                     var html = `<li class="ui-widget-content ui-state-disabled">${selectedCounters[i].name}</li>`;
+                     let html = `<li class="ui-widget-content ui-state-disabled">${selectedCounters[i].name}</li>`;
                  	$("#taskList").append(html);
                 }
                 
-                for(var j = 0; j < tasks.length; ++j) {
-                    var task = tasks[j];
-                    var showDeleteButton = j > 0 && gameMode == wego.GameMode.PLAN;
+                for(let j = 0; j < tasks.length; ++j) {
+                    let task = tasks[j];
+                    let showDeleteButton = j > 0 && gameMode == wego.GameMode.PLAN;
 
-                    var html = `<li class="ui-widget-content ui-state-enabled" data-counter-id="${selectedCounters[i].id}" data-task-slot="${j}">
+                    let html = `<li class="ui-widget-content ui-state-enabled" data-counter-id="${selectedCounters[i].id}" data-task-slot="${j}">
                         ${(showDeleteButton)?this.buildDeleteTaskLink(selectedCounters[i].id,j):''}
                         ${task.type}-${task.hex.column}:${task.hex.row}</li>`;
                     $("#taskList").append(html);

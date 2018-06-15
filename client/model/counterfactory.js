@@ -4,7 +4,7 @@ wego.CounterFactory = (function() {
 	//var counterTypeMap = {};
 
 	function buildCounter(counterData) {
-        var counter = new wego.Counter();
+        let counter = new wego.Counter();
 
         counter.type = counterData.type;
         counter.quality = counterData.quality;

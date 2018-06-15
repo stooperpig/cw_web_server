@@ -72,24 +72,35 @@ wego.MapView.prototype = {
 		var adjY = y + 3 // + 15 - 16; // (map.DY) - (COUNTER_WIDTH/2)
 
 		if (stack.counters.length > 0) {
-		    var counterCount = 0;
-			var firstCounter = null;
-			var firstLeader = null;
-		    var side = stack.counters[0].player.team.name;
+			let currentPlayer = this.state.getGame().currentPlayer;
+			let isFowEnabled = this.state.isFowEnabled();
 
-		    for(var i = 0; i < stack.counters.length; ++i) {
-		        var counter = stack.counters[i];
-		        if (counter.type != "L") {
-		            ++counterCount;
-		            if (firstCounter == null) {
-		                firstCounter = counter;
-		            }
-		        } else if (firstLeader == null) {
-					firstLeader = counter;
+		    let counterCount = 0;
+			let firstCounter = null;
+			let firstLeader = null;
+
+		    for(let i = 0; i < stack.counters.length; ++i) {
+				let counter = stack.counters[i];
+				let displayCounter = true;
+
+				if (isFowEnabled) {
+					displayCounter = (currentPlayer.team === counter.player.team || counter.getSpotted());
+				}
+
+				if (displayCounter) {
+					if (counter.type != "L") {
+						++counterCount;
+						if (firstCounter == null) {
+							firstCounter = counter;
+						}
+					} else if (firstLeader == null) {
+						firstLeader = counter;
+					}
 				}
 		    }
 
             if (counterCount > 0) {
+				let side = firstCounter.player.team.name;
 		        var imageIndex = wego.SpriteUtil.getStackSpriteIndex(side, counterCount);
 				wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, adjX, adjY);
 				
@@ -98,7 +109,8 @@ wego.MapView.prototype = {
 
                 imageIndex = wego.SpriteUtil.getMilSymbolSpriteIndex(type, firstCounter.getFormation(), firstCounter.getFacing());
                 wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex,  adjX - counterCount + 1, adjY - counterCount + 1);
-		    } else {
+		    } else if (firstLeader != null) {
+				let side = firstLeader.player.team.name;
                 var imageIndex = wego.SpriteUtil.getStackSpriteIndex(side, 1);
                 wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, adjX, adjY);
                 imageIndex = wego.SpriteUtil.getMilSymbolSpriteIndex(firstLeader.type, 0, 0);

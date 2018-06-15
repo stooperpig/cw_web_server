@@ -110,6 +110,11 @@
 						<li><a href="#">View Help Guide</a></li>
 					</ul>
 				</li>
+				<li><a href="#">[Developer]</a>
+					<ul>
+						<li><a id="toggleFowMenuItem" href="#">Toggle FOW</a></li>
+					</ul>
+				</li>
 			</ul>
 		</nav>
 	</div>

@@ -29,12 +29,12 @@ wego.Counter.prototype = {
 	},
 	
 	addTask:function(task) {
-		var currentHex = null;
+		let currentHex = null;
 		if (this.currentTask != null) {
 			currentHex = this.currentTask.hex;
 		}
 		
-		var newHex = task.hex;
+		let newHex = task.hex;
 		if (currentHex != newHex) {
 			if (currentHex != null) {
 				currentHex.removeCounter(this);
@@ -51,23 +51,23 @@ wego.Counter.prototype = {
 	},
 
 	getFacing:function() {
-		return this.currentTask.facing;
+		return (this.currentTask != null)?this.currentTask.facing:null;
 	},
 
 	getFatigue:function() {
-		return this.currentTask.fatigue;
+		return (this.currentTask != null)?this.currentTask.fatigue:null;
 	},
 
 	getFormation:function() {
-		return this.currentTask.formation;
+		return (this.currentTask != null)?this.currentTask.formation:null;
 	},
 	
 	// canMoveTo:function(toHex) {
-	// 	var returnValue = false;
+	// 	let returnValue = false;
 		
 	// 	if (this.mRemainingMovementFactor > 0) {
-	// 		var fromHex = this.getHex();
-	// 		var movementCost = this.getMoveCost(fromHex,toHex);
+	// 		let fromHex = this.getHex();
+	// 		let movementCost = this.getMoveCost(fromHex,toHex);
 	// 		if (movementCost <= this.mRemainingMovementFactor) {
 	// 			returnValue = true;
 	// 		}
@@ -81,26 +81,26 @@ wego.Counter.prototype = {
 	// },
 
 	deleteTask:function(time) {
-	 	var length = this.tasks.length;
+	 	let length = this.tasks.length;
 		this.tasks.splice(time, length-time);
 		this.currentTask = this.tasks[this.tasks.length - 1];
 	},
 	
 	// directFire:function(hex,targets) {
-	// 	var currentHex = this.getHex();
-	// 	var cost = this.getMovementFactor();
-	// 	var task = new wego.Task(wego.TaskType.DIRECT_FIRE,currentHex,cost);
+	// 	let currentHex = this.getHex();
+	// 	let cost = this.getMovementFactor();
+	// 	let task = new wego.Task(wego.TaskType.DIRECT_FIRE,currentHex,cost);
 	// 	task.otherHex = hex;
 	// 	task.targets = targets;
 	// 	this.addTask(task);
 	// },
 	
 	getHex:function() {
-		return this.currentTask.hex;
+		return (this.currentTask != null)?this.currentTask.hex:null;
 	},
 	
 	getLastTask:function() {
-		var returnValue = null;
+		let returnValue = null;
 		if (this.tasks.length > 0) {
 			returnValue = this.tasks[this.tasks.length - 1];
 		}
@@ -109,28 +109,28 @@ wego.Counter.prototype = {
 	},
 	
 	// getMoveCost:function(fromHex,toHex) {
-	// 	var hexCost = wego.MovementCostTable.getHexCost(this, fromHex, toHex);
+	// 	let hexCost = wego.MovementCostTable.getHexCost(this, fromHex, toHex);
 	// 	return hexCost;
 	// },
 	
 	getMoraleStatus:function() {
-		return this.currentTask.moraleStatus;
+		return (this.currentTask != null)?this.currentTask.moraleStatus:null;
 	},
 
 	getMovementFactor:function() {
-		return this.currentTask.movementFactor;
+		return (this.currentTask != null)?this.currentTask.movementFactor:null;
 	},
 
 	getSpotted:function() {
-		return this.currentTask.spotted;
+		return (this.currentTask != null)?this.currentTask.spotted:null;
 	},
 
 	getStrength:function() {
-		return this.currentTask.strength;
+		return (this.currentTask != null)?this.currentTask.strength:null;
 	},
 	
 	getTaskDataAtTime:function(mode, time) {
-		var returnValue = {};
+		let returnValue = {};
 		returnValue.hasMoreTasks = true;
 		
 		switch(mode) {
@@ -156,7 +156,7 @@ wego.Counter.prototype = {
 	},
 	
 	getTasks:function (gameMode) {
-		var returnValue = null;
+		let returnValue = null;
 		
 		switch(gameMode) {
 		case wego.GameMode.PLAN:
@@ -171,8 +171,8 @@ wego.Counter.prototype = {
 	},
 		
 	isFinished:function() {
-		var returnValue = true;
-		var lastTask = this.getLastTask();
+		let returnValue = true;
+		let lastTask = this.getLastTask();
 
 		if (!lastTask.fixed && lastTask.movementFactor > 0) {
 			returnValue = false;
@@ -182,9 +182,9 @@ wego.Counter.prototype = {
 	},
 
 	isReady:function() {
-		var returnValue = false;
+		let returnValue = false;
 		
-		var lastTask = this.getLastTask();
+		let lastTask = this.getLastTask();
 		if (!lastTask.fixed && lastTask == this.currentTask) {
 			returnValue = true;
 		}
@@ -193,24 +193,24 @@ wego.Counter.prototype = {
 	}, 
 
 	isFixed:function() {
-		return this.currentTask.fixed;
+		return (this.currentTask != null)?this.currentTask.fixed:null;
 	},
 
 	isRouted:function() {
-		var lastTask = this.getLastTask();
+		let lastTask = this.getLastTask();
 		return lastTask.moraleStatus == wego.MoraleType.ROUTED;
 	},
 	
 	// padWithWaitTasks:function(numberOfWaitTasks, startingTask) {
-	// 	var hex = startingTask.getHex();
-	// 	for(var i = 0; i < numberOfWaitTasks; ++i) {
+	// 	let hex = startingTask.getHex();
+	// 	for(let i = 0; i < numberOfWaitTasks; ++i) {
 	// 		newTask = new wego.Task(wego.TaskType.WAIT,hex,0,startingTask);
 	// 		this.addTask(newTask);
 	// 	}
 	// },
 
 	save:function() {
-		var returnValue = {};
+		let returnValue = {};
 		returnValue.id = this.id;
 		returnValue.type = this.type;
 		returnValue.quality = this.quality;
@@ -228,14 +228,14 @@ wego.Counter.prototype = {
 		returnValue.canMoveInLine = this.canMoveInLine;
 
 		returnValue.tasks = new Array();
-		for(var i = 0; i < this.tasks.length; ++i) {
-			var result = this.tasks[i].save();
+		for(let i = 0; i < this.tasks.length; ++i) {
+			let result = this.tasks[i].save();
 			returnValue.tasks[i] = result;
 		}
 		
 		returnValue.replayTasks = new Array();
-		for(var i = 0; i < this.replayTasks.length; ++i) {
-			var result = this.replayTasks[i].save();
+		for(let i = 0; i < this.replayTasks.length; ++i) {
+			let result = this.replayTasks[i].save();
 			returnValue.replayTasks[i] = result;
 		}
 		
@@ -247,36 +247,45 @@ wego.Counter.prototype = {
 	},
 	
 	updateCurrentTask:function(mode, time) {
-		var taskData = this.getTaskDataAtTime(mode, time);
-		var task = taskData.task;
-		
-		var hex = task.hex;
-		var currentHex = this.getHex();
-		if (hex != currentHex) {
+		let taskData = this.getTaskDataAtTime(mode, time);
+		let task = taskData.task;
+
+		if (task != null) {
+			let hex = task.hex;
+			let currentHex = this.getHex();
+			if (hex != currentHex) {
+				if (currentHex != null) {
+					currentHex.removeCounter(this);
+				}
+				
+				if (hex != null) {
+					hex.addCounter(this);
+				}
+			}
+
+			this.currentTask = task;			
+		} else {
+			let currentHex = this.getHex();
 			if (currentHex != null) {
 				currentHex.removeCounter(this);
 			}
-			
-			if (hex != null) {
-				hex.addCounter(this);
-			}
+			this.currentTask = null;
 		}
 
-		this.currentTask = task;			
 		return taskData.hasMoreTasks;
 	},
 	
 	// wait:function() {
-	// 	var movementFactor = this.getMovementFactor();
+	// 	let movementFactor = this.getMovementFactor();
 		
 	// 	if (movementFactor > 0) {
 	// 		if (this.mRemainingMovementFactor > 0) {
-	// 			var task = new wego.Task(wego.TaskType.WAIT,this.getHex(),0.0);
+	// 			let task = new wego.Task(wego.TaskType.WAIT,this.getHex(),0.0);
 	// 			this.addTask(task);
 	// 		}
 	// 	} else {
 	// 		if (this.mTasks.length == 1) {
-	// 			var task = new wego.Task(wego.TaskType.WAIT,this.getHex(),0);
+	// 			let task = new wego.Task(wego.TaskType.WAIT,this.getHex(),0);
 	// 			this.addTask(task);
 	// 		}
 	// 	}
