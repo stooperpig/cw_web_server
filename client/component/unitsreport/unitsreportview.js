@@ -1,14 +1,8 @@
-var wego = wego || {};
-
-wego.UnitsReportView = function(component) {
-    this.component = component;  
-	this.state = null;
-}
-    
-wego.UnitsReportView.prototype = {
-	initialize: function(state) {
+class UnitsReportView {
+	constructor(component, state) {
+    	this.component = component;  
 		this.state = state;
-		var view = this;
+		let view = this;
 
 		Handlebars.registerHelper('turnHelper', function(turn) {
 			return (turn + 1);
@@ -17,14 +11,15 @@ wego.UnitsReportView.prototype = {
 		Handlebars.registerHelper('timeHelper', function(time) {
 			return time.substring(0,time.length - 3);
 		});
-	},
-	loadContent: function(type) {
-		var template = $("#" + type + "Report-template").html();
-		var templateScript = Handlebars.compile(template);
-		var game = this.state.getGame();
-		var currentPlayer = game.currentPlayer;
-		var team = currentPlayer.team;
-		var context = null;
+	}
+    
+	loadContent(type) {
+		let template = $("#" + type + "Report-template").html();
+		let templateScript = Handlebars.compile(template);
+		let game = this.state.getGame();
+		let currentPlayer = game.currentPlayer;
+		let team = currentPlayer.team;
+		let context = null;
 
 		switch(type) {
 			case "releases":
@@ -35,7 +30,10 @@ wego.UnitsReportView.prototype = {
 				break;
 		}
 
-		var html = templateScript(context);
+		let html = templateScript(context);
 		$("#content-placeholder").html(html);
 	}
 }
+
+export default {};
+export {UnitsReportView};

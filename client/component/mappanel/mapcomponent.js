@@ -1,17 +1,12 @@
-var wego = wego || {};
+import {MapController} from './mapcontroller.js';
+import {MapView} from './mapview.js';
 
-wego.MapComponent = (function() {
-    var controller = new wego.MapController(this);
-    var view = new wego.MapView(this);
-
-	function initialize(state) {
-        controller.initialize(state);
-        view.initialize(state);
-    }
-
-    return {
-        controller: controller,
-        initialize : initialize,
-        view: view
+class MapComponent {
+    constructor(state) {
+        this.controller = new MapController(this, state);
+        this.view = new MapView(this, state);
 	}
-})();
+}
+
+export default {};
+export {MapComponent};

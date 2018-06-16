@@ -44,34 +44,10 @@
     <script src="/civilwar/client/model/imagecache.js"></script>
 	<script src="/civilwar/client/model/parametricdata.js"></script>
 	<script src="/civilwar/client/model/los.js"></script>
-	<script src="/civilwar/client/component/clock/clockcontroller.js"></script>
-	<script src="/civilwar/client/component/clock/clockview.js"></script>
-	<script src="/civilwar/client/component/clock/clockcomponent.js"></script>
-	<script src="/civilwar/client/component/unitpanel/unitpanelcontroller.js"></script>
-	<script src="/civilwar/client/component/unitpanel/unitpanelview.js"></script>
-	<script src="/civilwar/client/component/unitpanel/unitpanelcomponent.js"></script>
-	<script src="/civilwar/client/component/mappanel/mapcontroller.js"></script>
-	<script src="/civilwar/client/component/mappanel/mapview.js"></script>
-	<script src="/civilwar/client/component/mappanel/mapcomponent.js"></script>
-	<script src="/civilwar/client/component/statusbar/statusbarcontroller.js"></script>
-	<script src="/civilwar/client/component/statusbar/statusbarview.js"></script>
-	<script src="/civilwar/client/component/statusbar/statusbarcomponent.js"></script>
-	<script src="/civilwar/client/component/statusreport/statusreportcontroller.js"></script>
-	<script src="/civilwar/client/component/statusreport/statusreportview.js"></script>
-	<script src="/civilwar/client/component/statusreport/statusreportcomponent.js"></script>
-	<script src="/civilwar/client/component/unitsreport/unitsreportcontroller.js"></script>
-	<script src="/civilwar/client/component/unitsreport/unitsreportview.js"></script>
-	<script src="/civilwar/client/component/unitsreport/unitsreportcomponent.js"></script>	
-	<script src="/civilwar/client/component/mainmenu/mainmenucontroller.js"></script>
-	<script src="/civilwar/client/component/mainmenu/mainmenuview.js"></script>
-	<script src="/civilwar/client/component/mainmenu/mainmenucomponent.js"></script>	
-	<script src="/civilwar/client/component/toolbar/toolbarcontroller.js"></script>
-	<script src="/civilwar/client/component/toolbar/toolbarview.js"></script>
-	<script src="/civilwar/client/component/toolbar/toolbarcomponent.js"></script>
 	<script src="/civilwar/client/application.js"></script>
 	<script src="/civilwar/client/util/api.js"></script>
 	<script src="/civilwar/client/util/spriteutil.js"></script>
-	<script src="/civilwar/client/main.js"></script>
+	<script type="module" src="/civilwar/client/main.js"></script>
 </head>
 <body>
 <div id="header">

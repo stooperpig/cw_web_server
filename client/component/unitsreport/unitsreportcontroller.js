@@ -1,16 +1,10 @@
-var wego = wego || {};
-
-wego.UnitsReportController = function(component) {
-	this.component = component;  
-	this.state = null;
-}
-    
-wego.UnitsReportController.prototype = {
-	initialize: function(state) {
+class UnitsReportController {
+	constructor(component, state) {
+		this.component = component;  
 		this.state = state;
-		var controller = this;
-	},
-	showReport: function(type) {
+	}
+    
+	showReport(type) {
 		switch(type) {
 			case "releases":
 				$("#dialog").dialog({title:"Scheduled Releases"});
@@ -21,9 +15,13 @@ wego.UnitsReportController.prototype = {
 		}
 		$("#dialog").dialog("open");
 
-	},
-	showReplay: function() {
+	}
+
+	showReplay() {
 		$("#dialog").dialog("close");
 		this.state.setGameMode(wego.GameMode.REPLAY);
 	}
-}
+};
+
+export default {};
+export {UnitsReportController};

@@ -1,13 +1,9 @@
-var wego = wego || {};
-
-wego.StatusbarController = function(component) {
-	this.component = component;  
-	this.state = null;
-}
-    
-wego.StatusbarController.prototype = {
-	initialize: function(state) {
+class StatusbarController {
+	constructor(component, state) {
+		this.component = component;  
 		this.state = state;
-        var controller = this;
-    }
+	}
 }
+
+export default {};
+export {StatusbarController};

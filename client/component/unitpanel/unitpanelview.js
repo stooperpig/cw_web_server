@@ -1,29 +1,23 @@
-var wego = wego || {};
-
-wego.UnitPanelView = function(component) {
-    this.component = component;
-    this.state = null;
-};
-
-wego.UnitPanelView.prototype = {
-	initialize:function(state) {
+class UnitPanelView {
+    constructor(component, state) {
+        this.component = component;
         this.state = state;
 
-		$("#sidebarTabs").tabs();
-		let view = this;
-		amplify.subscribe(wego.Topic.CURRENT_HEX, function(data) {
+        $("#sidebarTabs").tabs();
+        let view = this;
+        amplify.subscribe(wego.Topic.CURRENT_HEX, function(data) {
             view.updateStack(data.hex,data.selectedCounters);
             view.updateTaskList(data.selectedCounters);
-			view.updateHexInfo(data.hex);
+            view.updateHexInfo(data.hex);
         });
         
         amplify.subscribe(wego.Topic.SELECTED_COUNTERS, function(data) {
             view.updateStack(data.hex,data.selectedCounters);
             view.updateTaskList(data.selectedCounters);
-		});		
-	},
+        });
+    }
 
-	updateHexInfo:function(hex) {
+	updateHexInfo(hex) {
 		let hexInfo = $("#hexInfo");
 		if (hex != null) {
             let hexSides = hex.hexSides;
@@ -40,21 +34,21 @@ wego.UnitPanelView.prototype = {
 		} else {
 			hexInfo.html("");
 		}
-    },
+    }
     	
-	updateStack:function(hex, selectedCounters) {
+	updateStack(hex, selectedCounters) {
 		let canvas = document.getElementById('unitBoxCanvas');
         let context = canvas.getContext('2d');
         context.clearRect(0,0,canvas.width,canvas.height);
 
         if (hex != null) {
             let stack = hex.stack;
-            if (stack !== null) {
+            if (stack != null) {
                 let currentTeam = this.state.getGame().currentPlayer.team;
                 let isFowEnabled = this.state.isFowEnabled();
 
                 let counters = stack.counters;
-                if (counters !== null) {
+                if (counters != null) {
                     let numCounters = counters.length;
                     let leaders = new Array();
                     for(let i = 0; i < numCounters; ++i) {
@@ -69,7 +63,7 @@ wego.UnitPanelView.prototype = {
                         }
                     }
 
-                    let leaderRows = Math.ceil(leaders.length / 2)
+                    let leaderRows = Math.ceil(leaders.length / 2);
                     context.canvas.height = (wego.SpriteUtil.unitBoxHeight * numCounters) + 20 + (leaderRows * wego.SpriteUtil.leaderBoxHeight); //todo: do I really need to resize? could just set a max based on rules
                     for(let i = 0; i < leaders.length; ++i) {
                         let row = Math.floor(i / 2);
@@ -82,7 +76,7 @@ wego.UnitPanelView.prototype = {
 
                     let unitCount = 0;
                     for(let i = 0; i < numCounters; ++i) {
-                        if (counters[i].type != wego.CounterType.LEADER) {
+                        if (counters[i].type !== wego.CounterType.LEADER) {
                             let displayCounter = true;
                             if (isFowEnabled) {
                                 if (!counters[i].getSpotted() && counters[i].player.team !== currentTeam) {
@@ -102,9 +96,9 @@ wego.UnitPanelView.prototype = {
                 }
             }
         }
-    },
+    }
     
-    containsObject:function(obj, list) {
+    containsObject(obj, list) {
         let i;
         for (i = 0; i < list.length; i++) {
             if (list[i] === obj) {
@@ -113,9 +107,9 @@ wego.UnitPanelView.prototype = {
         }
     
         return false;
-    },
+    }
 
-	drawLeader:function(context, baseX, baseY, counter, selected) {
+	drawLeader(context, baseX, baseY, counter, selected) {
         let x = baseX + 2;
         let side = counter.player.team.name;
         wego.SpriteUtil.drawLeaderSprite(context, counter.unitImageIndex, side, selected, x, baseY);
@@ -125,16 +119,16 @@ wego.UnitPanelView.prototype = {
         context.fillStyle = "white";
 
         x = baseX + 58;
-        x0 = baseX + 45;
+        let x0 = baseX + 45;
         context.fillText("C", x0, 12);
         context.fillText("L", x0, 28);
 
         context.fillText(this.getLetterValue(counter.command), x, baseY + 12);
         context.fillText(this.getLetterValue(counter.leadership), x, baseY + 28);
 
-        y = baseY + 44;
+        let y = baseY + 44;
         if(counter.isFixed()) {
-            imageIndex = wego.SpriteUtil.fixedSpriteIndex;
+            let imageIndex = wego.SpriteUtil.fixedSpriteIndex;
             wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x-29, y-24);
         } else {
             context.fillText("M", x0, y);
@@ -146,10 +140,10 @@ wego.UnitPanelView.prototype = {
         context.textAlign = "center";
         context.fillText(counter.shortName, baseX + 30, baseY + 60);
         console.log("shortName " + counter.shortName);
-	},
+	}
 
-	drawCounter:function(context, baseY, counter, selected) {
-	    let rowSpace = 19
+	drawCounter(context, baseY, counter, selected) {
+	    let rowSpace = 19;
 	    let x = 3;
 
 	    let side = counter.player.team.name;
@@ -179,29 +173,29 @@ wego.UnitPanelView.prototype = {
         y += rowSpace;
         context.fillText("RG", x - 21, y);
         let range = this.state.getParametricData().getWeaponRange(counter.weapon);
-        if (range != 0) {
+        if (range !== 0) {
             context.fillText(range, x, y);
         } else {
             context.fillText("--", x, y);
         }
 
-        y += rowSpace
+        y += rowSpace;
 
         context.fillText("MV", x - 21, y);
         context.fillText(counter.getMovementFactor(), x, y);
         
-        y += rowSpace
+        y += rowSpace;
 
         context.fillText("QL", x - 21, y);
-        if (counter.quality != 0) {
+        if (counter.quality !== 0) {
             context.fillText(this.getLetterValue(counter.quality), x, y);
         } else {
             context.fillText("--", x, y);
         }
-        y += rowSpace
+        y += rowSpace;
 
         context.fillText("FA", x - 21, y);
-        if (counter.type != "S") {
+        if (counter.type !== "S") {
             context.fillText(counter.getFatigue(), x, y);
          } else {
             context.fillText("--", x, y);
@@ -210,18 +204,18 @@ wego.UnitPanelView.prototype = {
         x = 34;
         y += rowSpace - 4;
         context.fillStyle = "black";
-        if (counter.weapon != wego.WeaponType.NONE) {
+        if (counter.weapon !== wego.WeaponType.NONE) {
             context.fillText(counter.weapon,x,y);
         }
 
         let formation = counter.getFormation();
-        if (formation != wego.Formation.NONE) {
+        if (formation !== wego.Formation.NONE) {
             imageIndex = wego.SpriteUtil.getFormationSpriteIndex(formation, counter.getFacing());
             wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 16, y - 24);
         }
 
         let moraleStatus = counter.getMoraleStatus();
-        if (moraleStatus == wego.MoraleType.ROUTED) {
+        if (moraleStatus === wego.MoraleType.ROUTED) {
             imageIndex = wego.SpriteUtil.routedSpriteIndex;
             wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 34, y - 26);
         }
@@ -237,7 +231,7 @@ wego.UnitPanelView.prototype = {
         }
 
         //unit symbol
-        if (side == 1) {
+        if (side === 1) {
             wego.SpriteUtil.drawSprite(context, "Icons2d", counter.unitSymbolIndex + 171, 0, y - 5);
         } else {
             wego.SpriteUtil.drawSprite(context, "Icons2d", counter.unitSymbolIndex + 156, 0, y - 5); 
@@ -251,11 +245,11 @@ wego.UnitPanelView.prototype = {
         if (counter.parentName != null) {
             context.fillText(counter.parentName, 72, y + 24);
         }
-	},
+	}
 
-	getLetterValue:function(intValue) {
+	getLetterValue(intValue) {
 	    console.log("quality: " + intValue);
-	    returnValue = "";
+	    let returnValue = "";
 	    switch(intValue) {
 	        case 1:
 	            returnValue = "F";
@@ -278,9 +272,9 @@ wego.UnitPanelView.prototype = {
 	    }
 
 	    return returnValue;
-	},
+	}
 	
-	updateTaskList:function(selectedCounters) {
+	updateTaskList(selectedCounters) {
         $("#taskList").html("");
         if (selectedCounters != null) {
             let gameMode = this.state.getGameMode();
@@ -295,7 +289,7 @@ wego.UnitPanelView.prototype = {
                 
                 for(let j = 0; j < tasks.length; ++j) {
                     let task = tasks[j];
-                    let showDeleteButton = j > 0 && gameMode == wego.GameMode.PLAN;
+                    let showDeleteButton = j > 0 && gameMode === wego.GameMode.PLAN;
 
                     let html = `<li class="ui-widget-content ui-state-enabled" data-counter-id="${selectedCounters[i].id}" data-task-slot="${j}">
                         ${(showDeleteButton)?this.buildDeleteTaskLink(selectedCounters[i].id,j):''}
@@ -304,11 +298,14 @@ wego.UnitPanelView.prototype = {
                 }
             }
         }
-    },
+    }
     
-    buildDeleteTaskLink:function(counterId,taskIndex) {
+    buildDeleteTaskLink(counterId,taskIndex) {
         //todo: i really hate this binding assuming global unitpanel component. maybe use jquery to bind after doc element is created.
         //either way I hate the fact the view is doing the binding for the controller.
-        return `<input type="button" value="x" onclick="wego.UnitPanelComponent.controller.deleteTask('${counterId}','${taskIndex}')">&nbsp;`
+        return `<input type="button" value="x" onclick="wego.UnitPanelComponent.controller.deleteTask('${counterId}','${taskIndex}')">&nbsp;`;
     }
 };
+
+export default {};
+export {UnitPanelView};

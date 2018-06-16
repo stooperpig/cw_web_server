@@ -1,17 +1,12 @@
-var wego = wego || {};
+import {StatusbarView} from './statusbarview.js';
+import {StatusbarController} from './statusbarcontroller.js';
 
-wego.StatusbarComponent = (function() {
-    var controller = new wego.StatusbarController(this);
-    var view = new wego.StatusbarView(this);
-
-	function initialize(state) {
-        controller.initialize(state);
-        view.initialize(state);
+class StatusbarComponent {
+    constructor(state) {
+        this.controller = new StatusbarController(this, state);
+        this.view = new StatusbarView(this, state);
     }
+};
 
-    return {
-        controller: controller,
-        initialize : initialize,
-        view: view
-	}
-})();
+export default {};
+export {StatusbarComponent};

@@ -1,24 +1,21 @@
-var wego = wego || {};
-
-wego.StatusReportView = function(component) {
-    this.component = component;  
-	this.state = null;
-}
-    
-wego.StatusReportView.prototype = {
-	initialize: function(state) {
+class StatusReportView {
+	constructor(component, state) {
+    	this.component = component;  
 		this.state = state;
-		var view = this;
-	},
-	loadContent: function() {
-		var template = $("#statusReport-template").html();
-		var templateScript = Handlebars.compile(template);
-		var game = this.state.getGame();
-		var team = game.currentPlayer.team;
-		var context = {"releases": team.messageMap.releases,
+	}
+    
+	loadContent() {
+		let template = $("#statusReport-template").html();
+		let templateScript = Handlebars.compile(template);
+		let game = this.state.getGame();
+		let team = game.currentPlayer.team;
+		let context = {"releases": team.messageMap.releases,
 					   "reinforcements": team.messageMap.reinforcements};
-		var html = templateScript(context);
-		var controller = this;
+		let html = templateScript(context);
+		let controller = this;
 		$("#content-placeholder").html(html);
 	}
-}
+};
+
+export default {};
+export {StatusReportView};

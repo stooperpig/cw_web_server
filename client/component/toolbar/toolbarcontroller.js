@@ -1,138 +1,133 @@
-var wego = wego || {};
+class ToolbarController {
+	constructor(component, state) {
+		this.component = component;
+		this.currentUnitIndex = -1;
 
-wego.ToolbarController = function(component) {
-	this.component = component;
-	this.state = null;
-	this.currentUnitIndex = -1;
-}
-
-wego.ToolbarController.prototype = {
-	canDirectFire:function() {
-		var returnValue = false;
-		var selectedCounters = this.state.getSelectedCounters();
-		if (selectedCounters.length > 0) {
-			returnValue = true;
-			for(var i = 0; i < selectedCounters.length; ++i) {
-				if (!selectedCounters[i].canDirectFire(null)) {
-					returnValue = false;
-					break;
-				}
-			}
-			
-			if (!returnValue) {
-				this.state.setStatusMessage("One of the units can not direct fire");
-			}
-		} else {
-			this.state.setStatusMessage("No units selected");
-		}
-		
-		return returnValue;
-	},
-	
-	canOpportunityFire:function() {
-		var returnValue = false;
-		var selectedCounters = this.state.getSelectedCounters();
-		if (selectedCounters.length > 0) {
-			returnValue = true;
-			for(var i = 0; i < selectedCounters.length; ++i) {
-				if (!selectedCounters[i].canOpportunityFire()) {
-					returnValue = false;
-					break;
-				}
-			}
-			
-			if (!returnValue) {
-				this.state.setStatusMessage("One of the units can not opportunity fire");
-			}
-		} else {
-			this.state.setStatusMessage("No units selected");
-		}
-		
-		return returnValue;
-	},
-	
-	directFireCommand:function() {
-		this.state.setCommandMode(wego.CommandMode.NONE);
-		var canFire = canDirectFire();
-		if (canFire) {
-			this.state.setCommandMode(wego.CommandMode.DIRECT_FIRE);
-			this.state.setStatusMessage("Select target hex");
-		}
-	},
-	
-	gameModeCommand:function(button) {
-		if (this.state.getGameMode() == wego.GameMode.PLAN) {
-			this.state.setGameMode(wego.GameMode.REPLAY);
-		} else {
-			this.state.setGameMode(wego.GameMode.PLAN);
-		}
-	},
-	
-	initialize:function(state) {
 		this.state = state;
-		var controller = this;
+		let controller = this;
 		$("#losButton").button().click(function() {controller.losCommand();});
 		$("#prevUnitButton").button().click(function() {controller.prevNextUnitCommand("prev");});
 		$("#nextUnitButton").button().click(function() {controller.prevNextUnitCommand("next");});
 		$("#opFireButton").button().click(controller.opportunityFireCommand);
 		$("#waitButton").button().click(controller.waitCommand);
-		$("#rotateLeftButton").button().click(function() {controller.rotateCommand("left")});
-		$("#rotateRightButton").button().click(function() {controller.rotateCommand("right")});
-		$("#aboutFaceButton").button().click(function() {controller.rotateCommand("aboutFace")});
-		$("#formationButton").button().click(function() {controller.formationCommand()});
+		$("#rotateLeftButton").button().click(function() {controller.rotateCommand("left");});
+		$("#rotateRightButton").button().click(function() {controller.rotateCommand("right");});
+		$("#aboutFaceButton").button().click(function() {controller.rotateCommand("aboutFace");});
+		$("#formationButton").button().click(function() {controller.formationCommand();});
 		
-		$("#directFireButton").button().click(function() {controller.directFireCommand()});
+		$("#directFireButton").button().click(function() {});
 		
-		$('#gameModeButton').button().click(function() {controller.gameModeCommand()});
-	},
+		$('#gameModeButton').button().click(function() {controller.gameModeCommand();});
+	}
 
-	losCommand:function() {
-		this.state.toggleDisplayLos();
-	},
+	// canDirectFire:function() {
+	// 	let returnValue = false;
+	// 	let selectedCounters = this.state.getSelectedCounters();
+	// 	if (selectedCounters.length > 0) {
+	// 		returnValue = true;
+	// 		for(let i = 0; i < selectedCounters.length; ++i) {
+	// 			if (!selectedCounters[i].canDirectFire(null)) {
+	// 				returnValue = false;
+	// 				break;
+	// 			}
+	// 		}
+			
+	// 		if (!returnValue) {
+	// 			this.state.setStatusMessage("One of the units can not direct fire");
+	// 		}
+	// 	} else {
+	// 		this.state.setStatusMessage("No units selected");
+	// 	}
+		
+	// 	return returnValue;
+	// },
 	
-	opportunityFireCommand:function() {
-		this.state.setCommandMode(wego.CommandMode.NONE);
-		var canFire = canOpportunityFire();
-		if (canFire) {
-			var selectedCounters = this.state.getSelectedCounters();
-			for(var i = 0; i < selectedCounters.length; ++i) {
-				selectedCounters[i].opportunityFire();
-			}
-			this.state.setStatusMessage("Opportunity fire task added");
-			this.state.setCurrentHex(this.state.getCurrentHex(),selectedCounters);
-			//todo should be -> updateTaskList();
+	// canOpportunityFire:function() {
+	// 	let returnValue = false;
+	// 	let selectedCounters = this.state.getSelectedCounters();
+	// 	if (selectedCounters.length > 0) {
+	// 		returnValue = true;
+	// 		for(let i = 0; i < selectedCounters.length; ++i) {
+	// 			if (!selectedCounters[i].canOpportunityFire()) {
+	// 				returnValue = false;
+	// 				break;
+	// 			}
+	// 		}
+			
+	// 		if (!returnValue) {
+	// 			this.state.setStatusMessage("One of the units can not opportunity fire");
+	// 		}
+	// 	} else {
+	// 		this.state.setStatusMessage("No units selected");
+	// 	}
+		
+	// 	return returnValue;
+	// },
+	
+	// directFireCommand:function() {
+	// 	this.state.setCommandMode(wego.CommandMode.NONE);
+	// 	let canFire = canDirectFire();
+	// 	if (canFire) {
+	// 		this.state.setCommandMode(wego.CommandMode.DIRECT_FIRE);
+	// 		this.state.setStatusMessage("Select target hex");
+	// 	}
+	// },
+	
+	gameModeCommand(button) {
+		if (this.state.getGameMode() == wego.GameMode.PLAN) {
+			this.state.setGameMode(wego.GameMode.REPLAY);
+		} else {
+			this.state.setGameMode(wego.GameMode.PLAN);
 		}
-	},
+	}
 	
-	prevNextUnitCommand:function(direction) {
-		var player = this.state.getGame().currentPlayer;
-		var mode = this.state.getGameMode();
-		var time = this.state.getTime();
-		var result = null;
+	losCommand() {
+		this.state.toggleDisplayLos();
+	}
+	
+	// opportunityFireCommand:function() {
+	// 	this.state.setCommandMode(wego.CommandMode.NONE);
+	// 	let canFire = canOpportunityFire();
+	// 	if (canFire) {
+	// 		let selectedCounters = this.state.getSelectedCounters();
+	// 		for(let i = 0; i < selectedCounters.length; ++i) {
+	// 			selectedCounters[i].opportunityFire();
+	// 		}
+	// 		this.state.setStatusMessage("Opportunity fire task added");
+	// 		this.state.setCurrentHex(this.state.getCurrentHex(),selectedCounters);
+	// 		//todo should be -> updateTaskList();
+	// 	}
+	// },
+	
+	prevNextUnitCommand(direction) {
+		let player = this.state.getGame().currentPlayer;
+		let mode = this.state.getGameMode();
+		let time = this.state.getTime();
+		let result = null;
 		if (direction == "next") {
 			result = player.getNextUnit(mode, time, this.currentUnitIndex);
 		} else {
 			result = player.getPrevUnit(mode, time, this.currentUnitIndex);
 		}
 		
-		var unit = result.unit;
+		let unit = result.unit;
 		console.log("unit: " + unit);
 		console.log("next index: " + result.nextIndex);
 		
 		if (unit != null) {
 			this.currentUnitIndex = result.nextIndex;
-			var hex = unit.getHex(mode, time);
+			let hex = unit.getHex(mode, time);
 			if (hex != null) {
-				var selectedUnits = new Array(unit);
+				let selectedUnits = new Array(unit);
 				this.state.setCurrentHex(hex, selectedUnits);
 			}
 		} else {
 			this.state.setStatusMessage("All units have been moved/fired");
 		}	
-	},
+	}
 
-	canRotate:function(counter, cost) {
-		var returnValue = false;
+	canRotate(counter, cost) {
+		let returnValue = false;
 		if (counter.isReady()) {
 			switch(counter.type) {
 				case wego.CounterType.SUPPLY:
@@ -140,7 +135,7 @@ wego.ToolbarController.prototype = {
 					returnValue = true;
 				break;
 				default:
-					var lastTask = counter.getLastTask();
+					let lastTask = counter.getLastTask();
 					if (lastTask.movementFactor >= cost) {
 						returnValue = true;
 					}
@@ -148,19 +143,19 @@ wego.ToolbarController.prototype = {
 			}
 		}
 		return returnValue;
-	},
+	}
 
-	rotateCommand:function(direction) {
+	rotateCommand(direction) {
 		this.state.setStatusMessage("");
-		var gameMode = this.state.getGameMode();
-		var time = this.state.getTime();
-		var selectedCounters = this.state.getSelectedCounters();
-		var parametricData = this.state.getParametricData();
+		let gameMode = this.state.getGameMode();
+		let time = this.state.getTime();
+		let selectedCounters = this.state.getSelectedCounters();
+		let parametricData = this.state.getParametricData();
 
 		if (selectedCounters != null && selectedCounters.length > 0) {
-			var allCanRotate = true;
-			for(var i = 0; i < selectedCounters.length; ++i) {
-				var cost = 0;
+			let allCanRotate = true;
+			for(let i = 0; i < selectedCounters.length; ++i) {
+				let cost = 0;
 				if (direction == "aboutFace") {
 					cost = parametricData.getAboutFaceCost(selectedCounters[i].type);
 				} else {
@@ -173,14 +168,14 @@ wego.ToolbarController.prototype = {
 			}
 
 			if (allCanRotate) {
-				var hex = this.state.getCurrentHex();
-				for(var i = 0; i < selectedCounters.length; ++i) {
-					var counter = selectedCounters[i];
-					var lastTask = counter.getLastTask();
-					var facing = lastTask.facing;
-					var newFacing = facing;
-					var task = null;
-					var cost = 0;
+				let hex = this.state.getCurrentHex();
+				for(let i = 0; i < selectedCounters.length; ++i) {
+					let counter = selectedCounters[i];
+					let lastTask = counter.getLastTask();
+					let facing = lastTask.facing;
+					let newFacing = facing;
+					let task = null;
+					let cost = 0;
 
 					if (direction == "left") {
 						cost = parametricData.getRotationCost(counter.type);
@@ -206,12 +201,12 @@ wego.ToolbarController.prototype = {
 		} else {
 			this.state.setStatusMessage("No units selected");
 		}
-	},
+	}
 
-	canChangeFormation:function(counter) {
-		var returnValue = false;
+	canChangeFormation(counter) {
+		let returnValue = false;
 		if (counter.isReady() && !counter.isRouted()) {
-			var lastTask = counter.getLastTask();
+			let lastTask = counter.getLastTask();
 			switch(counter.type) {
 				case wego.CounterType.SUPPLY:
 					returnValue = false;
@@ -221,7 +216,7 @@ wego.ToolbarController.prototype = {
 				break;
 				case wego.CounterType.CAVALRY:
 				case wego.CounterType.ARTILLERY:
-					var formationChangeCost = this.state.getParametricData().getFormationChangeCost(counter.type);
+					let formationChangeCost = this.state.getParametricData().getFormationChangeCost(counter.type);
 					returnValue = (lastTask.movementFactor >= formationChangeCost);
 				break;
 				case wego.CounterType.INFANTRY:
@@ -230,17 +225,17 @@ wego.ToolbarController.prototype = {
 			}
 		}
 		return returnValue;
-	},
+	}
 
-	formationCommand:function() {
+	formationCommand() {
 		this.state.setStatusMessage("");
-		var gameMode = this.state.getGameMode();
-		var time = this.state.getTime();
-		var selectedCounters = this.state.getSelectedCounters();
+		let gameMode = this.state.getGameMode();
+		let time = this.state.getTime();
+		let selectedCounters = this.state.getSelectedCounters();
 
 		if (selectedCounters != null && selectedCounters.length > 0) {
-			var allCanChangeFormation = true;
-			for(var i = 0; i < selectedCounters.length; ++i) {
+			let allCanChangeFormation = true;
+			for(let i = 0; i < selectedCounters.length; ++i) {
 				if (!this.canChangeFormation(selectedCounters[i])) {
 					allCanChangeFormation = false;
 					break;
@@ -248,24 +243,24 @@ wego.ToolbarController.prototype = {
 			}
 
 			if (allCanChangeFormation) {
-				var hex = this.state.getCurrentHex();
-				for(var i = 0; i < selectedCounters.length; ++i) {
-					var counter = selectedCounters[i];
-					var lastTask = counter.getLastTask();
-					var task = null;
-					var newFormation = wego.Formation.LINE
+				let hex = this.state.getCurrentHex();
+				for(let i = 0; i < selectedCounters.length; ++i) {
+					let counter = selectedCounters[i];
+					let lastTask = counter.getLastTask();
+					let task = null;
+					let newFormation = wego.Formation.LINE;
 
 					if (lastTask.formation == wego.Formation.LINE) {
 						newFormation = wego.Formation.COLUMN;
 					}
 
-					var formationChangeCost = this.state.getParametricData().getFormationChangeCost(counter.type);
+					let formationChangeCost = this.state.getParametricData().getFormationChangeCost(counter.type);
 					switch(counter.type) {
 						case wego.CounterType.CAVALRY:
 						case wego.CounterType.LEADER:
-							var lineMovementAllowance = this.state.getParametricData().getMovementAllowance(counter.type, wego.Formation.LINE);
-							var columnMovementAllowance = this.state.getParametricData().getMovementAllowance(counter.type, wego.Formation.COLUMN);
-							var movementFactor = 0;
+							let lineMovementAllowance = this.state.getParametricData().getMovementAllowance(counter.type, wego.Formation.LINE);
+							let columnMovementAllowance = this.state.getParametricData().getMovementAllowance(counter.type, wego.Formation.COLUMN);
+							let movementFactor = 0;
 							if (newFormation == wego.Formation.LINE) {
 								movementFactor = lineMovementAllowance - ((columnMovementAllowance - lastTask.movementFactor + formationChangeCost) / 2);
 							} else {
@@ -290,12 +285,12 @@ wego.ToolbarController.prototype = {
 			this.state.setStatusMessage("No units selected");
 		}
 
-	},
+	}
 	
-	waitCommand:function() {
-		var selectedCounters = this.state.getSelectedCounters();
+	waitCommand() {
+		let selectedCounters = this.state.getSelectedCounters();
 		if (selectedCounters.length > 0) {
-			for(var i = 0; i < selectedCounters.length; ++i) {
+			for(let i = 0; i < selectedCounters.length; ++i) {
 				if (!selectedCounters[i].isFinished()) {
 					selectedCounters[i].wait();
 				} else {
@@ -310,3 +305,6 @@ wego.ToolbarController.prototype = {
 		}
 	}
 };
+
+export default {};
+export {ToolbarController};

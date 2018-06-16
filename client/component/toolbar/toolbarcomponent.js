@@ -1,17 +1,12 @@
-var wego = wego || {};
+import {ToolbarController} from './toolbarcontroller.js';
+import {ToolbarView} from './toolbarview.js';
 
-wego.ToolbarComponent = (function() {
-    var controller = new wego.ToolbarController(this);
-    var view = new wego.ToolbarView(this);
-
-	function initialize(state) {
-        controller.initialize(state);
-        view.initialize(state);
+class ToolbarComponent {
+    constructor(state) {
+        this.controller = new ToolbarController(this, state);
+        this.view = new ToolbarView(this, state);
     }
+};
 
-    return {
-        controller: controller,
-        initialize : initialize,
-        view: view
-	}
-})();
+export default {};
+export {ToolbarComponent};

@@ -1,14 +1,9 @@
-var wego = wego || {};
-
-wego.MapController = function(component) {
-	this.component = component;
-	this.state = null;
-}
-
-wego.MapController.prototype = {
-	initialize:function(state) {
+class MapController {
+	constructor(component, state) {
+		this.component = component;
 		this.state = state;
-		var controller = this;
+
+		let controller = this;
 
 		$('#mainMapCanvas').on('contextmenu',function() {return false;});
 
@@ -32,9 +27,9 @@ wego.MapController.prototype = {
 		});
 
 		$('#mainMapCanvas').bind('mouseup',function(event) {
-			var that = this;
+			let that = this;
 			setTimeout(function() {
-				var dblclick = parseInt($(that).data('double'), 10);
+				let dblclick = parseInt($(that).data('double'), 10);
 				if (dblclick > 0) {
 					$(that).data('double', 0);
 				} else {
@@ -45,36 +40,36 @@ wego.MapController.prototype = {
 		    $(this).data('double', 2);
 		    controller.doubleClick.call(controller, event);
 		});
-	},
+	}
 	
 	// directFire:function() {
-	// 	var targets = this.getSelectedTargets();
+	// 	let targets = this.getSelectedTargets();
 	// 	if (targets.length > 0) {
-	// 		var selectedCounters = wego.UiState.getSelectedCounters();
-	// 		for(var i = 0; i < selectedCounters.length; ++i) {
+	// 		let selectedCounters = this.state.getSelectedCounters();
+	// 		for(let i = 0; i < selectedCounters.length; ++i) {
 	// 			selectedCounters[i].directFire(mTargetHex,targets);
 	// 		}
 	// 		this.setCurrentHex(this.state.getCurrentHex(),selectedCounters);
-	// 		wego.UiState.setCommandMode(mCommandMode.NONE);
+	// 		this.state.setCommandMode(mCommandMode.NONE);
 	// 	} else {
-	// 		wego.UiState.setStatusMessage("No targets selected");
+	// 		this.state.setStatusMessage("No targets selected");
 	// 	}
 	// },
 	
 	// getSelectedTargets:function() {
-	// 	return this.getCounterSelection("#targetList",wego.UiState.getTargetHex());
+	// 	return this.getCounterSelection("#targetList",this.state.getTargetHex());
 	// },
 	
 	// getCounterSelection:function(list,hex) {
-	// 	var returnValue = new Array();
-	// 	var selectedItems = $(list).children(".ui-selected");
+	// 	let returnValue = new Array();
+	// 	let selectedItems = $(list).children(".ui-selected");
 	// 	if (selectedItems.length > 0) {
-	// 		var selectedCounters = new Array();
-	// 		var stack = hex.getStack();
-	// 		var counters = stack.counters;
-	// 		for(var i = 0; i < selectedItems.length; ++i) {
-	// 			var counterId = parseInt(selectedItems[i].getAttribute("data-counter-id"));
-	// 			for(var j = 0; j < counters.length; ++j) {
+	// 		let selectedCounters = new Array();
+	// 		let stack = hex.getStack();
+	// 		let counters = stack.counters;
+	// 		for(let i = 0; i < selectedItems.length; ++i) {
+	// 			let counterId = parseInt(selectedItems[i].getAttribute("data-counter-id"));
+	// 			for(let j = 0; j < counters.length; ++j) {
 	// 				if (counters[j].getId() == counterId) {
 	// 					returnValue.push(counters[j]);
 	// 					break;
@@ -85,36 +80,37 @@ wego.MapController.prototype = {
 	// 	return returnValue;
 	// },
 	
-	getHex:function(event) {
-		var hexMap = this.state.getMap();
-		var posX = $(event.target).offset().left;
-		var posY = $(event.target).offset().top;
-		var coord = hexMap.pointToHex((event.pageX - posX) , (event.pageY - posY));
+	getHex(event) {
+		let hexMap = this.state.getMap();
+		let posX = $(event.target).offset().left;
+		let posY = $(event.target).offset().top;
+		let coord = hexMap.pointToHex((event.pageX - posX) , (event.pageY - posY));
 		//console.log("clicked on hex (" + coord.col + "," + coord.row + ") point (" + posX + "," + posY + ")");
-		hex = hexMap.getHex(coord.col, coord.row);
+		let hex = hexMap.getHex(coord.col, coord.row);
 		return hex;
-	},
+	}
 	
-	singleClick:function(event) {
-		wego.UiState.clearStatusMessage();
-		var hex = this.getHex(event);
+	singleClick(event) {
+		this.state.clearStatusMessage();
+		let hex = this.getHex(event);
+		let canFire = false;
 		
 		if (hex != null) {
-			var commandMode = wego.UiState.getCommandMode();
+			let commandMode = this.state.getCommandMode();
 			switch(commandMode) {
 				case wego.CommandMode.INDIRECT_FIRE:
-					var canFire = this.canIndirectFire(hex);
+					canFire = this.canIndirectFire(hex);
 					if (canFire) {
-						var selectedCounters = wego.UiState.getSelectedCounters();
-						for(var i = 0; i < selectedCounters.length; ++i) {
+						let selectedCounters = this.state.getSelectedCounters();
+						for(let i = 0; i < selectedCounters.length; ++i) {
 							selectedCounters[i].indirectFire(hex);
 						}
-						this.state.setCurrentHex(wego.UiState.getCurrentHex(),selectedCounters);
+						this.state.setCurrentHex(this.state.getCurrentHex(),selectedCounters);
 						this.state.setCommandMode(wego.CommandMode.NONE);
 					}
 					break;
 				case wego.CommandMode.DIRECT_FIRE:
-					var canFire = this.canDirectFire(hex);
+					canFire = this.canDirectFire(hex);
 					if (canFire) {
 						this.state.setTargetHex(hex);
 						this.updateTargetList(hex);
@@ -122,16 +118,16 @@ wego.MapController.prototype = {
 					}
 					break;
 				default:
-					var gameMode = wego.UiState.getGameMode();
-					if (event.button == 0) {
+					let gameMode = this.state.getGameMode();
+					if (event.button === 0) {
 						this.state.setCurrentHex(hex,null);
-					} else if (gameMode == wego.GameMode.PLAN){
+					} else if (gameMode === wego.GameMode.PLAN){
 						this.state.setCommandMode(wego.CommandMode.NONE);
-						var currentHex = wego.UiState.getCurrentHex();
+						let currentHex = this.state.getCurrentHex();
 						if (currentHex != null) {
 							console.log("is adj: " + currentHex.isAdjacent(hex));
 							if (currentHex.isAdjacent(hex)) {
-								var selectedCounters = wego.UiState.getSelectedCounters();
+								let selectedCounters = this.state.getSelectedCounters();
 								if (selectedCounters.length > 0) {
 									this.moveCounters(selectedCounters,hex);
 								} else {
@@ -149,26 +145,26 @@ wego.MapController.prototype = {
 		} else {
 			this.state.setStatusMessage("Not a valid hex");
 		}
-	},
+	}
 	
-	updateTargetList:function(hex) {
+	updateTargetList(hex) {
 		wego.MainController.updateCounterList("#targetList",hex,null);
-	},
+	}
 	
-	doubleClick:function(event) {
+	doubleClick(event) {
 		this.state.setCommandMode(wego.CommandMode.NONE);
 		this.state.clearStatusMessage();
 
-		hex = this.getHex(event);
+		let hex = this.getHex(event);
 		
-		var stack = hex.stack;
+		let stack = hex.stack;
 		if (stack != null) {
-			var counters = stack.counters;
-			var selectedCounters = new Array();
+			let counters = stack.counters;
+			let selectedCounters = new Array();
 			if (counters != null) {
-				var currentPlayer = this.state.getGame().currentPlayer;
-				for(var i = 0; i < counters.length; ++i) {
-					if (currentPlayer == counters[i].player) {
+				let currentPlayer = this.state.getGame().currentPlayer;
+				for(let i = 0; i < counters.length; ++i) {
+					if (currentPlayer === counters[i].player) {
 						selectedCounters.push(counters[i]);
 					}
 				}
@@ -178,14 +174,14 @@ wego.MapController.prototype = {
 		} else {
 			this.state.setCurrentHex(hex,null);
 		}
-	},
+	}
 	
 	// canDirectFire:function(hex) {
-	// 	var returnValue = false;
-	// 	var selectedCounters = wego.UiState.getSelectedCounters();
+	// 	let returnValue = false;
+	// 	let selectedCounters = this.state.getSelectedCounters();
 	// 	if (selectedCounters.length > 0) {
 	// 		returnValue = true;
-	// 		for(var i = 0; i < selectedCounters.length; ++i) {
+	// 		for(let i = 0; i < selectedCounters.length; ++i) {
 	// 			if (!selectedCounters[i].canDirectFire(hex)) {
 	// 				returnValue = false;
 	// 				break;
@@ -193,34 +189,34 @@ wego.MapController.prototype = {
 	// 		}
 			
 	// 		if (!returnValue) {
-	// 			wego.UiState.setStatusMessage("One of the units can not direct fire");
+	// 			this.state.setStatusMessage("One of the units can not direct fire");
 	// 		}
 	// 	} else {
-	// 		wego.UiState.setStatusMessage("No units selected");
+	// 		this.state.setStatusMessage("No units selected");
 	// 	}
 		
 	// 	return returnValue;
 	// },
 
-	canMove:function(counter, toHex) {
-		var returnValue = false;
+	canMove(counter, toHex) {
+		let returnValue = false;
 		if (counter.isReady()) {
-			if (counter.type == wego.CounterType.ARTILLERY && counter.getFormation() == wego.Formation.LINE) {
+			if (counter.type === wego.CounterType.ARTILLERY && counter.getFormation() === wego.Formation.LINE) {
 				returnValue = false;
 			} else {
-				var cost = this.getMovementCost(counter, toHex);
-				var lastTask = counter.getLastTask();
+				let cost = this.getMovementCost(counter, toHex);
+				let lastTask = counter.getLastTask();
 				if (lastTask.movementFactor >= cost) {
 					returnValue = true;
 				}
 			}
 		}
 		return returnValue;
-	},
+	}
 	
-	moveCounters:function(counters, toHex) {
-		var allCanMove = true;
-		for(var i = 0; i < counters.length; ++i) {
+	moveCounters(counters, toHex) {
+		let allCanMove = true;
+		for(let i = 0; i < counters.length; ++i) {
 			if(!this.canMove(counters[i], toHex)) {
 				allCanMove = false;
 				break;
@@ -228,17 +224,16 @@ wego.MapController.prototype = {
 		}
 		
 		if (allCanMove) {
-			for(var i = 0; i < counters.length; ++i) {
-				var counter = counters[i];
-				var cost = this.getMovementCost(counter, toHex);
-				var lastTask = counter.getLastTask();
-				var task = lastTask.clone(wego.TaskType.MOVE, cost, lastTask.movementFactor - cost);
+			for(let i = 0; i < counters.length; ++i) {
+				let counter = counters[i];
+				let cost = this.getMovementCost(counter, toHex);
+				let lastTask = counter.getLastTask();
+				let task = lastTask.clone(wego.TaskType.MOVE, cost, lastTask.movementFactor - cost);
 				switch(lastTask.formation) {
 					case wego.Formation.COLUMN:
 						task.facing = task.hex.getSharedHexSideIndex(toHex);
 					break;
 				}
-				var formation = lastTask.formation;
 				task.hex = toHex;
 				counter.addTask(task);
 			}
@@ -247,16 +242,16 @@ wego.MapController.prototype = {
 		} else {
 			this.state.setStatusMessage("One or more of the counters can not complete the move");
 		}
-	},
+	}
 
 	getMovementCost(counter, toHex) {
-		var parametricData = this.state.getParametricData();
-		var hexType = toHex.hexType;
-		var lastTask = counter.getLastTask();
-		var formation = lastTask.formation;
-		var fromHex = lastTask.hex;
-		var direction = fromHex.getSharedHexSideIndex(toHex);
-		var hexSide = fromHex.hexSides[direction];
+		let parametricData = this.state.getParametricData();
+		let hexType = toHex.hexType;
+		let lastTask = counter.getLastTask();
+		let formation = lastTask.formation;
+		let fromHex = lastTask.hex;
+		let direction = fromHex.getSharedHexSideIndex(toHex);
+		let hexSide = fromHex.hexSides[direction];
 		let cost = 0;
 
 		if (formation === wego.Formation.COLUMN || formation === wego.Formation.NONE) {
@@ -287,10 +282,10 @@ wego.MapController.prototype = {
 				}
 				
 				cost += parametricData.getHexCost(counter.type, formation, hexType.code);
-				var facing = lastTask.facing;
-				var direction = fromHex.getSharedHexSideIndex(toHex);
-				var delta = Math.abs(facing - direction);
-				if (delta != 0 && delta != 1 && delta != 5) {
+				let facing = lastTask.facing;
+				let direction = fromHex.getSharedHexSideIndex(toHex);
+				let delta = Math.abs(facing - direction);
+				if (delta !== 0 && delta !== 1 && delta !== 5) {
 					cost += parametricData.getRearwardMovementCost();
 				}
 			}
@@ -306,3 +301,6 @@ wego.MapController.prototype = {
 		return cost;
 	}
 };
+
+export default {};
+export {MapController};

@@ -1,7 +1,7 @@
 var wego = wego || {};
 
 wego.Hex = function(col,row) {
-	this.stack;
+	this.stack = null;
 	this.column = col;
 	this.row = row;
 	this.selected = false;
@@ -10,7 +10,7 @@ wego.Hex = function(col,row) {
 	this.elevation;
 	this.hexSides = new Array();
 	
-	for(var i = 0; i < 6; ++i) {
+	for(let i = 0; i < 6; ++i) {
 		this.hexSides[i] = new wego.HexSide();
 	}
 }
@@ -39,10 +39,10 @@ wego.Hex.prototype = {
 	// },
 	
 	isAdjacent:function(hex) {
-		var returnValue = false;
-		var col = hex.column;
-		var row = hex.row;
-		var rowDelta = row - this.row;
+		let returnValue = false;
+		let col = hex.column;
+		let row = hex.row;
+		let rowDelta = row - this.row;
 
 		if (Math.abs(col-this.column) <= 1) {
 			if (col == this.column) {
@@ -64,7 +64,7 @@ wego.Hex.prototype = {
 	},
 	
 	setHexSideType:function(hexSideType,hexSideMask) {
-		var hexSide = null;
+		let hexSide = null;
 		if ((hexSideMask & 1) != 0) {
 			hexSide = this.hexSides[0];
 			hexSide.updateValue(hexSideType);
@@ -97,9 +97,9 @@ wego.Hex.prototype = {
 	},
 
 	getSharedHexSideIndex:function(toHex) {
-		var returnValue = null;
-		var col = toHex.column;
-		var row = toHex.row;
+		let returnValue = null;
+		let col = toHex.column;
+		let row = toHex.row;
 		
 		if (col == this.column) {
 			if (row < this.row) {
@@ -143,7 +143,7 @@ wego.Hex.prototype = {
 	},
 	
 	getSharedHexSide:function(toHex) {
-		var index = this.getSharedHexSideIndex(toHex);
+		let index = this.getSharedHexSideIndex(toHex);
 		return this.mHexSides[index];
 	}
 }

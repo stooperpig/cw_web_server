@@ -1,23 +1,21 @@
-var wego = wego || {};
-
-wego.StatusReportController = function(component) {
-	this.component = component;  
-	this.state = null;
-}
-    
-wego.StatusReportController.prototype = {
-	initialize: function(state) {
+class StatusReportController {
+	constructor(component, state) {
+		this.component = component;  
 		this.state = state;
-		var controller = this;
-	},
-	showReport: function() {
+	}
+    
+	showReport() {
 		var controller = this;
 		$("#viewReplayButton").click(function() {controller.showReplay()});  //need to clean up bindings on repeated open/close
 		$("#dialog").dialog({title:"Status Report"});
 		$("#dialog").dialog("open");
-	},
-	showReplay: function() {
+	}
+
+	showReplay() {
 		$("#dialog").dialog("close");
 		this.state.setGameMode(wego.GameMode.REPLAY);
 	}
 }
+
+export default {};
+export {StatusReportController};

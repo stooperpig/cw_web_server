@@ -1,17 +1,12 @@
-var wego = wego || {};
+import {UnitPanelController} from './unitpanelcontroller.js';
+import {UnitPanelView} from './unitpanelview.js';
 
-wego.UnitPanelComponent = (function() {
-    var controller = new wego.UnitPanelController(this);
-    var view = new wego.UnitPanelView(this);
-
-	function initialize(state) {
-        controller.initialize(state);
-        view.initialize(state);
+class UnitPanelComponent {
+    constructor(state) {
+        this.controller = new UnitPanelController(this, state);
+        this.view = new UnitPanelView(this, state);
     }
+};
 
-    return {
-        controller: controller,
-        initialize : initialize,
-        view: view
-	}
-})();
+export default {};
+export {UnitPanelComponent};

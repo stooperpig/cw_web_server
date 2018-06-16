@@ -1,15 +1,17 @@
 var wego = wego || {};
 
 wego.Application = (function() {
+	let state = null;
+
 	function adjustSize() { 
-		var windowHeight = $(window).height(); 
-		var headerHeight = $('#header').height(); 
-		var footerHeight = $('#footer').height();
-		var centerHeight = windowHeight - headerHeight - footerHeight -35; 
+		let windowHeight = $(window).height(); 
+		let headerHeight = $('#header').height(); 
+		let footerHeight = $('#footer').height();
+		let centerHeight = windowHeight - headerHeight - footerHeight -35; 
 		$("#center").height(centerHeight);
 		
-		var taskHeight = $("#sidebarTabs").height();
-		var stackHeight = centerHeight - taskHeight - 10;
+		let taskHeight = $("#sidebarTabs").height();
+		let stackHeight = centerHeight - taskHeight - 10;
 		if (stackHeight < 200) {
 			stackHeight = 200;
 		}
@@ -20,35 +22,37 @@ wego.Application = (function() {
 
 	
 	function getCurrentHex() {
-		return wego.UiState.getCurrentHex();
+		return state.getCurrentHex();
 	}
 	
-	function initialize() {	
+	function initialize(uiState) {	
+		state = uiState;
+
 		console.log("maincontroller:initialize " + gGameId);
 		$("#dialog").dialog({autoOpen:false});
 		$(window).resize(adjustSize);
 		adjustSize();
-		var game = new wego.Game();
+		let game = new wego.Game();
 		game.id = gGameId;
-		wego.UiState.setGame(game);
+		state.setGame(game);
 
-		var scenario = new wego.Scenario();
-		wego.UiState.setScenario(scenario);
+		let scenario = new wego.Scenario();
+		state.setScenario(scenario);
 
-		var map = new wego.Map();
-		wego.UiState.setMap(map);
+		let map = new wego.Map();
+		state.setMap(map);
 
-		var parametricData = new wego.ParametricData();
-		wego.UiState.setParametricData(parametricData);
+		let parametricData = new wego.ParametricData();
+		state.setParametricData(parametricData);
 
 		wego.GameApi.retrieveGame(gGameId, gPlayerId, loadData);
 	}
 	
 	function initializeMapCanvas(images) {
-		var mapCanvas = $("#mainMapCanvas");
-		var context = mapCanvas[0].getContext('2d');
+		let mapCanvas = $("#mainMapCanvas");
+		let context = mapCanvas[0].getContext('2d');
 
-		var map = wego.UiState.getMap();
+		let map = state.getMap();
 		context.canvas.height = map.getPixelHeight();
 		context.canvas.width = map.getPixelWidth();
 		
@@ -56,34 +60,34 @@ wego.Application = (function() {
 		console.log("mapPixel width: " + map.getPixelWidth());
 		console.log("context width: " + context.canvas.width);
 		console.log("context height: " + context.canvas.height);
-		wego.UiState.setCurrentHex(null);
+		state.setCurrentHex(null);
 
-		//var r = confirm("View Replay");
+		//let r = confirm("View Replay");
         //if (r == true) {
-        //  	wego.UiState.setGameMode(wego.GameMode.REPLAY);
+        //  	state.setGameMode(wego.GameMode.REPLAY);
         //}
 	}
 	
 	function loadData(data) {
 		console.log(data);
-		var scenario = wego.UiState.getScenario();
+		let scenario = state.getScenario();
 		scenario.initialize(data.scenario);
-		var images = scenario.getImageNames(); //data.scenario.images;
-		for(var name in images) {
+		let images = scenario.getImageNames(); //data.scenario.images;
+		for(let name in images) {
 			wego.ImageCache[name] = {src:images[name]};
 		}
 
-		var map = wego.UiState.getMap();
+		let map = state.getMap();
 		map.initialize(data.map);
 		images = map.getImageNames();
-		for(var name in images) {
+		for(let name in images) {
 			wego.ImageCache[name] = {src:images[name]};
 		}
 
-		var game = wego.UiState.getGame();
+		let game = state.getGame();
 		game.initialize(data.game, map);
 
-		var parametricData = wego.UiState.getParametricData();
+		let parametricData = state.getParametricData();
 		parametricData.initialize(data.parametricData);
 
         window.document.title = "Civil War: " + scenario.title;
@@ -91,15 +95,15 @@ wego.Application = (function() {
 
 		loadImages(wego.ImageCache, initializeMapCanvas);
 
-		var oReq = new XMLHttpRequest();
+		let oReq = new XMLHttpRequest();
 		oReq.open("GET","/civilwar/server/data/maps/wc.los");
 		oReq.responseType = "arraybuffer";
 		oReq.onload = function(event) {
-			var arrayBuffer = oReq.response; // Note: not oReq.responseText
+			let arrayBuffer = oReq.response; // Note: not oReq.responseText
 
 			if (arrayBuffer) {
-				var los = new wego.Los(map.columns, map.rows, arrayBuffer);
-				wego.UiState.setLos(los);
+				let los = new wego.Los(map.columns, map.rows, arrayBuffer);
+				state.setLos(los);
 			}
 		};
 		
@@ -107,15 +111,15 @@ wego.Application = (function() {
 	}
 	
 	function loadImages(images, callback) {
-		var loadedImages = 0;
-		var numImages = 0;
+		let loadedImages = 0;
+		let numImages = 0;
 
-		for(var imageName in images) {
+		for(let imageName in images) {
 			numImages++;
 		}
-		for(var imageName in images) {
-			var src = images[imageName].src;
-			var image = new Image();
+		for(let imageName in images) {
+			let src = images[imageName].src;
+			let image = new Image();
 			image.onload = function() {
 				if(++loadedImages >= numImages) {
 					callback(images);
@@ -125,25 +129,25 @@ wego.Application = (function() {
 			images[imageName].image = image;
 		}
 
-		var game = wego.UiState.getGame();
+		let game = state.getGame();
 		if (game.showReplay) {
 			wego.StatusReportComponent.showReport();
 		}
 	}
 	
 	function updateCounterList(list,hex,selectedCounters,player) {
-		var counterList = $(list);
+		let counterList = $(list);
 		counterList.html("");
 		if (hex != null){
-			var stack = hex.getStack();
+			let stack = hex.getStack();
 			if (stack != null && !stack.isEmpty()) {
-				var counters = stack.counters;
-				for(var i = 0; i < counters.length; ++i) {
-					var counter = counters[i];
-					var selected = false;
+				let counters = stack.counters;
+				for(let i = 0; i < counters.length; ++i) {
+					let counter = counters[i];
+					let selected = false;
 					if (selectedCounters != null) {
 						console.log("updateStack..selecting " + selectedCounters.length);
-						for(var j = 0; j < selectedCounters.length; ++j) {
+						for(let j = 0; j < selectedCounters.length; ++j) {
 							if (counter.getId() == selectedCounters[j].getId()) {
 								selected = true;
 								break;
@@ -151,15 +155,15 @@ wego.Application = (function() {
 						}
 					}
 					
-					var html = '<li class="ui-widget-content';
+					let html = '<li class="ui-widget-content';
 					if (selected) {
 						html += " ui-selected";
 					}
 					
 
-						var disabled = false;
+						let disabled = false;
 						if (player != null) {
-							var owner = counter.getPlayer();
+							let owner = counter.getPlayer();
 							if (player != owner) {
 								disabled = true;
 							}
@@ -172,12 +176,12 @@ wego.Application = (function() {
 						}
 						
 						html += '" data-counter-id="' + counter.getId() + '">';
-						var counterName = counter.toString();
-						//var imageSrc = counter.getImageSrc();
-						var imageSrc = "monkeyBalls";
+						let counterName = counter.toString();
+						//let imageSrc = counter.getImageSrc();
+						let imageSrc = "monkeyBalls";
 						html += '<img src="' + imageSrc + '">'; 
-						var movementFactor = counter.getMovementFactor();
-						var remainingMovementFactor = counter.getRemainingMovementFactor();
+						let movementFactor = counter.getMovementFactor();
+						let remainingMovementFactor = counter.getRemainingMovementFactor();
 						html += ' MF: ' + movementFactor + '/' + remainingMovementFactor;
 					html += "</li>";
 					counterList.append(html);
@@ -187,7 +191,7 @@ wego.Application = (function() {
 	}
 	
 	function setCurrentHex(hex,counters) {
-		wego.UiState.setCurrentHex(hex,counters);
+		state.setCurrentHex(hex,counters);
 	} 
 	
 	return {

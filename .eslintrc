@@ -6,7 +6,23 @@
             "jsx": true
         }
     },
+    "env": {
+        "browser": true
+    },
     "rules": {
-        "semi": 2
+        "semi": 2,
+        "no-undef": 2,
+        "no-irregular-whitespace": 2,
+        "no-unreachable": 2,
+        "block-scoped-var": 2,
+        "eqeqeq": ["smart"],
+        "no-redeclare": 2,
+        "no-unused-vars": 2,
+        "no-unused-expressions":2
+    },
+    "globals": {
+        "$": false,
+        "wego":false,
+        "amplify":false
     }
 }

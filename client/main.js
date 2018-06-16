@@ -1,11 +1,18 @@
-$(document).ready(function (e) {
-	wego.UnitPanelComponent.initialize(wego.UiState);
-	wego.ClockComponent.initialize(wego.UiState);
-	wego.MapComponent.initialize(wego.UiState);
-	wego.StatusbarComponent.initialize(wego.UiState);
-	wego.ToolbarComponent.initialize(wego.UiState);
-	wego.StatusReportComponent.initialize(wego.UiState);
-	wego.UnitsReportComponent.initialize(wego.UiState);
-	wego.MainMenuComponent.initialize(wego.UiState);
-	wego.Application.initialize();
-});
+	import {StatusbarComponent} from './component/statusbar/statusbarcomponent.js';
+	import {ClockComponent} from './component/clock/clockcomponent.js';
+	import {UnitPanelComponent} from './component/unitpanel/unitpanelcomponent.js';
+	import {MapComponent} from './component/mappanel/mapcomponent.js';
+	import {ToolbarComponent} from './component/toolbar/toolbarcomponent.js';
+	import {StatusReportComponent} from './component/statusreport/statusreportcomponent.js';
+	import {UnitsReportComponent} from './component/unitsreport/unitsreportcomponent.js';
+	import {MainMenuComponent} from './component/mainmenu/mainmenucomponent.js';
+	
+	wego.UnitPanelComponent = new UnitPanelComponent(wego.UiState);
+	wego.ClockComponent = new ClockComponent(wego.UiState);
+	wego.MapComponent = new MapComponent(wego.UiState);
+	wego.StatusbarComponent = new StatusbarComponent(wego.UiState);
+	wego.ToolbarComponent = new ToolbarComponent(wego.UiState);
+	wego.StatusReportComponent = new StatusReportComponent(wego.UiState);
+	wego.UnitsReportComponent = new UnitsReportComponent(wego.UiState);
+	wego.MainMenuComponent = new MainMenuComponent(wego.UiState);
+	wego.Application.initialize(wego.UiState);

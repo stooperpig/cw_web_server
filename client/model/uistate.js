@@ -1,21 +1,21 @@
 var wego = wego || {};
 
 wego.UiState = (function() {
-	var currentHex = null;
-	var mTargetHex =  null;
-	var mCommandMode = wego.CommandMode.NONE;
-	var gameMode = wego.GameMode.PLAN; 
-	var selectedCounters = new Array();
-	var game = null;
-	var scenario = null;
-	var map = null;
-	var parametricData = null;
-	var time = 0;
-	var lastPlanTime = 0;
-	var lastReplayTime = 0;
-	var displayLos = false;
-	var los = null;
-	var enableFow = true;
+	let currentHex = null;
+	let targetHex =  null;
+	let mCommandMode = wego.CommandMode.NONE;
+	let gameMode = wego.GameMode.PLAN; 
+	let selectedCounters = new Array();
+	let game = null;
+	let scenario = null;
+	let map = null;
+	let parametricData = null;
+	let time = 0;
+	let lastPlanTime = 0;
+	let lastReplayTime = 0;
+	let displayLos = false;
+	let los = null;
+	let enableFow = true;
 	
 	function getDisplayLos() {
 		return displayLos;
@@ -74,7 +74,7 @@ wego.UiState = (function() {
 	}
 	
 	function setGameMode(value) {
-		if (gameMode == wego.GameMode.PLAN) {
+		if (gameMode === wego.GameMode.PLAN) {
 			lastPlanTime = time;
 		} else {
 			lastReplayTime = time;
@@ -82,7 +82,7 @@ wego.UiState = (function() {
 
 		gameMode = value;
 		
-		if (value == wego.GameMode.PLAN) {
+		if (value === wego.GameMode.PLAN) {
 			time = lastPlanTime;
 		} else {
 			time = lastReplayTime;
@@ -143,27 +143,27 @@ wego.UiState = (function() {
 
 	function setTime(value) {
 		time = value;
-		var areThereMoreTasks = updateCounters();
+		let areThereMoreTasks = updateCounters();
 		amplify.publish(wego.Topic.TIME,areThereMoreTasks);
 		amplify.publish(wego.Topic.CURRENT_HEX,{hex:currentHex, selectedCounters:[]});
 	}
 
 	function updateCounters() {
-		var areThereMoreTasks = false;
+		let areThereMoreTasks = false;
 
-		if (gameMode == wego.GameMode.PLAN) {
-			var currentPlayer = game.currentPlayer;
-			var counters = currentPlayer.counters;
-			for(var i = 0; i < counters.length; ++i) {
+		if (gameMode === wego.GameMode.PLAN) {
+			let currentPlayer = game.currentPlayer;
+			let counters = currentPlayer.counters;
+			for(let i = 0; i < counters.length; ++i) {
 				areThereMoreTasks |= counters[i].updateCurrentTask(gameMode,time);
 			}
 		} else {
-			var teams = game.teams;
-			for(var i = 0; i < teams.length; ++i) {
-				var players = teams[i].players;
-				for(var j = 0; j < players.length; ++j) {
-					var counters = players[j].counters;
-					for(var k = 0; k < counters.length; ++k) {
+			let teams = game.teams;
+			for(let i = 0; i < teams.length; ++i) {
+				let players = teams[i].players;
+				for(let j = 0; j < players.length; ++j) {
+					let counters = players[j].counters;
+					for(let k = 0; k < counters.length; ++k) {
 						areThereMoreTasks |= counters[k].updateCurrentTask(gameMode, time);
 					}
 				}

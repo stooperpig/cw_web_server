@@ -1,17 +1,12 @@
-var wego = wego || {};
+import {MainMenuController} from './mainmenucontroller.js';
+import {MainMenuView} from './mainmenuview.js';
 
-wego.MainMenuComponent = (function() {
-    var controller = new wego.MainMenuController(this);
-    var view = new wego.MainMenuView(this);
-
-	function initialize(state) {
-        controller.initialize(state);
-        view.initialize(state);
-    }
-
-    return {
-        controller: controller,
-        initialize : initialize,
-        view: view
+class MainMenuComponent {
+    constructor(state) {
+        this.controller = new MainMenuController(this, state);
+        this.view = new MainMenuView(this, state);
 	}
-})();
+};
+
+export default {};
+export {MainMenuComponent};

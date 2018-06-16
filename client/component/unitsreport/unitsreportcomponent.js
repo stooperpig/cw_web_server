@@ -1,23 +1,18 @@
-var wego = wego || {};
+import {UnitsReportController} from './unitsreportcontroller.js';
+import {UnitsReportView} from './unitsreportview.js';
 
-wego.UnitsReportComponent = (function() {
-    var controller = new wego.UnitsReportController(this);
-    var view = new wego.UnitsReportView(this);
-
-	function initialize(state) {
-        controller.initialize(state);
-        view.initialize(state);
+class UnitsReportComponent {
+    constructor(state) {
+        this.controller = new UnitsReportController(this, state);
+        this.view = new UnitsReportView(this, state);
     }
 
-    function showReport(type) {
-        view.loadContent(type);
-        controller.showReport(type);
-    }
 
-    return {
-        controller: controller,
-        initialize : initialize,
-        view: view,
-        showReport: showReport
-	}
-})();
+    showReport(type) {
+        this.view.loadContent(type);
+        this.controller.showReport(type);
+    }
+};
+
+export default {};
+export {UnitsReportComponent};

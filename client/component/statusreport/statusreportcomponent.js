@@ -1,23 +1,17 @@
-var wego = wego || {};
+import {StatusReportController} from './statusreportcontroller.js';
+import {StatusReportView} from './statusreportview.js';
 
-wego.StatusReportComponent = (function() {
-    var controller = new wego.StatusReportController(this);
-    var view = new wego.StatusReportView(this);
-
-	function initialize(state) {
-        controller.initialize(state);
-        view.initialize(state);
+class StatusReportComponent {
+    constructor(state) {
+        this.controller = new StatusReportController(this, state);
+        this.view = new StatusReportView(this, state);
     }
 
-    function showReport() {
-        view.loadContent();
-        controller.showReport();
+    showReport() {
+        this.view.loadContent();
+        this.controller.showReport();
     }
+}
 
-    return {
-        controller: controller,
-        initialize : initialize,
-        view: view,
-        showReport: showReport
-	}
-})();
+export default {};
+export {StatusReportComponent};
