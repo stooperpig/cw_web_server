@@ -1,3 +1,5 @@
+import {SpriteUtil} from '../../util/spriteutil.js';
+
 class UnitPanelView {
     constructor(component, state) {
         this.component = component;
@@ -64,11 +66,11 @@ class UnitPanelView {
                     }
 
                     let leaderRows = Math.ceil(leaders.length / 2);
-                    context.canvas.height = (wego.SpriteUtil.unitBoxHeight * numCounters) + 20 + (leaderRows * wego.SpriteUtil.leaderBoxHeight); //todo: do I really need to resize? could just set a max based on rules
+                    context.canvas.height = (SpriteUtil.unitBoxHeight * numCounters) + 20 + (leaderRows * SpriteUtil.leaderBoxHeight); //todo: do I really need to resize? could just set a max based on rules
                     for(let i = 0; i < leaders.length; ++i) {
                         let row = Math.floor(i / 2);
                         let column = (i % 2);
-                        let baseY = row * wego.SpriteUtil.leaderBoxHeight;
+                        let baseY = row * SpriteUtil.leaderBoxHeight;
                         let baseX = 60 * column;
                         let selected = (selectedCounters != null)?this.containsObject(leaders[i], selectedCounters):false;
                         this.drawLeader(context, baseX, baseY, leaders[i], selected);
@@ -85,7 +87,7 @@ class UnitPanelView {
                             }
                             
                             if (displayCounter) {
-                                let baseY = unitCount * (wego.SpriteUtil.unitBoxHeight + 2) + (leaderRows * wego.SpriteUtil.leaderBoxHeight + 2);
+                                let baseY = unitCount * (SpriteUtil.unitBoxHeight + 2) + (leaderRows * SpriteUtil.leaderBoxHeight + 2);
                                 let selected = (selectedCounters != null) ?this.containsObject(counters[i], selectedCounters):false;
                                 console.log("unit selected: " + selected);
                                 this.drawCounter(context, baseY, counters[i], selected);
@@ -112,7 +114,7 @@ class UnitPanelView {
 	drawLeader(context, baseX, baseY, counter, selected) {
         let x = baseX + 2;
         let side = counter.player.team.name;
-        wego.SpriteUtil.drawLeaderSprite(context, counter.unitImageIndex, side, selected, x, baseY);
+        SpriteUtil.drawLeaderSprite(context, counter.unitImageIndex, side, selected, x, baseY);
 
         context.font = "10px Arial";
         context.textAlign = "right";
@@ -128,8 +130,8 @@ class UnitPanelView {
 
         let y = baseY + 44;
         if(counter.isFixed()) {
-            let imageIndex = wego.SpriteUtil.fixedSpriteIndex;
-            wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x-29, y-24);
+            let imageIndex = SpriteUtil.fixedSpriteIndex;
+            SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x-29, y-24);
         } else {
             context.fillText("M", x0, y);
             context.fillText(counter.getMovementFactor(), x, y);
@@ -148,10 +150,10 @@ class UnitPanelView {
 
 	    let side = counter.player.team.name;
 
-	    let imageIndex = wego.SpriteUtil.getUnitBoxSpriteIndex(side, selected, false);
-	    wego.SpriteUtil.drawSprite(context, "UnitBox", imageIndex, x, baseY);
+	    let imageIndex = SpriteUtil.getUnitBoxSpriteIndex(side, selected, false);
+	    SpriteUtil.drawSprite(context, "UnitBox", imageIndex, x, baseY);
 
-	    wego.SpriteUtil.drawSprite(context, "Units", counter.unitImageIndex, x + 1, baseY + 1);
+	    SpriteUtil.drawSprite(context, "Units", counter.unitImageIndex, x + 1, baseY + 1);
 
         context.font = "10px Arial";
         context.textAlign = "right";
@@ -210,31 +212,31 @@ class UnitPanelView {
 
         let formation = counter.getFormation();
         if (formation !== wego.Formation.NONE) {
-            imageIndex = wego.SpriteUtil.getFormationSpriteIndex(formation, counter.getFacing());
-            wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 16, y - 24);
+            imageIndex = SpriteUtil.getFormationSpriteIndex(formation, counter.getFacing());
+            SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 16, y - 24);
         }
 
         let moraleStatus = counter.getMoraleStatus();
         if (moraleStatus === wego.MoraleType.ROUTED) {
-            imageIndex = wego.SpriteUtil.routedSpriteIndex;
-            wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 34, y - 26);
+            imageIndex = SpriteUtil.routedSpriteIndex;
+            SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 34, y - 26);
         }
 
         if (counter.isFixed()) {
-            imageIndex = wego.SpriteUtil.fixedSpriteIndex;
-            wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x - 1, y - 25);
+            imageIndex = SpriteUtil.fixedSpriteIndex;
+            SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x - 1, y - 25);
         }
 
         //spotted sprite
         if (counter.getSpotted()) {
-            wego.SpriteUtil.drawSprite(context, "Icons2d", 155, x + 57, y - 24);
+            SpriteUtil.drawSprite(context, "Icons2d", 155, x + 57, y - 24);
         }
 
         //unit symbol
         if (side === 1) {
-            wego.SpriteUtil.drawSprite(context, "Icons2d", counter.unitSymbolIndex + 171, 0, y - 5);
+            SpriteUtil.drawSprite(context, "Icons2d", counter.unitSymbolIndex + 171, 0, y - 5);
         } else {
-            wego.SpriteUtil.drawSprite(context, "Icons2d", counter.unitSymbolIndex + 156, 0, y - 5); 
+            SpriteUtil.drawSprite(context, "Icons2d", counter.unitSymbolIndex + 156, 0, y - 5); 
         }
 
         context.fillStyle = "black";

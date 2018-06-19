@@ -1,26 +1,24 @@
-var wego = wego || {};
+class Player {
+	constructor(id,name) {
+		this.counters = new Array();
+		this.id = id;
+		this.name = name;
+		this.team;
+	}
 
-wego.Player = function(id,name) {
-	this.counters = new Array();
-	this.id = id;
-	this.name = name;
-	this.team;
-}
-
-wego.Player.prototype = {	
-	addCounter:function(counter) {
+	addCounter(counter) {
 		counter.player = this;
 		this.counters.push(counter);
-	},
+	}
 
-	addRelease:function(release) {
+	addRelease(release) {
 		this.releases.push(release);
-	},
+	}
 	
-	getCounter:function(id) {
-		var returnValue = null;
+	getCounter(id) {
+		let returnValue = null;
 		
-		for(var i = 0; i < this.counters.length; ++i) {
+		for(let i = 0; i < this.counters.length; ++i) {
 			if (this.counters[i].id == id) {
 				returnValue = this.counters[i];
 				break;
@@ -28,12 +26,12 @@ wego.Player.prototype = {
 		}
 		
 		return returnValue;
-	},
+	}
 	
-	getNextUnit:function(mode, time, index) {
-		var newIndex = index + 1;
-		var counter = null;
-		for(var i = newIndex; i < this.counters.length; ++i) {
+	getNextUnit(mode, time, index) {
+		let newIndex = index + 1;
+		let counter = null;
+		for(let i = newIndex; i < this.counters.length; ++i) {
 			if (!this.counters[i].isFinished() && this.counters[i].getHex(mode, time) != null) {
 				counter = this.counters[i];
 				newIndex = i;
@@ -42,7 +40,7 @@ wego.Player.prototype = {
 		}
 		
 		if (counter == null) {
-			for(var i = 0; i < newIndex; ++i) {
+			for(let i = 0; i < newIndex; ++i) {
 				if (!this.counters[i].isFinished() && this.counters[i].getHex(mode, time) != null) {
 					counter = this.counters[i];
 					newIndex = i;
@@ -52,12 +50,12 @@ wego.Player.prototype = {
 		}
 		
 		return ({nextIndex:newIndex, unit:counter});
-	},
+	}
 	
-	getPrevUnit:function(mode, time, index) {
-		var newIndex = index - 1;
-		var counter = null;
-		for(var i = newIndex; i >= 0; --i) {
+	getPrevUnit(mode, time, index) {
+		let newIndex = index - 1;
+		let counter = null;
+		for(let i = newIndex; i >= 0; --i) {
 			if (!this.counters[i].isFinished() && this.counters[i].getHex(mode, time) != null) {
 				counter = this.counters[i];
 				newIndex = i;
@@ -66,7 +64,7 @@ wego.Player.prototype = {
 		}
 		
 		if (counter == null) {
-			for(var i = this.counters.length - 1; i > newIndex; --i) {
+			for(let i = this.counters.length - 1; i > newIndex; --i) {
 				if (!this.counters[i].isFinished() && this.counters[i].getHex(mode, time) != null) {
 					counter = this.counters[i];
 					newIndex = i;
@@ -76,18 +74,21 @@ wego.Player.prototype = {
 		}
 		
 		return ({nextIndex:newIndex, unit:counter});
-	},
+	}
 	
-	save:function() {
-		var returnValue = {};
+	save() {
+		let returnValue = {};
 		returnValue.id = this.id;
 		returnValue.name = this.name;
 		returnValue.counters = new Array();
-		for(var i = 0; i < this.counters.length; ++i) {
-			var result = this.counters[i].save();
+		for(let i = 0; i < this.counters.length; ++i) {
+			let result = this.counters[i].save();
 			returnValue.counters[i] = result;
 		}
 		
 		return returnValue;
 	}
 }
+
+export default {};
+export {Player};

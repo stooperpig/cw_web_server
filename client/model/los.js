@@ -1,28 +1,26 @@
-var wego = wego || {};
+class Los {
+	constructor(columns, rows, data) {
+		this.columns = columns;
+		this.rows = rows;
+		this.bytesPerRow = Math.ceil(rows/8);
+		this.bytesPerHex = this.bytesPerRow * this.columns;
+		this.bytesPerColumn = this.bytesPerHex * this.rows;
+		this.numberOfHexes = this.columns * this.rows;
+		this.losFileSize = this.numberOfHexes * this.bytesPerHex;
+		this.byteArray = null;
 
-wego.Los = function(columns, rows, data) {
-	this.columns = columns;
-	this.rows = rows;
-	this.bytesPerRow = Math.ceil(rows/8);
-	this.bytesPerHex = this.bytesPerRow * this.columns;
-	this.bytesPerColumn = this.bytesPerHex * this.rows;
-	this.numberOfHexes = this.columns * this.rows;
-	this.losFileSize = this.numberOfHexes * this.bytesPerHex;
-	this.byteArray = null;
-
-	this.data = data;
-	if (data) {
-		this.byteArray = new Uint8Array(data);
-		for (var i = 0; i < this.byteArray.byteLength; i++) {
+		this.data = data;
+		if (data) {
+			this.byteArray = new Uint8Array(data);
+			for (var i = 0; i < this.byteArray.byteLength; i++) {
+			}
+			console.log("Init LOS:\nColumns: " + this.columns + " Rows: " + this.rows + "\n");
+			console.log("bytesForRow: " + this.bytesPerRow + " bytesPerColumn: " + this.bytesPerColumn + "\n");
+			console.log("bytesPerHex: " + this.bytesPerHex + " numberOfHexes: " + this.numberOfHexes + "\n");
+			console.log("Projected LOS File Size: " + this.losFileSize + " Actual LOS File Size: " + this.byteArray.byteLength + "\n");
 		}
-		console.log("Init LOS:\nColumns: " + this.columns + " Rows: " + this.rows + "\n");
-		console.log("bytesForRow: " + this.bytesPerRow + " bytesPerColumn: " + this.bytesPerColumn + "\n");
-		console.log("bytesPerHex: " + this.bytesPerHex + " numberOfHexes: " + this.numberOfHexes + "\n");
-		console.log("Projected LOS File Size: " + this.losFileSize + " Actual LOS File Size: " + this.byteArray.byteLength + "\n");
 	}
-}
 
-wego.Los.prototype = {
 	checkLos(fromHex, toHex) {
 		let fromX = fromHex.column;
 		let fromY = fromHex.row;
@@ -47,3 +45,6 @@ wego.Los.prototype = {
 		return (visible != 0);
 	}
 }
+
+export default {};
+export {Los};

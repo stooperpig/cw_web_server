@@ -6,6 +6,7 @@
 	import {StatusReportComponent} from './component/statusreport/statusreportcomponent.js';
 	import {UnitsReportComponent} from './component/unitsreport/unitsreportcomponent.js';
 	import {MainMenuComponent} from './component/mainmenu/mainmenucomponent.js';
+	import {Application} from './application.js';
 	
 	wego.UnitPanelComponent = new UnitPanelComponent(wego.UiState);
 	wego.ClockComponent = new ClockComponent(wego.UiState);
@@ -15,4 +16,4 @@
 	wego.StatusReportComponent = new StatusReportComponent(wego.UiState);
 	wego.UnitsReportComponent = new UnitsReportComponent(wego.UiState);
 	wego.MainMenuComponent = new MainMenuComponent(wego.UiState);
-	wego.Application.initialize(wego.UiState);
+	wego.Application = new Application(wego.UiState);

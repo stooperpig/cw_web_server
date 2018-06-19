@@ -1,10 +1,8 @@
-var wego = wego || {};
+import {Counter} from './counter.js';
 
-wego.CounterFactory = (function() {
-	//var counterTypeMap = {};
-
+var CounterFactory = (function() {
 	function buildCounter(counterData) {
-        let counter = new wego.Counter();
+        let counter = new Counter();
 
         counter.type = counterData.type;
         counter.quality = counterData.quality;
@@ -14,29 +12,21 @@ wego.CounterFactory = (function() {
 		counter.name = counterData.name;
 		counter.shortName = counterData.shortName;
        	counter.parentName = counterData.parentName;
-    	//counter.facing = counterData.facing;
        	counter.originalStrength = counterData.originalStrength;
     	counter.id = counterData.id;
-    	//counter.fatigue = counterData.fatigue;
-    	//counter.formation = counterData.formation;
-    	//counter.fixed = counterData.fixed;
-    	//counter.moraleStatus = counterData.moraleStatus;
     	counter.leadership = counterData.leadership;
     	counter.command = counterData.command;
     	counter.range = counterData.range;
-	    //counter.lineMovement = counterData.lineMovement;
-	    //counter.columnMovement = counterData.columnMovement;
 	    counter.canChangeFormation = counterData.canChangeFormation;
 	    counter.canMoveInLine = counterData.canMoveInLine;
 		
 		return counter;
 	}
-	
-	function initialize(counterData) {
-	}
-	
+
 	return {
-		buildCounter: buildCounter,
-		initialize: initialize
+		buildCounter : buildCounter
 	}
 })();
+
+export default {};
+export {CounterFactory};

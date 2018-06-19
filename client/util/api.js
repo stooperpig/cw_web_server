@@ -1,12 +1,9 @@
-var wego = wego || {};
-
-wego.GameApi = (function() {
+var GameApi = (function() {
 	function readTurn(game) {
 		
 	}
 	
-	function saveGame() {
-		var game = wego.UiState.getGame();
+	function saveGame(game) {
 		var result = game.save();
 		alert(JSON.stringify(result));
 		$.post("/civilwar/server/api/gameApi.php", {action:"saveGame", gameId:game.id, playerId:game.currentPlayer.id, data:JSON.stringify(result)}).done(function( data ) {
@@ -14,8 +11,7 @@ wego.GameApi = (function() {
 		});
 	}
 	
-	function submitTurn() {
-		var game = wego.UiState.getGame();
+	function submitTurn(game) {
 		var result = game.save();
 		alert(JSON.stringify(result));
 		$.post("/civilwar/server/api/gameApi.php", {action:"submitTurn", gameId:game.id, playerId:game.currentPlayer.id, data:JSON.stringify(result)}).done(function( data ) {
@@ -35,3 +31,6 @@ wego.GameApi = (function() {
 		retrieveGame: retrieveGame
 	}
 })();
+
+export default {};
+export {GameApi};

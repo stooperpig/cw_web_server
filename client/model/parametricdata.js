@@ -1,10 +1,8 @@
-var wego = wego || {};
+class ParametricData {
+    constructor() {
+    }
 
-wego.ParametricData = function() {
-}
-
-wego.ParametricData.prototype = {
-    initialize:function(data) {
+    initialize(data) {
         this.movementAllowance = data.movementAllowance;
         this.formationChangeCost = data.formationChangeCost;
         this.weaponRange = data.weaponRange;
@@ -15,35 +13,48 @@ wego.ParametricData.prototype = {
         this.upElevationCost = data.upElevationCost;
         this.rearwardMovementCost = data.rearwardMovementCost;
         this.downElevationCost = data.downElevationCost;
-    },
-    getFormationChangeCost:function(unitType) {
+    }
+
+    getFormationChangeCost(unitType) {
         return this.formationChangeCost[unitType];
-    },
-    getMovementAllowance:function(unitType, formation) {
+    }
+
+    getMovementAllowance(unitType, formation) {
         return this.movementAllowance[unitType + ":" + formation];
-    },
-    getWeaponRange:function(weaponType) {
+    }
+
+    getWeaponRange(weaponType) {
         return this.weaponRange[weaponType];
-    },
-    getRotationCost:function(unitType) {
+    }
+
+    getRotationCost(unitType) {
         return this.rotationCost[unitType];
-    },
-    getAboutFaceCost:function(unitType) {
+    }
+
+    getAboutFaceCost(unitType) {
         return this.aboutFaceCost[unitType];
-    },
-    getHexCost:function(unitType, formation, hexType) {
+    }
+
+    getHexCost(unitType, formation, hexType) {
         return this.hexTypeCost[unitType + ":" + formation + ":" + hexType];
-    },
-    getHexSideCost:function(unitType, formation, hexSideType) {
+    }
+
+    getHexSideCost(unitType, formation, hexSideType) {
         return this.hexSideTypeCost[unitType + ":" + formation + ":" + hexSideType];
-    },
+    }
+
     getUpElevationCost(unitType, formation) {
         return this.upElevationCost[unitType + ":" + formation];
-    },
+    }
+
     getDownElevationCost(unitType, formation) {
         return this.downElevationCost[unitType + ":" + formation];
-    },
+    }
+
     getRearwardMovementCost() {
         return this.rearwardMovementCost;
     }
-};
+}
+
+export default {};
+export {ParametricData};

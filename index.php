@@ -28,25 +28,9 @@
 	<script src="/civilwar/client/lib/handlebars/handlebars-v4.0.11.js"></script>
 	<script src="/civilwar/client/util/json2.js"></script>
 	<script src="/civilwar/client/model/enum.js"></script>
-	<script src="/civilwar/client/model/task.js"></script>
-	<script src="/civilwar/client/model/counter.js"></script>
-	<script src="/civilwar/client/model/counterfactory.js"></script>
-	<script src="/civilwar/client/model/hexside.js"></script>
-	<script src="/civilwar/client/model/hex.js"></script>
-	<script src="/civilwar/client/model/map.js"></script>
-	<script src="/civilwar/client/model/counterstack.js"></script>
-	<script src="/civilwar/client/model/player.js"></script>
-	<script src="/civilwar/client/model/team.js"></script>
-	<script src="/civilwar/client/model/game.js"></script>
 	<script src="/civilwar/client/model/uistate.js"></script>
 	<script src="/civilwar/client/model/table.js"></script>
-    <script src="/civilwar/client/model/scenario.js"></script>
     <script src="/civilwar/client/model/imagecache.js"></script>
-	<script src="/civilwar/client/model/parametricdata.js"></script>
-	<script src="/civilwar/client/model/los.js"></script>
-	<script src="/civilwar/client/application.js"></script>
-	<script src="/civilwar/client/util/api.js"></script>
-	<script src="/civilwar/client/util/spriteutil.js"></script>
 	<script type="module" src="/civilwar/client/main.js"></script>
 </head>
 <body>

@@ -1,22 +1,23 @@
-var wego = wego || {};
+class CounterStack {
+	constructor() {
+		this.counters = new Array();
+	}
 
-wego.CounterStack = function() {
-	this.counters = new Array();
-}
-
-wego.CounterStack.prototype = {
-	addCounter:function(counter) {
+	addCounter(counter) {
 		this.counters.push(counter);
-	},
+	}
 	
-	removeCounter:function(counter) {
+	removeCounter(counter) {
 		let index = this.counters.indexOf(counter);
 		if (index > -1) {
 			this.counters.splice(index,1);
 		}
-	},
+	}
 	
-	isEmpty:function() {
+	isEmpty() {
 		return this.counters.length == 0;
 	}
 }
+
+export default {};
+export {CounterStack};

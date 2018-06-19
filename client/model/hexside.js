@@ -1,69 +1,67 @@
-var wego = wego || {};
+class HexSide {
+	constructor() {
+		this.mValue = 0;
+	}
 
-wego.HexSide = function() {
-	this.mValue = 0;
-}
-
-wego.HexSide.prototype = {
-	getValue:function() {
+	getValue() {
 		return this.mValue;
-	},
+	}
 
-	isClear:function() {
+	isClear() {
 		return this.mValue == 0;
-	},
+	}
 		
-	isTrail:function() {
+	isTrail() {
 		return (this.mValue & wego.HexSideType.TRAIL.mask) != 0;
-	},
+	}
 		
-	isRoad:function() {
+	isRoad() {
 		return (this.mValue & wego.HexSideType.ROAD.mask) != 0;
-	},
+	}
 		
-	isPike:function() {
+	isPike() {
 		return (this.mValue & wego.HexSideType.PIKE.mask) != 0;
-	},
+	}
 
-	isRailroad:function() {
+	isRailroad() {
 		return (this.mValue & wego.HexSideType.RAILROAD.mask) != 0;
-	},
+	}
 
-	isStream:function() {
+	isStream() {
 		return (this.mValue & wego.HexSideType.STREAM.mask) != 0;
-	},
+	}
 
-	isCreek:function() {
+	isCreek() {
 		return (this.mValue & wego.HexSideType.CREEK.mask) != 0;
-	},
+	}
 
-	isEmbankment:function() {
+	isEmbankment() {
 		return (this.mValue & wego.HexSideType.EMBANKMENT.mask) != 0;
-	},
+	}
 		
-	isWall:function() {
+	isWall() {
 		return (this.mValue & wego.HexSideType.WALL.mask) != 0;
-	},
+	}
 		
-	isRailroadCut:function() {
+	isRailroadCut() {
 		return (this.mValue & wego.HexSideType.RAILROAD_CUT.mask) != 0;
-	},
+	}
 			
-	isType:function(hexSideType) {
+	isType(hexSideType) {
 		return (this.mValue & hexSideType.mask) != 0;
-	},
+	}
 		
-	updateValue:function(hexSideType) {
-		var mask = hexSideType.mask;
+	updateValue(hexSideType) {
+		let mask = hexSideType.mask;
 		if (mask == 0) {
 			this.mValue = 0;
 		} else {
 			this.mValue = this.mValue | mask;
 		}
-	},
+	}
 		
-	toString:function() {
-		var returnValue = "";
+	toString() {
+		let returnValue = "";
 			
 		if (this.isClear()) {
 			returnValue = "clear";
@@ -123,3 +121,6 @@ wego.HexSide.prototype = {
 		return returnValue;
 	}
 }
+
+export default {};
+export {HexSide};

@@ -1,34 +1,32 @@
-var wego = wego || {};
+class Counter {
+	constructor() {
+		this.tasks = new Array();
+		this.replayTasks = new Array();
+		this.player = null;
+		this.currentTask = null;
 
-wego.Counter = function() {
-	this.tasks = new Array();
-	this.replayTasks = new Array();
-	this.player = null;
-	this.currentTask = null;
+		this.type = "";
+		this.quality = 0;
+		this.weapon = "";
+		this.unitImageIndex = 3;
+		this.unitSymbolIndex = 0;
+		this.name = "";
+		this.shortName = "";
+		this.parentName = "";
+		this.originalStrength = 0;
+		this.id = "";
+		this.leadership = 0;
+		this.command = 0;
+		this.range = 0;
+		this.canChangeFormation = true;
+		this.canMoveInLine = true;
+	}
 
-    this.type = "";
-    this.quality = 0;
-    this.weapon = "";
-	this.unitImageIndex = 3;
-	this.unitSymbolIndex = 0;
-	this.name = "";
-	this.shortName = "";
-	this.parentName = "";
-	this.originalStrength = 0;
-	this.id = "";
-	this.leadership = 0;
-	this.command = 0;
-	this.range = 0;
-	this.canChangeFormation = true;
-	this.canMoveInLine = true;
-};
-
-wego.Counter.prototype = {
-	addReplayTask:function(task) {
+	addReplayTask(task) {
 		this.replayTasks.push(task);
-	},
+	}
 	
-	addTask:function(task) {
+	addTask(task) {
 		let currentHex = null;
 		if (this.currentTask != null) {
 			currentHex = this.currentTask.hex;
@@ -48,19 +46,19 @@ wego.Counter.prototype = {
 		
 		this.currentTask = task;
 		this.tasks.push(task);
-	},
+	}
 
-	getFacing:function() {
+	getFacing() {
 		return (this.currentTask != null)?this.currentTask.facing:null;
-	},
+	}
 
-	getFatigue:function() {
+	getFatigue() {
 		return (this.currentTask != null)?this.currentTask.fatigue:null;
-	},
+	}
 
-	getFormation:function() {
+	getFormation() {
 		return (this.currentTask != null)?this.currentTask.formation:null;
-	},
+	}
 	
 	// canMoveTo:function(toHex) {
 	// 	let returnValue = false;
@@ -80,11 +78,11 @@ wego.Counter.prototype = {
 	// 	return this.canDirectFire(null);
 	// },
 
-	deleteTask:function(time) {
+	deleteTask(time) {
 	 	let length = this.tasks.length;
 		this.tasks.splice(time, length-time);
 		this.currentTask = this.tasks[this.tasks.length - 1];
-	},
+	}
 	
 	// directFire:function(hex,targets) {
 	// 	let currentHex = this.getHex();
@@ -95,41 +93,41 @@ wego.Counter.prototype = {
 	// 	this.addTask(task);
 	// },
 	
-	getHex:function() {
+	getHex() {
 		return (this.currentTask != null)?this.currentTask.hex:null;
-	},
+	}
 	
-	getLastTask:function() {
+	getLastTask() {
 		let returnValue = null;
 		if (this.tasks.length > 0) {
 			returnValue = this.tasks[this.tasks.length - 1];
 		}
 		
 		return returnValue;
-	},
+	}
 	
 	// getMoveCost:function(fromHex,toHex) {
 	// 	let hexCost = wego.MovementCostTable.getHexCost(this, fromHex, toHex);
 	// 	return hexCost;
 	// },
 	
-	getMoraleStatus:function() {
+	getMoraleStatus() {
 		return (this.currentTask != null)?this.currentTask.moraleStatus:null;
-	},
+	}
 
-	getMovementFactor:function() {
+	getMovementFactor() {
 		return (this.currentTask != null)?this.currentTask.movementFactor:null;
-	},
+	}
 
-	getSpotted:function() {
+	getSpotted() {
 		return (this.currentTask != null)?this.currentTask.spotted:null;
-	},
+	}
 
-	getStrength:function() {
+	getStrength() {
 		return (this.currentTask != null)?this.currentTask.strength:null;
-	},
+	}
 	
-	getTaskDataAtTime:function(mode, time) {
+	getTaskDataAtTime(mode, time) {
 		let returnValue = {};
 		returnValue.hasMoreTasks = true;
 		
@@ -153,9 +151,9 @@ wego.Counter.prototype = {
 		}
 		
 		return returnValue; 
-	},
+	}
 	
-	getTasks:function (gameMode) {
+	getTasks(gameMode) {
 		let returnValue = null;
 		
 		switch(gameMode) {
@@ -168,9 +166,9 @@ wego.Counter.prototype = {
 		}
 		
 		return returnValue;
-	},
+	}
 		
-	isFinished:function() {
+	isFinished() {
 		let returnValue = true;
 		let lastTask = this.getLastTask();
 
@@ -179,9 +177,9 @@ wego.Counter.prototype = {
 		}
 		
 		return returnValue;
-	},
+	}
 
-	isReady:function() {
+	isReady() {
 		let returnValue = false;
 		
 		let lastTask = this.getLastTask();
@@ -190,16 +188,16 @@ wego.Counter.prototype = {
 		}
 		
 		return returnValue;
-	}, 
+	}
 
-	isFixed:function() {
+	isFixed() {
 		return (this.currentTask != null)?this.currentTask.fixed:null;
-	},
+	}
 
-	isRouted:function() {
+	isRouted() {
 		let lastTask = this.getLastTask();
 		return lastTask.moraleStatus == wego.MoraleType.ROUTED;
-	},
+	}
 	
 	// padWithWaitTasks:function(numberOfWaitTasks, startingTask) {
 	// 	let hex = startingTask.getHex();
@@ -209,7 +207,7 @@ wego.Counter.prototype = {
 	// 	}
 	// },
 
-	save:function() {
+	save() {
 		let returnValue = {};
 		returnValue.id = this.id;
 		returnValue.type = this.type;
@@ -240,13 +238,13 @@ wego.Counter.prototype = {
 		}
 		
 		return returnValue;
-	},
+	}
 	
-	toString:function() {
+	toString() {
 		return this.id; //this.mCounterType.getCounterName();
-	},
+	}
 	
-	updateCurrentTask:function(mode, time) {
+	updateCurrentTask(mode, time) {
 		let taskData = this.getTaskDataAtTime(mode, time);
 		let task = taskData.task;
 
@@ -273,7 +271,7 @@ wego.Counter.prototype = {
 		}
 
 		return taskData.hasMoreTasks;
-	},
+	}
 	
 	// wait:function() {
 	// 	let movementFactor = this.getMovementFactor();
@@ -291,3 +289,6 @@ wego.Counter.prototype = {
 	// 	}
 	// },
 }
+
+export default {};
+export {Counter};

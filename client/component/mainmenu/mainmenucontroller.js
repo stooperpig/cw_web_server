@@ -1,3 +1,5 @@
+import {GameApi} from '../../util/api.js';
+
 class MainMenuController {
 	constructor(component, state) {
 		this.component = component;  
@@ -13,7 +15,7 @@ class MainMenuController {
 	}
 
 	saveGame() {
-		wego.GameApi.saveGame();
+		GameApi.saveGame(this.state.getGame());
 	}
 
 	toggleFow() {
@@ -29,7 +31,7 @@ class MainMenuController {
 	}
 
 	submitTurn() {
-		wego.GameApi.submitTurn();
+		GameApi.submitTurn(this.state.getGame());
 	}
 };
 

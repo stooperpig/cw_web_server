@@ -1,3 +1,5 @@
+import {SpriteUtil} from '../../util/spriteutil.js';
+
 class UnitPanelController {
     constructor(component, state) {
         this.component = component;
@@ -96,11 +98,11 @@ class UnitPanelController {
                 let leaders = this.getLeaders(counters);
 
                 let leaderRows = Math.ceil(leaders.length / 2);
-                let leaderMaxY = leaderRows * wego.SpriteUtil.leaderBoxHeight;
+                let leaderMaxY = leaderRows * SpriteUtil.leaderBoxHeight;
                 if (y > leaderMaxY) {
                     console.log("clicked on a unit");
                     let adjY = y - leaderMaxY;
-                    let unitRow = Math.floor(adjY / wego.SpriteUtil.unitBoxHeight);
+                    let unitRow = Math.floor(adjY / SpriteUtil.unitBoxHeight);
                     console.log("clicked on unit " + unitRow);
                     if (leaders.length == 0) {
                         counter = counters[unitRow];
@@ -110,8 +112,8 @@ class UnitPanelController {
                     }
                 } else {
                     console.log("clicked on a leader");
-                    let leaderRow = Math.floor(y / (wego.SpriteUtil.leaderBoxHeight));
-                    let leaderColumn = Math.floor(x / (wego.SpriteUtil.leaderBoxWidth));
+                    let leaderRow = Math.floor(y / (SpriteUtil.leaderBoxHeight));
+                    let leaderColumn = Math.floor(x / (SpriteUtil.leaderBoxWidth));
                     let leaderIndex = (leaderRow * 2) + leaderColumn;
                     counter = leaders[leaderIndex];    
                     console.log("clicked on leader " + leaderRow + "," + leaderColumn + " -> " + leaderIndex);

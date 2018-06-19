@@ -1,3 +1,5 @@
+import {SpriteUtil} from '../../util/spriteutil.js';
+
 class MapView {
 	constructor(component, state) {
 		this.component = component;
@@ -55,7 +57,7 @@ class MapView {
 			if (currentHex != null) {
 				let los = state.getLos();
 				if(!los.checkLos(currentHex, hex)) {
-					wego.SpriteUtil.drawSprite(context, "Icons2d", wego.SpriteUtil.blockedSpriteIndex,  coord.x + 3, coord.y + 3);
+					SpriteUtil.drawSprite(context, "Icons2d", SpriteUtil.blockedSpriteIndex,  coord.x + 3, coord.y + 3);
 				}
 			}
 		}
@@ -95,20 +97,20 @@ class MapView {
 
             if (counterCount > 0) {
 				let side = firstCounter.player.team.name;
-		        let imageIndex = wego.SpriteUtil.getStackSpriteIndex(side, counterCount);
-				wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, adjX, adjY);
+		        let imageIndex = SpriteUtil.getStackSpriteIndex(side, counterCount);
+				SpriteUtil.drawSprite(context, "Icons2d", imageIndex, adjX, adjY);
 				
 				let moraleStatus = firstCounter.getMoraleStatus();
                 let type = (moraleStatus == wego.MoraleType.ROUTED) ? "R" : firstCounter.type;
 
-                imageIndex = wego.SpriteUtil.getMilSymbolSpriteIndex(type, firstCounter.getFormation(), firstCounter.getFacing());
-                wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex,  adjX - counterCount + 1, adjY - counterCount + 1);
+                imageIndex = SpriteUtil.getMilSymbolSpriteIndex(type, firstCounter.getFormation(), firstCounter.getFacing());
+                SpriteUtil.drawSprite(context, "Icons2d", imageIndex,  adjX - counterCount + 1, adjY - counterCount + 1);
 		    } else if (firstLeader != null) {
 				let side = firstLeader.player.team.name;
-                let imageIndex = wego.SpriteUtil.getStackSpriteIndex(side, 1);
-                wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex, adjX, adjY);
-                imageIndex = wego.SpriteUtil.getMilSymbolSpriteIndex(firstLeader.type, 0, 0);
-                wego.SpriteUtil.drawSprite(context, "Icons2d", imageIndex,  adjX, adjY);
+                let imageIndex = SpriteUtil.getStackSpriteIndex(side, 1);
+                SpriteUtil.drawSprite(context, "Icons2d", imageIndex, adjX, adjY);
+                imageIndex = SpriteUtil.getMilSymbolSpriteIndex(firstLeader.type, 0, 0);
+                SpriteUtil.drawSprite(context, "Icons2d", imageIndex,  adjX, adjY);
 		    }
 		}
 	}

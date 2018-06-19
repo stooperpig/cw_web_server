@@ -1,19 +1,17 @@
-var wego = wego || {};
+class Team {
+	constructor(id,name) {
+		this.name = name;
+		this.id = id;
+		this.players = new Array();
+		this.releases = new Array();
+		this.reinforcements = new Array();
+		this.messageMap = {};
+	}
 
-wego.Team = function(id,name) {
-	this.name = name;
-	this.id = id;
-	this.players = new Array();
-	this.releases = new Array();
-	this.reinforcements = new Array();
-	this.messageMap = {};
-}
-
-wego.Team.prototype = {
-	getPlayer:function(id) {
-		var returnValue = null;
+	getPlayer(id) {
+		let returnValue = null;
 		
-		for(var i = 0; i < this.players.length; ++i) {
+		for(let i = 0; i < this.players.length; ++i) {
 			if (this.players[i].id == id) {
 				returnValue = this.players[i];
 				break;
@@ -21,36 +19,39 @@ wego.Team.prototype = {
 		}
 		
 		return returnValue;
-	},
+	}
 	
-	getCounter:function(id) {
-		var returnValue = null;
+	getCounter(id) {
+		let returnValue = null;
 		
-		for(var i = 0; i < this.players.length && returnValue == null; ++i) {
+		for(let i = 0; i < this.players.length && returnValue == null; ++i) {
 			returnValue = this.players[i].getCounter(id);
 		}
 		
 		return returnValue;
-	},
+	}
 	
-	addPlayer:function(player) {
+	addPlayer(player) {
 		player.team = this;
 		this.players.push(player);
-	},
+	}
 	
-	save:function() {
-		var returnValue = {};
+	save() {
+		let returnValue = {};
 		returnValue.id = this.id;
 		returnValue.name = this.name;
 		returnValue.releases = this.releases;
 		returnValue.reinforcements = this.reinforcements;
 		returnValue.messageMap = this.messageMap;
 		returnValue.players = new Array();
-		for(var i = 0; i < this.players.length; ++i) {
-			var result = this.players[i].save();
+		for(let i = 0; i < this.players.length; ++i) {
+			let result = this.players[i].save();
 			returnValue.players[i] = result;
 		}
 		
 		return returnValue;
 	}
 }
+
+export default {};
+export {Team};
