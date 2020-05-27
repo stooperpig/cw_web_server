@@ -1,11 +1,14 @@
 import {SpriteUtil} from '../../util/spriteutil.js';
+import {ImageCache} from '../../model/imagecache.js';
+import {Topic, MoraleType, GameMode, TaskType} from '../../model/enum.js';
+import { Task } from '../../model/task.js';
 
 class MapView {
 	constructor(component, state) {
 		this.component = component;
 		this.state = state;
 		let view = this;
-		amplify.subscribe(wego.Topic.CURRENT_HEX, function(data) {
+		amplify.subscribe(Topic.CURRENT_HEX, function(data) {
 			view.drawMap();
         });
 	}
@@ -40,7 +43,7 @@ class MapView {
 		if (hex.selected) {
 			let adjX = coord.x + 3; // - 35;
 			let adjY = coord.y + 3; // - 30;
-			let image = wego.ImageCache["Current Hex"].image;
+			let image = ImageCache["Current Hex"].image;
 			context.drawImage(image,adjX,adjY);
 		}
 
@@ -48,7 +51,7 @@ class MapView {
 		if (stack != null && !stack.isEmpty()) {
 			let x = coord.x;
 			let y = coord.y;
-			this.drawStack(context, stack, x, y);
+			this.drawStack(context, map, stack, x, y);
 		}
 
 		let state = this.state;
@@ -63,7 +66,7 @@ class MapView {
 		}
 	}
 	
-	drawStack(context, stack, x, y) {
+	drawStack(context, map, stack, x, y) {
 		let adjX = x + 4; // + 19 - 16; // (map.DX + (map.HEX_SIDE/2)) - (COUNTER_WIDTH/2)
 		let adjY = y + 3; // + 15 - 16; // (map.DY) - (COUNTER_WIDTH/2)
 
@@ -93,25 +96,59 @@ class MapView {
 						firstLeader = counter;
 					}
 				}
-		    }
-
+			}
+			
+			let drawArrow = false;
             if (counterCount > 0) {
 				let side = firstCounter.player.team.name;
 		        let imageIndex = SpriteUtil.getStackSpriteIndex(side, counterCount);
 				SpriteUtil.drawSprite(context, "Icons2d", imageIndex, adjX, adjY);
 				
 				let moraleStatus = firstCounter.getMoraleStatus();
-                let type = (moraleStatus == wego.MoraleType.ROUTED) ? "R" : firstCounter.type;
+                let type = (moraleStatus == MoraleType.ROUTED) ? "R" : firstCounter.type;
 
                 imageIndex = SpriteUtil.getMilSymbolSpriteIndex(type, firstCounter.getFormation(), firstCounter.getFacing());
-                SpriteUtil.drawSprite(context, "Icons2d", imageIndex,  adjX - counterCount + 1, adjY - counterCount + 1);
+				SpriteUtil.drawSprite(context, "Icons2d", imageIndex,  adjX - counterCount + 1, adjY - counterCount + 1);
+				drawArrow = true;
 		    } else if (firstLeader != null) {
 				let side = firstLeader.player.team.name;
                 let imageIndex = SpriteUtil.getStackSpriteIndex(side, 1);
                 SpriteUtil.drawSprite(context, "Icons2d", imageIndex, adjX, adjY);
                 imageIndex = SpriteUtil.getMilSymbolSpriteIndex(firstLeader.type, 0, 0);
-                SpriteUtil.drawSprite(context, "Icons2d", imageIndex,  adjX, adjY);
-		    }
+				SpriteUtil.drawSprite(context, "Icons2d", imageIndex,  adjX, adjY);
+				drawArrow = true;
+			}
+			
+			let mode = this.state.getGameMode();
+			let time = this.state.getTime(); 
+			if (drawArrow && mode == GameMode.REPLAY && time > 0) {
+				let directions = [];
+				for(let i = 0; i < stack.counters.length; ++i) {
+					let counter = stack.counters[i];
+					let displayCounter = true;
+	
+					if (isFowEnabled) {
+						displayCounter = (currentPlayer.team === counter.player.team || counter.getSpotted());
+					}
+	
+					if (displayCounter) {
+						let taskData = counter.getTaskDataAtTime(mode, time);
+						let currentTask = taskData.task;
+						if (currentTask.type == TaskType.MOVE) {
+							taskData = counter.getTaskDataAtTime(mode, time - 1);
+							let currentHex = currentTask.hex;
+							let previousHex = taskData.task.hex;
+							if (currentHex !== previousHex) {
+								let coord = map.hexToPoint(previousHex.column, previousHex.row);
+								let arrowIndex = SpriteUtil.firstArrowIndex + currentTask.direction;
+								SpriteUtil.drawSprite(context, "Icons2d", arrowIndex,  coord.x, coord.y);
+								//TODO: draw arrow in previous hex if direction has not
+								//already been drawn
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 };

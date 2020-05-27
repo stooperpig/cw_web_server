@@ -1,3 +1,5 @@
+import {Formation} from './enum.js';
+
 class Task {
 	constructor(type, cost, movementFactor) {
 		this.type = type;
@@ -9,11 +11,12 @@ class Task {
 		this.facing = 0;
 		this.strength = 0;
 		this.fatigue = 0;
-		this.formation = wego.Formation.LINE;
+		this.formation = Formation.LINE;
 		this.moraleStatus = 0;
 		this.fixed = false;
 		this.spotted = false;
 		this.id = ++Task.counter;
+		this.direction = 0;
 	}
 
 	clone(type, cost, movementFactor) {
@@ -46,6 +49,7 @@ class Task {
 		let returnValue = {};
 		returnValue.id = this.id;
 		returnValue.type = this.type;
+		returnValue.direction = this.direction;
 		
 		if (this.hex != null) {
 			returnValue.hexX = this.hex.column;

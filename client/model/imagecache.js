@@ -1,3 +1,4 @@
-var wego = wego || {};
+var ImageCache = {};
 
-wego.ImageCache = {};
+export default {};
+export {ImageCache};

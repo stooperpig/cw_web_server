@@ -1,4 +1,6 @@
 import {Hex} from './hex.js';
+import {ImageCache} from './imagecache.js';
+import {HexSideType, HexType} from './enum.js';
 
 class Map {
 	constructor() {
@@ -41,7 +43,7 @@ class Map {
 	getImages() {
 		if (this.images == null) {
 			this.images = new Array(); 
-			this.images[0] = wego.ImageCache['main1'].image;		
+			this.images[0] = ImageCache['main1'].image;		
 			this.boardHeight = this.images[0].naturalHeight;
 			this.boardWidth = this.images[0].naturalWidth;
 			//console.log("mBoardHeight: " + this.boardHeight);
@@ -139,22 +141,22 @@ class Map {
 			this.hexGrid[i] = new Array();
 			for(let j = 0; j < this.rows; ++j) {
 				let  type = hexTypes[j].charAt(i);
-				let  hexType = wego.HexType.getType(type);
+				let  hexType = HexType.getType(type);
 				let  elevation = elevations[j].charAt(i);
 
 				let  hex = new Hex(i,j);
 				hex.hexType = hexType;
 				hex.elevation = elevation;
 
-				this.updateHexSides(hex, trails, i, j, wego.HexSideType.TRAIL);
-				this.updateHexSides(hex, roads, i, j, wego.HexSideType.ROAD);
-				this.updateHexSides(hex, pikes, i, j, wego.HexSideType.PIKE);
-				this.updateHexSides(hex, railroads, i, j, wego.HexSideType.RAILROAD);
-				this.updateHexSides(hex, streams, i, j, wego.HexSideType.STREAM);												
-				this.updateHexSides(hex, creeks, i, j, wego.HexSideType.CREEK);
-				this.updateHexSides(hex, embankments, i, j, wego.HexSideType.EMBANKMENT);
-				this.updateHexSides(hex, walls, i, j, wego.HexSideType.WALL);
-				this.updateHexSides(hex, railroadCuts, i, j, wego.HexSideType.RAIDROAD_CUT);
+				this.updateHexSides(hex, trails, i, j, HexSideType.TRAIL);
+				this.updateHexSides(hex, roads, i, j, HexSideType.ROAD);
+				this.updateHexSides(hex, pikes, i, j, HexSideType.PIKE);
+				this.updateHexSides(hex, railroads, i, j, HexSideType.RAILROAD);
+				this.updateHexSides(hex, streams, i, j, HexSideType.STREAM);												
+				this.updateHexSides(hex, creeks, i, j, HexSideType.CREEK);
+				this.updateHexSides(hex, embankments, i, j, HexSideType.EMBANKMENT);
+				this.updateHexSides(hex, walls, i, j, HexSideType.WALL);
+				this.updateHexSides(hex, railroadCuts, i, j, HexSideType.RAIDROAD_CUT);
 
 				this.hexGrid[i][j] = hex;
 			}
@@ -169,76 +171,76 @@ class Map {
 	}
 	
 	pointToHex(x, y) {
-		//console.log(`original x,y: ${x},${y}`);
+	//console.log(`original x,y: ${x},${y}`);
 
-		y -= this.INTERNAL_TOP_MARGIN;
-		x -= this.INTERNAL_LEFT_MARGIN;
+	y -= this.INTERNAL_TOP_MARGIN;
+	x -= this.INTERNAL_LEFT_MARGIN;
+	
+	//console.log(`hex_width: ${this.HEX_WIDTH}`);
+	//console.log(`internal_top_margin: ${this.INTERNAL_TOP_MARGIN}`);
+	//console.log(`internal_left_margin: ${this.INTERNAL_LEFT_MARGIN}`);
+	//console.log(`dx: ${this.DX}`);
+	//console.log(`dy: ${this.DY}`);
+	//console.log(`hex_height: ${this.HEX_HEIGHT}`);
+	//console.log(`x,y adjusted for internal margins: ${x},${y}`);
+
+	let  col = Math.floor(x/this.HEX_WIDTH);
+	let  row = -1;
 		
-		//console.log(`hex_width: ${this.HEX_WIDTH}`);
-		//console.log(`internal_top_margin: ${this.INTERNAL_TOP_MARGIN}`);
-		//console.log(`internal_left_margin: ${this.INTERNAL_LEFT_MARGIN}`);
-		//console.log(`dx: ${this.DX}`);
-		//console.log(`dy: ${this.DY}`);
-		//console.log(`hex_height: ${this.HEX_HEIGHT}`);
-		//console.log(`x,y adjusted for internal margins: ${x},${y}`);
+	//console.log(`column: ${col}`);
 
-		let  col = Math.floor(x/this.HEX_WIDTH);
-		let  row = -1;
-			
-		//console.log(`column: ${col}`);
+	if (col % 2 == 0) {
+		//console.log("even column");
+		y = y - this.DY;
+		//console.log(`y adjusted for DY: ${x},${y}`);
 
-		if (col % 2 == 0) {
-			//console.log("even column");
-			y = y - this.DY;
-			//console.log(`y adjusted for DY: ${x},${y}`);
+		row = Math.floor(y/this.HEX_HEIGHT);
+		//console.log(`row: ${row}`);
 
-			row = Math.floor(y/this.HEX_HEIGHT);
-			//console.log(`row: ${row}`);
+		let  modX = x % this.HEX_WIDTH;
+		//console.log(`modX: ${modX}`);
 
-			let  modX = x % this.HEX_WIDTH;
-			//console.log(`modX: ${modX}`);
-
-			if (modX < this.DX) {
-				let  modY = y % this.HEX_HEIGHT;
-				let  cross = this.turns(this.DX,0,0,this.DY,modX,modY);
+		if (modX < this.DX) {
+			let  modY = y % this.HEX_HEIGHT;
+			let  cross = this.turns(this.DX,0,0,this.DY,modX,modY);
+			if (cross == this.LEFT) {
+				//console.log("up to the left");
+				--col;
+			} else if (cross == this.RIGHT) {
+				cross = this.turns(0,this.DY,this.DX,this.HEX_HEIGHT,modX,modY);
 				if (cross == this.LEFT) {
-					//console.log("up to the left");
+					//console.log("down to the left");
 					--col;
-				} else if (cross == this.RIGHT) {
-					cross = this.turns(0,this.DY,this.DX,this.HEX_HEIGHT,modX,modY);
-					if (cross == this.LEFT) {
-						//console.log("down to the left");
-						--col;
-						++row;
-					}
-				}
-			}
-		} else {
-			//console.log("odd column");
-			row = Math.floor(y/this.HEX_HEIGHT);
-			let  modX = x % this.HEX_WIDTH;
-			if (modX < this.DX) {
-				let  modY = y % this.HEX_HEIGHT;
-				let  cross = this.turns(this.DX,0,0,this.DY,modX,modY);
-				if (cross == this.LEFT) {
-					//console.log("up to the left");
-					--row;
-					--col;
-				} else if (cross == this.RIGHT) {
-					cross = this.turns(0,this.DY,this.DX,this.HEX_HEIGHT,modX,modY);
-					if (cross == this.LEFT) {
-						//console.log("down to the left");
-						--col;
-					}
+					++row;
 				}
 			}
 		}
-		
-		let  returnValue = {};
-		returnValue.row = row;
-		returnValue.col = col;
-		
-		return returnValue;
+	} else {
+		//console.log("odd column");
+		row = Math.floor(y/this.HEX_HEIGHT);
+		let  modX = x % this.HEX_WIDTH;
+		if (modX < this.DX) {
+			let  modY = y % this.HEX_HEIGHT;
+			let  cross = this.turns(this.DX,0,0,this.DY,modX,modY);
+			if (cross == this.LEFT) {
+				//console.log("up to the left");
+				--row;
+				--col;
+			} else if (cross == this.RIGHT) {
+				cross = this.turns(0,this.DY,this.DX,this.HEX_HEIGHT,modX,modY);
+				if (cross == this.LEFT) {
+					//console.log("down to the left");
+					--col;
+				}
+			}
+		}
+	}
+	
+	let  returnValue = {};
+	returnValue.row = row;
+	returnValue.col = col;
+	
+	return returnValue;
 	}
 
 	turns(x0, y0, x1, y1, x2, y2) {

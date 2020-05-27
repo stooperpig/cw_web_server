@@ -1,3 +1,6 @@
+import {Topic, GameMode} from '../../model/enum.js';
+import { Dispatcher } from '../../dispatcher.js';
+
 class ClockController {
 	constructor(component, state) {
 		this.component = component;  
@@ -15,7 +18,7 @@ class ClockController {
 		$("#seekEndButton" ).button({icons: {primary: "ui-icon-seek-end"},text: false}).click(function() {controller.seekEnd();});
 		$("#linkButton" ).button({icons: {primary: "ui-icon-link"},text: false});
 
-		amplify.subscribe(wego.Topic.TIME,function(data) {
+		amplify.subscribe(Topic.TIME,function(data) {
             controller.clockUpdate(data);
         });
 	}
@@ -49,6 +52,7 @@ class ClockController {
 	}
 	
 	seekEnd() {
+		Dispatcher.dispatch({action:"Monkey",payload:"Stuff"});
 		let time = this.maxTime;
 		//this.updateCounters(time)
 		this.state.setTime(time);
@@ -78,36 +82,36 @@ class ClockController {
 		this.state.setTime(time);
 	}
 	
-	updateCounters(time) {
-		let mode = this.state.getGameMode();
-		let game = this.state.getGame();
+	// updateCounters(time) {
+	// 	let mode = this.state.getGameMode();
+	// 	let game = this.state.getGame();
 
-		let areThereMoreTasks = false;
+	// 	let areThereMoreTasks = false;
 
-		if (mode == wego.GameMode.PLAN) {
-			let currentPlayer = game.currentPlayer;
-			let counters = currentPlayer.counters;
-			for(let i = 0; i < counters.length; ++i) {
-				areThereMoreTasks |= counters[i].updateCurrentTask(mode,time);
-			}
-		} else {
-			let teams = game.teams;
-			for(let i = 0; i < teams.length; ++i) {
-				let players = teams[i].players;
-				for(let j = 0; j < players.length; ++j) {
-					let counters = players[j].counters;
-					for(let k = 0; k < counters.length; ++k) {
-						areThereMoreTasks |= counters[k].updateCurrentTask(mode, time);
-					}
-				}
-			}
-		}
+	// 	if (mode == GameMode.PLAN) {
+	// 		let currentPlayer = game.currentPlayer;
+	// 		let counters = currentPlayer.counters;
+	// 		for(let i = 0; i < counters.length; ++i) {
+	// 			areThereMoreTasks |= counters[i].updateCurrentTask(mode,time);
+	// 		}
+	// 	} else {
+	// 		let teams = game.teams;
+	// 		for(let i = 0; i < teams.length; ++i) {
+	// 			let players = teams[i].players;
+	// 			for(let j = 0; j < players.length; ++j) {
+	// 				let counters = players[j].counters;
+	// 				for(let k = 0; k < counters.length; ++k) {
+	// 					areThereMoreTasks |= counters[k].updateCurrentTask(mode, time);
+	// 				}
+	// 			}
+	// 		}
+	// 	}
 
-	 	if (!areThereMoreTasks && this.timer != null) {
-	 		window.clearInterval(this.timer);
-	 		this.timer = null;
-	 	}
-	}
+	//  	if (!areThereMoreTasks && this.timer != null) {
+	//  		window.clearInterval(this.timer);
+	//  		this.timer = null;
+	//  	}
+	// }
 }
 
 export default {};

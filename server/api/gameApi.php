@@ -1,8 +1,11 @@
 <?php
 
+$servername = "localhost";
+$username = "wego_app";
+$password = "ferrule11";
+$dbname = "wego_civilwar";
+
 function getCurlValue($filename, $contentType, $postname) {
-    // PHP 5.5 introduced a CurlFile object that deprecates the old @filename syntax
-    // See: https://wiki.php.net/rfc/curl-file-upload
     if (function_exists('curl_file_create')) {
         return curl_file_create($filename, $contentType, $postname);
     }
@@ -19,38 +22,59 @@ function getCurlValue($filename, $contentType, $postname) {
 function saveGame($gameId, $playerId, $data) {
 	$date = date('YmdHis');
 	$file = '../data/games/game'.$gameId.'-'.$playerId.'.json';
-	$newFile = '../data/games/archive/game'.$gameId.'-'.$playerId.'-'.$date.'.json';
-	copy($file,$newFile);
+	//$newFile = '../data/games/archive/game'.$gameId.'-'.$playerId.'-'.$date.'.json';
+	//copy($file,$newFile);
 	file_put_contents('../data/games/game'.$gameId.'-'.$playerId.'.json',$data);
     echo "successfully saved game";
 }
 
-function sendGame($gameId, $playerId) {
-    echo "\nmonkey shit ".$gameId."  ".$playerId;
-    $filename = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\game'.$gameId.'-'.$playerId.'.json';
-    $cfile = getCurlValue($filename,'text/html','game'.$gameId.'-'.$playerId.'.json');
-    echo "\nb";
-    //NOTE: The top level key in the array is important, as some apis will insist that it is 'file'.
-    $data = array('game' => $cfile, 'gameId' => $gameId, 'playerId' => $playerId);
- 
-    $ch = curl_init();
-    $options = array(CURLOPT_URL => 'http://localhost:8080/game',
-                 CURLOPT_RETURNTRANSFER => true,
-                 CURLINFO_HEADER_OUT => true, //Request header
-                 CURLOPT_HEADER => true, //Return header
-                 CURLOPT_SSL_VERIFYPEER => false, //Don't veryify server certificate
-                 CURLOPT_POST => true,
-                 CURLOPT_POSTFIELDS => $data
-                );
- 
-    curl_setopt_array($ch, $options);
-    echo "\nc";
-    $result = curl_exec($ch);
-    $header_info = curl_getinfo($ch,CURLINFO_HEADER_OUT);
-    $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-    $header = substr($result, 0, $header_size);
-    $body = substr($result, $header_size);
-    curl_close($ch);
+function sendGame($gameId) {
+    global $username, $password, $servername, $dbname;
+
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    $sql = "update game state='submitted', last_update=sysdate() where id=".$gameId;
+    $result = $conn->query($sql);
+
+    $sql = "select player from player_game where game=".$gameId;
+    $result = $conn->query($sql);
+
+    $files = array();
+
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $files[] = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\game'.$gameId.'-'.$row["player"].'.json';
+        }
+    }
+
+    $conn->close();
+    
+    // Set postdata array
+    $postData = ['gameId' => $gameId];
+    
+    // Create array of files to post
+    foreach ($files as $index => $file) {
+        $postData['file[' . $index . ']'] = curl_file_create(
+            realpath($file),
+            mime_content_type($file),
+            basename($file)
+        );
+    }
+    
+    $request = curl_init('http://localhost:8080/game/');
+    curl_setopt($request, CURLOPT_POST, true);
+    curl_setopt($request, CURLOPT_POSTFIELDS, $postData);
+    curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+    $result = curl_exec($request);
+    if ($result === false) {
+        error_log(curl_error($request));
+    }
+    
+    curl_close($request);
+
     echo $result;
     echo "\nd";
 }
@@ -85,7 +109,23 @@ if ($action == "retrieveGame") {
 	$playerId = $_POST["playerId"];
 	$data = $_POST["data"];
     saveGame($gameId, $playerId, $data);
-    sendGame($gameId, $playerId);
+
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    $sql = "update player_game set state='submitted', last_update=sysdate() where game=".$gameId." and player=".$playerId;
+    $result = $conn->query($sql);
+
+    $sql = "select distinct state from player_game where game=".$gameId;
+    $result = $conn->query($sql);
+    $rowCount = $result->num_rows;
+    $conn->close();
+
+    if ($rowCount == 1) {
+        sendGame($gameId);
+    }
 } else {
 	echo "no action specified";
 }

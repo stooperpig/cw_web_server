@@ -73,12 +73,11 @@ class UnitPanelController {
 					counter.update(taskSlot, gameMode);
 					let hex = counter.getHex();
 					this.state.setCurrentHex(hex,[counter]);
-					//wego.MainController.drawMap();
 					break;
 				}
 			}
 		} else {
-			alert("not updating");
+			//alert("not updating");
 		}
 	}
 

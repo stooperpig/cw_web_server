@@ -1,5 +1,6 @@
 class Los {
 	constructor(columns, rows, data) {
+		debugger;
 		this.columns = columns;
 		this.rows = rows;
 		this.bytesPerRow = Math.ceil(rows/8);
@@ -20,6 +21,16 @@ class Los {
 			console.log("Projected LOS File Size: " + this.losFileSize + " Actual LOS File Size: " + this.byteArray.byteLength + "\n");
 		}
 	}
+
+	// 1) byte array layout (hexes for each column)
+	// | column 0 hexes | column 1 hexes | column 2 hexes | etc...
+	// 
+	// 2) layout within each column of hexes
+	// | hex (x,0) | hex (x,1) | hex (x,2) | hex (x,3), | etc...
+	// 3) layout within each hex
+	// | column 0 rowData | column 1 rowData | column 2 rowData | etc...
+	// 4) layout within column rowData
+	// | rows 0-7 (byte), rows 8-15 (byte), rows 16-23 (bytes), etc)
 
 	checkLos(fromHex, toHex) {
 		let fromX = fromHex.column;

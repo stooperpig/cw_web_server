@@ -1,3 +1,5 @@
+import {Topic} from '../../model/enum.js';
+
 class ClockView {
     constructor(component, state) {
         this.component = component;  
@@ -5,11 +7,11 @@ class ClockView {
         
         let view = this;
 		
-		amplify.subscribe(wego.Topic.GAME_MODE,function() {
+		amplify.subscribe(Topic.GAME_MODE,function() {
 		 	view.clockUpdate();
          });
          
-         amplify.subscribe(wego.Topic.TIME,function() {
+         amplify.subscribe(Topic.TIME,function() {
             view.clockUpdate();
         });
     }

@@ -15,31 +15,52 @@ function reArrayFiles(&$file_post) {
     return $file_ary;
 }
 
-	echo 'Receive Sim ';
-	$uploaddir = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\';
+echo "Receive Sim \n";
+$uploaddir = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\';
 
-    $file_ary = reArrayFiles($_FILES['file']);
+$gameId = $_GET["gameId"];
+$turn = $_GET["turn"];
+echo "GameId: ".$gameId."\n";
+echo "Turn: ".$turn."\n";
 
-    foreach ($file_ary as $file) {
-        print 'File Name: ' . $file['name'];
-        print 'File Type: ' . $file['type'];
-        print 'File Size: ' . $file['size'];
-        
+$file_ary = reArrayFiles($_FILES['file']);
 
-		    $uploadfile = $uploaddir . basename($file['name']);
+foreach ($file_ary as $file) {
+    print 'File Name: ' . $file['name']."\n";
+    print 'File Type: ' . $file['type']."\n";
+    print 'File Size: ' . $file['size']."\n";
+    
 
-		    echo '<pre>';
-		    if (move_uploaded_file($file['tmp_name'], $uploadfile)) {
-    		    echo "File is valid, and was successfully uploaded.\n";
-		    } else {
-    		    echo "Possible file upload attack!\n";
-		    }		
-    }
- 
-	echo 'Here is some more debugging info:';
-	print_r($_FILES);
+        $uploadfile = $uploaddir . basename($file['name']);
 
-	print "</pre>"; 
- 
+        echo '<pre>';
+        if (move_uploaded_file($file['tmp_name'], $uploadfile)) {
+            echo "\nFile is valid, and was successfully uploaded.\n";
+        } else {
+            echo "Possible file upload attack!\n";
+        }		
+}
+
+echo "Here is some more debugging info:";
+print_r($_FILES);
+
+print "</pre>"; 
+
+$servername = "localhost";
+$username = "wego_app";
+$password = "ferrule11";
+$dbname = "wego_civilwar";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$sql = "update game set turn=".($turn + 1).", state='planning', last_update=sysdate() where id=".$gameId;
+$result = $conn->query($sql);
+$sql = "update player_game set state='planning', last_update=sysdate() where game=".$gameId;
+$result = $conn->query($sql);
+$conn->close();
+
 ?>
  

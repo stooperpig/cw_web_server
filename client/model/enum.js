@@ -1,12 +1,10 @@
-var wego = wego || {};
-
-wego.HexType = {
+var HexType = {
 	CLEAR:{code:" ",name:"Clear"},
 	ROUGH:{code:"r",name:"Rough"},
 	FOREST:{code:"f",name:"Forest"},
 	getType:function getType(code) {
-		var returnValue = null;	
-		for(var i in this) {
+		let returnValue = null;	
+		for(let i in this) {
 			if (this[i].code == code) {
 				returnValue = this[i];
 				break;
@@ -17,13 +15,13 @@ wego.HexType = {
 	}
 }
 
-wego.Formation = {
+var Formation = {
 	COLUMN:"C",
 	LINE:"L",
 	NONE:"N",
 	getType:function getType(name) {
-		var returnValue = null;
-		for(var i in this) {
+		let returnValue = null;
+		for(let i in this) {
 			if (this[i] == name) {
 				returnValue = this[i];
 				break;
@@ -34,7 +32,7 @@ wego.Formation = {
 	}
 }
 
-wego.HexSideType = {
+var HexSideType = {
 	CLEAR:{type:"Clear",code:" ",mask:0},
 	TRAIL:{type:"Trail",code:"t",mask:2},
 	ROAD:{type:"Road",code:"r",mask:4},
@@ -46,8 +44,8 @@ wego.HexSideType = {
 	WALL:{type:"Wall",code:"w",mask:256},
 	RAILROAD_CUT:{type:"Railroad Cut",code:"i",mask:512},
 	getType:function getType(code) {
-		var returnValue = null;
-		for(var i in this) {
+		let returnValue = null;
+		for(let i in this) {
 			if (this[i].code == code) {
 				returnValue = this[i];
 				break;
@@ -58,7 +56,7 @@ wego.HexSideType = {
 	}
 }
 
-wego.TaskType = {
+var TaskType = {
 	WAIT:"Wt",
 	INITIAL:"In",
 	MOVE:"Mv",
@@ -69,8 +67,8 @@ wego.TaskType = {
 	OPPORTUNITY_FIRE:"Of",
 	ABOUT_FACE: "Af",
 	getType:function getType(name) {
-		var returnValue = null;
-		for(var i in this) {
+		let returnValue = null;
+		for(let i in this) {
 			if (this[i] == name) {
 				returnValue = this[i];
 				break;
@@ -81,15 +79,15 @@ wego.TaskType = {
 	}
 }
 
-wego.CounterType = {
+var CounterType = {
 	INFANTRY: "I",
 	CAVALRY: "C",
 	LEADER: "L",
 	SUPPLY: "S",
 	ARTILLERY: "A",
 	getType:function getType(name) {
-		var returnValue = null;
-		for(var i in this) {
+		let returnValue = null;
+		for(let i in this) {
 			if (this[i] == name) {
 				returnValue = this[i];
 				break;
@@ -100,11 +98,11 @@ wego.CounterType = {
 	}
 }
 
-wego.WeaponType = {
+var WeaponType = {
 	NONE: "X",
 	getType:function getType(name) {
-		var returnValue = null;
-		for(var i in this) {
+		let returnValue = null;
+		for(let i in this) {
 			if (this[i] == name) {
 				returnValue = this[i];
 				break;
@@ -115,13 +113,13 @@ wego.WeaponType = {
 	}
 }
 
-wego.MoraleType = {
+var MoraleType = {
 	GOOD: "G",
 	DISRUPTED: "D",
 	ROUTED: "R",
 	getType:function getType(name) {
-		var returnValue = null;
-		for(var i in this) {
+		let returnValue = null;
+		for(let i in this) {
 			if (this[i] == name) {
 				returnValue = this[i];
 				break;
@@ -132,7 +130,7 @@ wego.MoraleType = {
 	}	
 }
 
-wego.Topic = {
+var Topic = {
 	CURRENT_HEX : "currentHex",
 	GAME_MODE : "gameMode",
 	STATUS_MESSAGE : "statusMessage",
@@ -140,12 +138,15 @@ wego.Topic = {
 	TIME: "time"
 }
 
-wego.CommandMode = {
+var CommandMode = {
 		NONE:"None",
 		DIRECT_FIRE:"Direct Fire"
 }
 
-wego.GameMode = {
+var GameMode = {
 	PLAN:"Plan Mode",
 	REPLAY:"Replay Mode"
 }
+
+export default {};
+export {HexType,Formation,GameMode,CommandMode,Topic,MoraleType,WeaponType,CounterType,TaskType,HexSideType};

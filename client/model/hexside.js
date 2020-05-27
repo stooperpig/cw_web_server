@@ -1,3 +1,5 @@
+import {HexSideType} from './enum.js';
+
 class HexSide {
 	constructor() {
 		this.mValue = 0;
@@ -12,39 +14,39 @@ class HexSide {
 	}
 		
 	isTrail() {
-		return (this.mValue & wego.HexSideType.TRAIL.mask) != 0;
+		return (this.mValue & HexSideType.TRAIL.mask) != 0;
 	}
 		
 	isRoad() {
-		return (this.mValue & wego.HexSideType.ROAD.mask) != 0;
+		return (this.mValue & HexSideType.ROAD.mask) != 0;
 	}
 		
 	isPike() {
-		return (this.mValue & wego.HexSideType.PIKE.mask) != 0;
+		return (this.mValue & HexSideType.PIKE.mask) != 0;
 	}
 
 	isRailroad() {
-		return (this.mValue & wego.HexSideType.RAILROAD.mask) != 0;
+		return (this.mValue & HexSideType.RAILROAD.mask) != 0;
 	}
 
 	isStream() {
-		return (this.mValue & wego.HexSideType.STREAM.mask) != 0;
+		return (this.mValue & HexSideType.STREAM.mask) != 0;
 	}
 
 	isCreek() {
-		return (this.mValue & wego.HexSideType.CREEK.mask) != 0;
+		return (this.mValue & HexSideType.CREEK.mask) != 0;
 	}
 
 	isEmbankment() {
-		return (this.mValue & wego.HexSideType.EMBANKMENT.mask) != 0;
+		return (this.mValue & HexSideType.EMBANKMENT.mask) != 0;
 	}
 		
 	isWall() {
-		return (this.mValue & wego.HexSideType.WALL.mask) != 0;
+		return (this.mValue & HexSideType.WALL.mask) != 0;
 	}
 		
 	isRailroadCut() {
-		return (this.mValue & wego.HexSideType.RAILROAD_CUT.mask) != 0;
+		return (this.mValue & HexSideType.RAILROAD_CUT.mask) != 0;
 	}
 			
 	isType(hexSideType) {

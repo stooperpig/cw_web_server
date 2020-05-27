@@ -1,3 +1,6 @@
+import {ImageCache} from '../model/imagecache.js';
+import {Formation} from '../model/enum.js';
+
 var SpriteUtil = (function() {
  let imageScale = 1.25;
 
@@ -60,10 +63,11 @@ var SpriteUtil = (function() {
  let disruptedSpriteIndex = 154;
  let fixedSpriteIndex = 138;
  let blockedSpriteIndex = 26;
+ let firstArrowIndex = 27;
 
  function drawSprite(context, sheetName, spriteNumber, x, y) {
         let sprite = sprites[sheetName];
-        let spriteSheet = wego.ImageCache[sheetName].image;
+        let spriteSheet = ImageCache[sheetName].image;
 
 
         let spriteRow = Math.floor(spriteNumber / sprite.columns);
@@ -76,7 +80,7 @@ var SpriteUtil = (function() {
 
  function drawLeaderSprite(context, spriteNumber, side, selected, x, y) {
     let sprite = sprites["Leaders"];
-    let spriteSheet = wego.ImageCache["Leaders"].image;
+    let spriteSheet = ImageCache["Leaders"].image;
 
     if (selected) {
         let boxNumber = 15;
@@ -112,7 +116,7 @@ var SpriteUtil = (function() {
     let index = 0;
     switch(type) {
         case "I":
-            if (formation == wego.Formation.LINE) {
+            if (formation == Formation.LINE) {
                 index = milSymbolSpriteIndices.infantry_line;
             } else {
                 index = milSymbolSpriteIndices.infantry_column;
@@ -120,7 +124,7 @@ var SpriteUtil = (function() {
             index += facing;
         break;
         case "C":
-            if (formation == wego.Formation.LINE) {
+            if (formation == Formation.LINE) {
                 index = milSymbolSpriteIndices.cavalry_line;
             } else {
                 index = milSymbolSpriteIndices.cavalry_column;
@@ -128,7 +132,7 @@ var SpriteUtil = (function() {
             index += facing;
         break;
         case "A":
-            if (formation == wego.Formation.LINE) {
+            if (formation == Formation.LINE) {
                index = milSymbolSpriteIndices.artillery_limbered;
             } else {
                 index = milSymbolSpriteIndices.artillery_unlimbered;
@@ -189,7 +193,7 @@ var SpriteUtil = (function() {
 
   function getFormationSpriteIndex(formation, facing) {
     let index = 0;
-    if (formation == wego.Formation.LINE) {
+    if (formation == Formation.LINE) {
         index = 204 + facing;
     } else {
         index = 210 + facing;
@@ -209,6 +213,7 @@ return {
     routedSpriteIndex: routedSpriteIndex,
     fixedSpriteIndex: fixedSpriteIndex,
     blockedSpriteIndex: blockedSpriteIndex,
+    firstArrowIndex: firstArrowIndex,
     unitBoxHeight: unitBoxHeight,
     leaderBoxHeight: leaderBoxHeight,
     leaderBoxWidth : leaderBoxWidth

@@ -1,10 +1,12 @@
+import {Topic} from '../../model/enum.js';
+
 class StatusbarView {
 	constructor(component, state) {
 		this.component = component;  
 		this.state = state;
 
 		let view = this;
-		amplify.subscribe(wego.Topic.STATUS_MESSAGE,function(data) {
+		amplify.subscribe(Topic.STATUS_MESSAGE,function(data) {
 			view.setStatusMessage(data);
 		});
 	}

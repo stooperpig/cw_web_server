@@ -1,19 +1,20 @@
 import {SpriteUtil} from '../../util/spriteutil.js';
+import {Topic, CounterType, WeaponType, Formation, MoraleType, GameMode} from '../../model/enum.js';
 
 class UnitPanelView {
     constructor(component, state) {
         this.component = component;
         this.state = state;
 
-        $("#sidebarTabs").tabs();
+        //$("#sidebarTabsDiv").tabs();
         let view = this;
-        amplify.subscribe(wego.Topic.CURRENT_HEX, function(data) {
+        amplify.subscribe(Topic.CURRENT_HEX, function(data) {
             view.updateStack(data.hex,data.selectedCounters);
             view.updateTaskList(data.selectedCounters);
             view.updateHexInfo(data.hex);
         });
         
-        amplify.subscribe(wego.Topic.SELECTED_COUNTERS, function(data) {
+        amplify.subscribe(Topic.SELECTED_COUNTERS, function(data) {
             view.updateStack(data.hex,data.selectedCounters);
             view.updateTaskList(data.selectedCounters);
         });
@@ -54,7 +55,7 @@ class UnitPanelView {
                     let numCounters = counters.length;
                     let leaders = new Array();
                     for(let i = 0; i < numCounters; ++i) {
-                        if (counters[i].type === wego.CounterType.LEADER) {
+                        if (counters[i].type === CounterType.LEADER) {
                             if (isFowEnabled) {
                                 if (counters[i].getSpotted() || counters[i].player.team === currentTeam) {
                                     leaders.push(counters[i]);
@@ -66,7 +67,7 @@ class UnitPanelView {
                     }
 
                     let leaderRows = Math.ceil(leaders.length / 2);
-                    context.canvas.height = (SpriteUtil.unitBoxHeight * numCounters) + 20 + (leaderRows * SpriteUtil.leaderBoxHeight); //todo: do I really need to resize? could just set a max based on rules
+                    //context.canvas.height = (SpriteUtil.unitBoxHeight * numCounters) + 20 + (leaderRows * SpriteUtil.leaderBoxHeight); //todo: do I really need to resize? could just set a max based on rules
                     for(let i = 0; i < leaders.length; ++i) {
                         let row = Math.floor(i / 2);
                         let column = (i % 2);
@@ -78,7 +79,7 @@ class UnitPanelView {
 
                     let unitCount = 0;
                     for(let i = 0; i < numCounters; ++i) {
-                        if (counters[i].type !== wego.CounterType.LEADER) {
+                        if (counters[i].type !== CounterType.LEADER) {
                             let displayCounter = true;
                             if (isFowEnabled) {
                                 if (!counters[i].getSpotted() && counters[i].player.team !== currentTeam) {
@@ -206,18 +207,18 @@ class UnitPanelView {
         x = 34;
         y += rowSpace - 4;
         context.fillStyle = "black";
-        if (counter.weapon !== wego.WeaponType.NONE) {
+        if (counter.weapon !== WeaponType.NONE) {
             context.fillText(counter.weapon,x,y);
         }
 
         let formation = counter.getFormation();
-        if (formation !== wego.Formation.NONE) {
+        if (formation !== Formation.NONE) {
             imageIndex = SpriteUtil.getFormationSpriteIndex(formation, counter.getFacing());
             SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 16, y - 24);
         }
 
         let moraleStatus = counter.getMoraleStatus();
-        if (moraleStatus === wego.MoraleType.ROUTED) {
+        if (moraleStatus === MoraleType.ROUTED) {
             imageIndex = SpriteUtil.routedSpriteIndex;
             SpriteUtil.drawSprite(context, "Icons2d", imageIndex, x + 34, y - 26);
         }
@@ -291,7 +292,7 @@ class UnitPanelView {
                 
                 for(let j = 0; j < tasks.length; ++j) {
                     let task = tasks[j];
-                    let showDeleteButton = j > 0 && gameMode === wego.GameMode.PLAN;
+                    let showDeleteButton = j > 0 && gameMode === GameMode.PLAN;
 
                     let html = `<li class="ui-widget-content ui-state-enabled" data-counter-id="${selectedCounters[i].id}" data-task-slot="${j}">
                         ${(showDeleteButton)?this.buildDeleteTaskLink(selectedCounters[i].id,j):''}

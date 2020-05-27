@@ -1,3 +1,5 @@
+import {GameMode, MoraleType} from './enum.js';
+
 class Counter {
 	constructor() {
 		this.tasks = new Array();
@@ -87,7 +89,7 @@ class Counter {
 	// directFire:function(hex,targets) {
 	// 	let currentHex = this.getHex();
 	// 	let cost = this.getMovementFactor();
-	// 	let task = new wego.Task(wego.TaskType.DIRECT_FIRE,currentHex,cost);
+	// 	let task = new Task(TaskType.DIRECT_FIRE,currentHex,cost);
 	// 	task.otherHex = hex;
 	// 	task.targets = targets;
 	// 	this.addTask(task);
@@ -107,7 +109,7 @@ class Counter {
 	}
 	
 	// getMoveCost:function(fromHex,toHex) {
-	// 	let hexCost = wego.MovementCostTable.getHexCost(this, fromHex, toHex);
+	// 	let hexCost = MovementCostTable.getHexCost(this, fromHex, toHex);
 	// 	return hexCost;
 	// },
 	
@@ -132,7 +134,7 @@ class Counter {
 		returnValue.hasMoreTasks = true;
 		
 		switch(mode) {
-			case wego.GameMode.PLAN:
+			case GameMode.PLAN:
 				if (time < this.tasks.length) {
 					returnValue.task = this.tasks[time]; 
 				} else {
@@ -140,7 +142,7 @@ class Counter {
 					returnValue.hasMoreTasks = false;
 				}
 				break;
-			case wego.GameMode.REPLAY:
+			case GameMode.REPLAY:
 				if (time < this.replayTasks.length) {
 					returnValue.task = this.replayTasks[time]; 
 				} else {
@@ -157,10 +159,10 @@ class Counter {
 		let returnValue = null;
 		
 		switch(gameMode) {
-		case wego.GameMode.PLAN:
+		case GameMode.PLAN:
 			returnValue = this.tasks;
 			break;
-		case wego.GameMode.REPLAY:
+		case GameMode.REPLAY:
 			returnValue = this.replayTasks;
 			break;
 		}
@@ -196,13 +198,13 @@ class Counter {
 
 	isRouted() {
 		let lastTask = this.getLastTask();
-		return lastTask.moraleStatus == wego.MoraleType.ROUTED;
+		return lastTask.moraleStatus == MoraleType.ROUTED;
 	}
 	
 	// padWithWaitTasks:function(numberOfWaitTasks, startingTask) {
 	// 	let hex = startingTask.getHex();
 	// 	for(let i = 0; i < numberOfWaitTasks; ++i) {
-	// 		newTask = new wego.Task(wego.TaskType.WAIT,hex,0,startingTask);
+	// 		newTask = new Task(TaskType.WAIT,hex,0,startingTask);
 	// 		this.addTask(newTask);
 	// 	}
 	// },
@@ -278,12 +280,12 @@ class Counter {
 		
 	// 	if (movementFactor > 0) {
 	// 		if (this.mRemainingMovementFactor > 0) {
-	// 			let task = new wego.Task(wego.TaskType.WAIT,this.getHex(),0.0);
+	// 			let task = new Task(TaskType.WAIT,this.getHex(),0.0);
 	// 			this.addTask(task);
 	// 		}
 	// 	} else {
 	// 		if (this.mTasks.length == 1) {
-	// 			let task = new wego.Task(wego.TaskType.WAIT,this.getHex(),0);
+	// 			let task = new Task(TaskType.WAIT,this.getHex(),0);
 	// 			this.addTask(task);
 	// 		}
 	// 	}

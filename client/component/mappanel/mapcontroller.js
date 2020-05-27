@@ -1,3 +1,5 @@
+import {CommandMode, GameMode, CounterType, Formation, TaskType, HexSideType} from '../../model/enum.js';
+
 class MapController {
 	constructor(component, state) {
 		this.component = component;
@@ -98,7 +100,7 @@ class MapController {
 		if (hex != null) {
 			let commandMode = this.state.getCommandMode();
 			switch(commandMode) {
-				case wego.CommandMode.INDIRECT_FIRE:
+				case CommandMode.INDIRECT_FIRE:
 					canFire = this.canIndirectFire(hex);
 					if (canFire) {
 						let selectedCounters = this.state.getSelectedCounters();
@@ -106,10 +108,10 @@ class MapController {
 							selectedCounters[i].indirectFire(hex);
 						}
 						this.state.setCurrentHex(this.state.getCurrentHex(),selectedCounters);
-						this.state.setCommandMode(wego.CommandMode.NONE);
+						this.state.setCommandMode(CommandMode.NONE);
 					}
 					break;
-				case wego.CommandMode.DIRECT_FIRE:
+				case CommandMode.DIRECT_FIRE:
 					canFire = this.canDirectFire(hex);
 					if (canFire) {
 						this.state.setTargetHex(hex);
@@ -121,15 +123,16 @@ class MapController {
 					let gameMode = this.state.getGameMode();
 					if (event.button === 0) {
 						this.state.setCurrentHex(hex,null);
-					} else if (gameMode === wego.GameMode.PLAN){
-						this.state.setCommandMode(wego.CommandMode.NONE);
+					} else if (gameMode === GameMode.PLAN){
+						this.state.setCommandMode(CommandMode.NONE);
 						let currentHex = this.state.getCurrentHex();
 						if (currentHex != null) {
 							console.log("is adj: " + currentHex.isAdjacent(hex));
 							if (currentHex.isAdjacent(hex)) {
 								let selectedCounters = this.state.getSelectedCounters();
 								if (selectedCounters.length > 0) {
-									this.moveCounters(selectedCounters,hex);
+									let direction = currentHex.getSharedHexSideIndex(hex);
+									this.moveCounters(selectedCounters,hex,direction);
 								} else {
 									this.state.setStatusMessage("No units are selected");
 								}
@@ -152,7 +155,7 @@ class MapController {
 	}
 	
 	doubleClick(event) {
-		this.state.setCommandMode(wego.CommandMode.NONE);
+		this.state.setCommandMode(CommandMode.NONE);
 		this.state.clearStatusMessage();
 
 		let hex = this.getHex(event);
@@ -201,7 +204,7 @@ class MapController {
 	canMove(counter, toHex) {
 		let returnValue = false;
 		if (counter.isReady()) {
-			if (counter.type === wego.CounterType.ARTILLERY && counter.getFormation() === wego.Formation.LINE) {
+			if (counter.type === CounterType.ARTILLERY && counter.getFormation() === Formation.LINE) {
 				returnValue = false;
 			} else {
 				let cost = this.getMovementCost(counter, toHex);
@@ -214,7 +217,7 @@ class MapController {
 		return returnValue;
 	}
 	
-	moveCounters(counters, toHex) {
+	moveCounters(counters, toHex, direction) {
 		let allCanMove = true;
 		for(let i = 0; i < counters.length; ++i) {
 			if(!this.canMove(counters[i], toHex)) {
@@ -228,12 +231,13 @@ class MapController {
 				let counter = counters[i];
 				let cost = this.getMovementCost(counter, toHex);
 				let lastTask = counter.getLastTask();
-				let task = lastTask.clone(wego.TaskType.MOVE, cost, lastTask.movementFactor - cost);
+				let task = lastTask.clone(TaskType.MOVE, cost, lastTask.movementFactor - cost);
 				switch(lastTask.formation) {
-					case wego.Formation.COLUMN:
+					case Formation.COLUMN:
 						task.facing = task.hex.getSharedHexSideIndex(toHex);
 					break;
 				}
+				task.direction = direction;
 				task.hex = toHex;
 				counter.addTask(task);
 			}
@@ -254,19 +258,19 @@ class MapController {
 		let hexSide = fromHex.hexSides[direction];
 		let cost = 0;
 
-		if (formation === wego.Formation.COLUMN || formation === wego.Formation.NONE) {
+		if (formation === Formation.COLUMN || formation === Formation.NONE) {
 			if (hexSide.isTrail()) {
-				cost += parametricData.getHexSideCost(counter.type, formation, wego.HexSideType.TRAIL.code);
+				cost += parametricData.getHexSideCost(counter.type, formation, HexSideType.TRAIL.code);
 			} else if (hexSide.isRoad()) {
-				cost += parametricData.getHexSideCost(counter.type, formation, wego.HexSideType.ROAD.code);
+				cost += parametricData.getHexSideCost(counter.type, formation, HexSideType.ROAD.code);
 			} else if (hexSide.isPike()) {
-				cost += parametricData.getHexSideCost(counter.type, formation, wego.HexSideType.PIKE.code);
+				cost += parametricData.getHexSideCost(counter.type, formation, HexSideType.PIKE.code);
 			} else {
 				if (hexSide.isCreek()) {
 					cost = 99;
 				} else {
 					if (hexSide.isStream()) {
-						cost += parametricData.getHexSideCost(counter.type, formation, wego.HexSideType.STREAM.code);
+						cost += parametricData.getHexSideCost(counter.type, formation, HexSideType.STREAM.code);
 					}
 
 					cost += parametricData.getHexCost(counter.type, formation, hexType.code);
@@ -278,7 +282,7 @@ class MapController {
 				cost = 99;
 			} else {
 				if (hexSide.isStream()) {
-					cost += parametricData.getHexSideCost(counter.type, formation, wego.HexSideType.STREAM.code);
+					cost += parametricData.getHexSideCost(counter.type, formation, HexSideType.STREAM.code);
 				}
 				
 				cost += parametricData.getHexCost(counter.type, formation, hexType.code);

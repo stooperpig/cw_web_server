@@ -1,10 +1,10 @@
-var wego = wego || {};
+import {Topic, CommandMode, GameMode} from './enum.js';
 
-wego.UiState = (function() {
+var UiState = (function() {
 	let currentHex = null;
 	let targetHex =  null;
-	let mCommandMode = wego.CommandMode.NONE;
-	let gameMode = wego.GameMode.PLAN; 
+	let mCommandMode = CommandMode.NONE;
+	let gameMode = GameMode.PLAN; 
 	let selectedCounters = new Array();
 	let game = null;
 	let scenario = null;
@@ -23,11 +23,11 @@ wego.UiState = (function() {
 
 	function toggleDisplayLos() {
 		displayLos = !displayLos;
-		amplify.publish(wego.Topic.CURRENT_HEX,{hex:currentHex, selectedCounters:[]});
+		amplify.publish(Topic.CURRENT_HEX,{hex:currentHex, selectedCounters:[]});
 	}
 
 	function clearStatusMessage() {
-		amplify.publish(wego.Topic.STATUS_MESSAGE,null);
+		amplify.publish(Topic.STATUS_MESSAGE,null);
 	}
 	
 	function getGameMode() {
@@ -70,11 +70,11 @@ wego.UiState = (function() {
 		}
 
 		selectedCounters = counters;
-		amplify.publish(wego.Topic.CURRENT_HEX,{hex:currentHex, selectedCounters:counters});
+		amplify.publish(Topic.CURRENT_HEX,{hex:currentHex, selectedCounters:counters});
 	}
 	
 	function setGameMode(value) {
-		if (gameMode === wego.GameMode.PLAN) {
+		if (gameMode === GameMode.PLAN) {
 			lastPlanTime = time;
 		} else {
 			lastReplayTime = time;
@@ -82,23 +82,23 @@ wego.UiState = (function() {
 
 		gameMode = value;
 		
-		if (value === wego.GameMode.PLAN) {
+		if (value === GameMode.PLAN) {
 			time = lastPlanTime;
 		} else {
 			time = lastReplayTime;
 		}
 
-		amplify.publish(wego.Topic.GAME_MODE,{gameMode});
+		amplify.publish(Topic.GAME_MODE,{gameMode});
 		setTime(time);
 	}
 	
 	function setStatusMessage(message) {
-		amplify.publish(wego.Topic.STATUS_MESSAGE,message);
+		amplify.publish(Topic.STATUS_MESSAGE,message);
 	}
 
 	function setSelectedCounters(value) {
 		selectedCounters = value;
-		amplify.publish(wego.Topic.SELECTED_COUNTERS,{hex:currentHex, selectedCounters:selectedCounters});
+		amplify.publish(Topic.SELECTED_COUNTERS,{hex:currentHex, selectedCounters:selectedCounters});
 	}
 	
 	function setTargetHex(hex) {
@@ -144,14 +144,14 @@ wego.UiState = (function() {
 	function setTime(value) {
 		time = value;
 		let areThereMoreTasks = updateCounters();
-		amplify.publish(wego.Topic.TIME,areThereMoreTasks);
-		amplify.publish(wego.Topic.CURRENT_HEX,{hex:currentHex, selectedCounters:[]});
+		amplify.publish(Topic.TIME,areThereMoreTasks);
+		amplify.publish(Topic.CURRENT_HEX,{hex:currentHex, selectedCounters:[]});
 	}
 
 	function updateCounters() {
 		let areThereMoreTasks = false;
 
-		if (gameMode === wego.GameMode.PLAN) {
+		if (gameMode === GameMode.PLAN) {
 			let currentPlayer = game.currentPlayer;
 			let counters = currentPlayer.counters;
 			for(let i = 0; i < counters.length; ++i) {
@@ -187,7 +187,7 @@ wego.UiState = (function() {
 
 	function setEnableFow(value) {
 		enableFow = value; 
-		amplify.publish(wego.Topic.CURRENT_HEX,{hex:currentHex, selectedCounters:[]});
+		amplify.publish(Topic.CURRENT_HEX,{hex:currentHex, selectedCounters:[]});
 	}
 
 	return {
@@ -221,3 +221,6 @@ wego.UiState = (function() {
 		setEnableFow : setEnableFow
 	}
 })();
+
+export default {};
+export {UiState};

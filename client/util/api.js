@@ -12,6 +12,7 @@ var GameApi = (function() {
 	}
 	
 	function submitTurn(game) {
+		debugger;
 		var result = game.save();
 		alert(JSON.stringify(result));
 		$.post("/civilwar/server/api/gameApi.php", {action:"submitTurn", gameId:game.id, playerId:game.currentPlayer.id, data:JSON.stringify(result)}).done(function( data ) {

@@ -2,17 +2,20 @@ import {Team} from './team.js';
 import {Player} from './player.js';
 import {CounterFactory} from './counterfactory.js';
 import {Task} from './task.js';
+import {TaskType} from './enum.js';
 
 class Game {
 	constructor() {
-	this.teams = new Array();
-	this.currentPlayer;
-	this.turn = 0;
-	this.id;
-	this.counters = new Array();
-	this.scenarioId = 0;
-	this.showReplay = false;
-	this.messageMap = {};
+		this.teams = new Array();
+		this.currentPlayer;
+		this.currentTurn = 0;
+		this.id = -1;
+		this.counters = new Array();
+		this.scenarioId = 0;
+		this.showReplay = false;
+		this.messageMap = {};
+		this.currentVisibility = 0;
+		this.currentDateTime;
 	}
 
 	getCounter(id) {
@@ -44,10 +47,13 @@ class Game {
 	}
 	
 	initialize(data, map) {
-		this.turn = data.currentTurn;
+		this.id = data.id;
+		this.currentTurn = data.currentTurn;
 		this.scenarioId = data.scenarioId;
 		this.showReplay = data.showReplay;
 		this.messageMap = data.messageMap;
+		this.currentVisibility = data.currentVisibility;
+		this.currentDateTime = data.currentDateTime;
 		console.log("currentPlayer: " + data.currentPlayerId);
 		Task.counter = data.taskCounter;
 
@@ -132,7 +138,7 @@ class Game {
 			hex = map.getHex(hexX,hexY);
 		}
 		
-		let taskType = wego.TaskType.getType(task.type);
+		let taskType = TaskType.getType(task.type);
 		let newTask = new Task(taskType, task.cost, task.movementFactor);
 		newTask.hex = hex;
 		newTask.id = task.id;
@@ -143,6 +149,7 @@ class Game {
 		newTask.moraleStatus = task.moraleStatus;
 		newTask.fixed = task.fixed;
 		newTask.spotted = task.spotted;
+		newTask.direction = task.direction;
 							
 		let targetIds = task.targetIds;
 		if (targetIds != null) {
@@ -161,11 +168,14 @@ class Game {
 	save() {
 		let returnValue = {};
 		
-		returnValue.currentTurn = this.turn;
+		returnValue.id = this.id;
+		returnValue.currentTurn = this.currentTurn;
 		returnValue.scenarioId = this.scenarioId;
 		returnValue.currentPlayerId = this.currentPlayer.id;
 		returnValue.messageMap = this.messageMap;
 		returnValue.taskCounter = Task.counter;
+		returnValue.currentVisibility = this.currentVisibility;
+		returnValue.currentDateTime = this.currentDateTime;
 		returnValue.teams = new Array();
 		for(let i = 0; i < this.teams.length; ++i) {
 			let result = this.teams[i].save();

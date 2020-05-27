@@ -9,6 +9,7 @@ class MainMenuController {
 		$("#menuItemSaveGameMenuItem").click(function() {controller.saveGame();});
 		$("#menuItemSubmitTurnMenuItem").click(function() {controller.submitTurn();});
 		$("#statusReportMenuItem").click(function() {controller.showStatusReport();});
+		$("#terrainChartMenuItem").click(function() {controller.showTerrainChart();});
 		$("#releasesReportMenuItem").click(function() {controller.showUnitsReport("releases");});
 		$("#reinforcementsReportMenuItem").click(function() {controller.showUnitsReport("reinforcements");});
 		$("#toggleFowMenuItem").click(function() {controller.toggleFow();});
@@ -24,6 +25,10 @@ class MainMenuController {
 
 	showStatusReport() {
 		wego.StatusReportComponent.showReport();
+	}
+
+	showTerrainChart() {
+		wego.TerrainChartComponent.showReport();
 	}
 
 	showUnitsReport(type) {

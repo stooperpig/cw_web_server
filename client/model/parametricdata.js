@@ -54,6 +54,14 @@ class ParametricData {
     getRearwardMovementCost() {
         return this.rearwardMovementCost;
     }
+
+    getDawnDuskVisbility() {
+        return this.getDawnDuskVisbility;
+    }
+
+    getNightVisibility() {
+        return this.getNightVisibility;
+    }
 }
 
 export default {};

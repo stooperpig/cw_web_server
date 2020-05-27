@@ -25,32 +25,60 @@ function getCurlValue($filename, $contentType, $postname)
 //$filename = 'C:\\sites\\wego\\civilwar\\server\\data\\scenarios\\scenario0.json';
 //$cfile = getCurlValue($filename,'text/html','scenario0.json');
 
-$filename = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\game0-0.json';
-$cfile = getCurlValue($filename,'text/html','game0-0.json');
+$files = [
+    'C:\\sites\\wego\\civilwar\\server\\data\\games\\game0-0.json',
+    'C:\\sites\\wego\\civilwar\\server\\data\\games\\game0-1.json'
+];
+
+// Set postdata array
+$postData = ['gameId' => 0];
+
+// Create array of files to post
+foreach ($files as $index => $file) {
+    $postData['file[' . $index . ']'] = curl_file_create(
+        realpath($file),
+        mime_content_type($file),
+        basename($file)
+    );
+}
+
+$request = curl_init('http://localhost:8080/game/');
+curl_setopt($request, CURLOPT_POST, true);
+curl_setopt($request, CURLOPT_POSTFIELDS, $postData);
+curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+$result = curl_exec($request);
+if ($result === false) {
+    error_log(curl_error($request));
+}
+
+curl_close($request);
+
+//$filename = 'C:\\sites\\wego\\civilwar\\server\\data\\games\\game0-0.json';
+//$cfile = getCurlValue($filename,'text/html','game0-0.json');
  
 //NOTE: The top level key in the array is important, as some apis will insist that it is 'file'.
 //$data = array('file' => $cfile, 'file0' => $cfile0);
-$data = array('game' => $cfile, 'gameId');
+//$data = array('game' => $cfile, 'gameId');
  
-$ch = curl_init();
-$options = array(CURLOPT_URL => 'http://localhost:8080/game/',
-             CURLOPT_RETURNTRANSFER => true,
-             CURLINFO_HEADER_OUT => true, //Request header
-             CURLOPT_HEADER => true, //Return header
-             CURLOPT_SSL_VERIFYPEER => false, //Don't veryify server certificate
-             CURLOPT_POST => true,
-             CURLOPT_POSTFIELDS => $data
-            );
+//$ch = curl_init();
+//$options = array(CURLOPT_URL => 'http://localhost:8080/game/',
+//             CURLOPT_RETURNTRANSFER => true,
+//             CURLINFO_HEADER_OUT => true, //Request header
+//             CURLOPT_HEADER => true, //Return header
+//             CURLOPT_SSL_VERIFYPEER => false, //Don't veryify server certificate
+//             CURLOPT_POST => true,
+//             CURLOPT_POSTFIELDS => $data
+//            );
  
-curl_setopt_array($ch, $options);
-$result = curl_exec($ch);
-$header_info = curl_getinfo($ch,CURLINFO_HEADER_OUT);
-$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-$header = substr($result, 0, $header_size);
-$body = substr($result, $header_size);
-curl_close($ch);
+//curl_setopt_array($ch, $options);
+//$result = curl_exec($ch);
+//$header_info = curl_getinfo($ch,CURLINFO_HEADER_OUT);
+//$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+//$header = substr($result, 0, $header_size);
+//$body = substr($result, $header_size);
+//curl_close($ch);
 
-echo $options
+//echo $options
  
 ?>
  

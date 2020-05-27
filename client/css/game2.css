@@ -1,5 +1,159 @@
 
-body {font-family: Segoe UI,Helvetica,Arial,sans-serif;}
+html, body {
+	color: white;
+	font-family: Segoe UI,Helvetica,Arial,sans-serif;
+	background-color: black;
+	margin:0px;
+}
+
+.page {
+	display: flex;
+	flex-flow: column;
+	align-items: stretch;
+	width: 100vw;
+	height: 100vh;
+}
+
+/************************ header section styles ************************/
+.headerDiv {
+	background-color:red;
+	flex-grow:0;
+	height:100px;
+}
+
+/************************ center section styles ************************/
+.centerDiv {
+	/*background-color:tan;*/
+	flex-grow:1;
+	display: flex;
+	flex-flow: row;
+	align-items: stretch;
+	height:100%;
+	width:100%;
+}
+
+#sidebarDiv {
+	border:1px solid white;
+	flex-grow: 0;
+	/*background-color:green;*/
+	width:165px;
+	max-width: 165px;
+	height:100%;
+	/*display:flex;
+	flex-flow: column;
+	align-items: stretch;
+	background-color: blue; */
+	display: flex;
+	flex-flow: column;
+	align-items: stretch;
+}
+
+#stackDiv {
+	width:165px;
+	max-width: 165px;
+	/*background-color:pink;*/
+	flex-grow: 1;
+	height:100%;
+	overflow:auto;
+	/*overflow: scroll;
+	color:#ffffff;
+	flex-grow: 1;
+	max-height:100%;
+	height:100vh;*/
+}
+
+#unitBoxCanvas {margin-left:5px;}
+
+#sidebarTabsDiv {
+	width:165px;
+	max-width: 165px;
+	/*background-color:orange;*/
+	flex-grow: 0;
+	height:250px;
+	padding-left:5px;
+}
+
+.tabLabels {
+	display:flex;
+	flex-flow: row;
+	list-style: none;
+	padding-top:5px;
+}
+
+.tabLabels > div {
+	padding: 0 5px 0 5px;
+	border:1px solid white;
+}
+
+.tabLabels > div.active {
+	background-color:white;
+	color:black;
+}
+
+.tabs {
+	position:relative;
+}
+
+.tabs > div {
+	display:none;
+}
+
+.tabs > div.active {
+	background-color:red;
+	display:block;
+}
+
+#taskListDiv {height:212px; overflow:auto; padding:0;}
+#taskList { padding:0em 1.4em; }
+#hexInfo { padding:0; }
+
+#mainMapDiv {
+	flex-grow:1;
+	background-color:purple;
+	height:100%;
+	overflow:auto;
+	/*grid-column-start: 2;
+	grid-column-end: 3;
+	background-color: black;
+	height:auto;
+	overflow:auto; 
+	max-height: 100%;*/
+}
+
+#mainMapCanvas {border: 0px none black;}
+/************************ footer section styles ************************/
+.footerDiv {
+	background-color:blue;
+	flex-grow:0;
+	height:100px;
+}
+
+/***********************************************/
+
+
+
+#sidebarBottom {
+	background-color: red;
+	height:258px;
+	flex-grow: 0;
+}
+
+#mainToolbar {
+	grid-column-start: 1;
+	grid-column-end: 3;
+}
+
+#mainMenuDiv {
+	grid-column-start: 1;
+	grid-column-end: 3;
+}
+
+
+
+#footerDiv {
+	grid-column-start: 1;
+	grid-column-end: 3;
+}
 
 #header {border-bottom:1px solid #ffffff; width:100%; height:85px;}
 .headerFirstRow { display:flex; align-items: center; background-color:#201913; }
@@ -16,23 +170,21 @@ body {font-family: Segoe UI,Helvetica,Arial,sans-serif;}
 #footerStatusDiv {float:left; background-color:#201913; height:29px; padding-top:5px; padding-left:2px; color:#ffffff; border-left:1px dotted #ffffff; }
 #footerTurnDiv {float:right; background-color:#201913; height:29px; padding-top:5px; padding-left:10px; padding-right:10px; color:#ffffff; border-left:1px dotted #ffffff;}
 
-#center {width:100%; height:600px;} 
-#sidebar {border-right:1px solid #ffffff; float:left; width:140px; height:100%;}
-#stackDiv {width:179px; overflow:auto; background:#201913; color:#ffffff;}
-#sidebarTabs {height:250px;}
-#taskListDiv {height:212px; overflow:auto; padding:0;}
+/*#center {width:100%; height:600px;} */
+
+
 
 
 #gameModeButton {float:right; margin-right:10px;}
 
-#hexInfo { padding:0; }
-#taskList { padding:0em 1.4em; }
+
+
 
 #currentHexDiv {background-color:#201913;; width:179px; height:120px; color:#ffffff;}
 
-#mainMapDiv {height:100%; overflow:auto; background-color:#000000;}
-#mainMapCanvas {border: 0px none black;}
-#unitBoxCanvas {margin-left:5px;}
+
+
+
 
 #counterList .ui-selecting, #targetList .ui-selecting, #taskList .ui-selecting { background: #FECA40; }
 #counterList .ui-selected, #targetList .ui-selected, #taskList .ui-selected { background: #F39814; color: white; }
@@ -47,6 +199,8 @@ body {font-family: Segoe UI,Helvetica,Arial,sans-serif;}
 #taskList {
 	overflow:auto;
 }
+
+#mainToolbar .ui-button {position:static;}
 
 nav {color: #9BCC60; font-weight:bold;}
 nav ul { margin:0px;}
@@ -65,7 +219,7 @@ nav ul ul li a:hover {background: url("/panzerblitz/server/images/ui-bg_gloss-wa
 nav ul ul ul {left: 100%; position: absolute; top: 0;}
 nav ul ul { z-index: 2;}
 
-#mainToolbar .ui-button {position:static;}
+
 .ui-widget {font-size:.9em;}
 .ui-widget-overlay {background:#ffffff; -moz-opacity:0.99; filter:alpha(opacity=99);}
 

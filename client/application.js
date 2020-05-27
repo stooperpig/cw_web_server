@@ -4,6 +4,7 @@ import {Scenario} from './model/scenario.js';
 import {GameApi} from './util/api.js';
 import {Los} from './model/los.js';
 import {ParametricData} from './model/parametricdata.js';
+import {ImageCache} from './model/imagecache.js';
 
 class Application {
 	constructor(state) {
@@ -31,6 +32,7 @@ class Application {
 	}
 
 	adjustSize() { 
+		/*
 		let windowHeight = $(window).height(); 
 		let headerHeight = $('#header').height(); 
 		let footerHeight = $('#footer').height();
@@ -43,7 +45,7 @@ class Application {
 			stackHeight = 200;
 		}
 		
-		$("#stackDiv").height(stackHeight);
+		$("#stackDiv").height(stackHeight); */
 	}
 	
 	getCurrentHex() {
@@ -71,7 +73,6 @@ class Application {
 	}
 	
 	loadData(data) {
-		debugger;
 		console.log(data);
 		let application = this;
 
@@ -79,14 +80,14 @@ class Application {
 		scenario.initialize(data.scenario);
 		let images = scenario.getImageNames(); //data.scenario.images;
 		for(let name in images) {
-			wego.ImageCache[name] = {src:images[name]};
+			ImageCache[name] = {src:images[name]};
 		}
 
 		let map = this.state.getMap();
 		map.initialize(data.map);
 		images = map.getImageNames();
 		for(let name in images) {
-			wego.ImageCache[name] = {src:images[name]};
+			ImageCache[name] = {src:images[name]};
 		}
 
 		let game = this.state.getGame();
@@ -96,9 +97,9 @@ class Application {
 		parametricData.initialize(data.parametricData);
 
         window.document.title = "Civil War: " + scenario.title;
-        $("#footerTurnDiv").html("Turn " + (game.turn + 1));
+        $("#footerTurnDiv").html("Turn " + (game.currentTurn + 1) + " (visibility: " + game.currentVisibility + " hexes)");
 
-		this.loadImages(wego.ImageCache, function(data) {application.initializeMapCanvas(data);});
+		this.loadImages(ImageCache, function(data) {application.initializeMapCanvas(data);});
 
 		let oReq = new XMLHttpRequest();
 		oReq.open("GET","/civilwar/server/data/maps/wc.los");

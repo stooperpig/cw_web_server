@@ -1,3 +1,5 @@
+import {CommandMode, GameMode, CounterType, TaskType, Formation} from '../../model/enum.js';
+
 class ToolbarController {
 	constructor(component, state) {
 		this.component = component;
@@ -65,19 +67,19 @@ class ToolbarController {
 	// },
 	
 	// directFireCommand:function() {
-	// 	this.state.setCommandMode(wego.CommandMode.NONE);
+	// 	this.state.setCommandMode(CommandMode.NONE);
 	// 	let canFire = canDirectFire();
 	// 	if (canFire) {
-	// 		this.state.setCommandMode(wego.CommandMode.DIRECT_FIRE);
+	// 		this.state.setCommandMode(CommandMode.DIRECT_FIRE);
 	// 		this.state.setStatusMessage("Select target hex");
 	// 	}
 	// },
 	
 	gameModeCommand(button) {
-		if (this.state.getGameMode() == wego.GameMode.PLAN) {
-			this.state.setGameMode(wego.GameMode.REPLAY);
+		if (this.state.getGameMode() == GameMode.PLAN) {
+			this.state.setGameMode(GameMode.REPLAY);
 		} else {
-			this.state.setGameMode(wego.GameMode.PLAN);
+			this.state.setGameMode(GameMode.PLAN);
 		}
 	}
 	
@@ -86,7 +88,7 @@ class ToolbarController {
 	}
 	
 	// opportunityFireCommand:function() {
-	// 	this.state.setCommandMode(wego.CommandMode.NONE);
+	// 	this.state.setCommandMode(CommandMode.NONE);
 	// 	let canFire = canOpportunityFire();
 	// 	if (canFire) {
 	// 		let selectedCounters = this.state.getSelectedCounters();
@@ -130,8 +132,8 @@ class ToolbarController {
 		let returnValue = false;
 		if (counter.isReady()) {
 			switch(counter.type) {
-				case wego.CounterType.SUPPLY:
-				case wego.CounterType.LEADER:
+				case CounterType.SUPPLY:
+				case CounterType.LEADER:
 					returnValue = true;
 				break;
 				default:
@@ -180,15 +182,15 @@ class ToolbarController {
 					if (direction == "left") {
 						cost = parametricData.getRotationCost(counter.type);
 						newFacing = (facing == 0)?5:facing - 1;
-						task = lastTask.clone(wego.TaskType.ROTATE_LEFT, cost, lastTask.movementFactor - cost);
+						task = lastTask.clone(TaskType.ROTATE_LEFT, cost, lastTask.movementFactor - cost);
 					} else if (direction == "right") {
 						cost = parametricData.getRotationCost(counter.type);
 						newFacing = (facing == 5)?0:facing + 1;
-						task = lastTask.clone(wego.TaskType.ROTATE_RIGHT, cost, lastTask.movementFactor - cost);
+						task = lastTask.clone(TaskType.ROTATE_RIGHT, cost, lastTask.movementFactor - cost);
 					} else {
 						newFacing = (facing + 3) % 6;
 						cost = parametricData.getAboutFaceCost(counter.type);
-						task = lastTask.clone(wego.TaskType.ABOUT_FACE, cost, lastTask.movementFactor - cost);
+						task = lastTask.clone(TaskType.ABOUT_FACE, cost, lastTask.movementFactor - cost);
 					}
 
 					task.facing = newFacing;
@@ -208,19 +210,19 @@ class ToolbarController {
 		if (counter.isReady() && !counter.isRouted()) {
 			let lastTask = counter.getLastTask();
 			switch(counter.type) {
-				case wego.CounterType.SUPPLY:
+				case CounterType.SUPPLY:
 					returnValue = false;
 				break;
-				case wego.CounterType.LEADER:
+				case CounterType.LEADER:
 					returnValue = true;
 				break;
-				case wego.CounterType.CAVALRY:
-				case wego.CounterType.ARTILLERY:
+				case CounterType.CAVALRY:
+				case CounterType.ARTILLERY:
 					let formationChangeCost = this.state.getParametricData().getFormationChangeCost(counter.type);
 					returnValue = (lastTask.movementFactor >= formationChangeCost);
 				break;
-				case wego.CounterType.INFANTRY:
-					returnValue = (lastTask.type == wego.TaskType.INITIAL);
+				case CounterType.INFANTRY:
+					returnValue = (lastTask.type == TaskType.INITIAL);
 				break;
 			}
 		}
@@ -248,29 +250,29 @@ class ToolbarController {
 					let counter = selectedCounters[i];
 					let lastTask = counter.getLastTask();
 					let task = null;
-					let newFormation = wego.Formation.LINE;
+					let newFormation = Formation.LINE;
 
-					if (lastTask.formation == wego.Formation.LINE) {
-						newFormation = wego.Formation.COLUMN;
+					if (lastTask.formation == Formation.LINE) {
+						newFormation = Formation.COLUMN;
 					}
 
 					let formationChangeCost = this.state.getParametricData().getFormationChangeCost(counter.type);
 					switch(counter.type) {
-						case wego.CounterType.CAVALRY:
-						case wego.CounterType.LEADER:
-							let lineMovementAllowance = this.state.getParametricData().getMovementAllowance(counter.type, wego.Formation.LINE);
-							let columnMovementAllowance = this.state.getParametricData().getMovementAllowance(counter.type, wego.Formation.COLUMN);
+						case CounterType.CAVALRY:
+						case CounterType.LEADER:
+							let lineMovementAllowance = this.state.getParametricData().getMovementAllowance(counter.type, Formation.LINE);
+							let columnMovementAllowance = this.state.getParametricData().getMovementAllowance(counter.type, Formation.COLUMN);
 							let movementFactor = 0;
-							if (newFormation == wego.Formation.LINE) {
+							if (newFormation == Formation.LINE) {
 								movementFactor = lineMovementAllowance - ((columnMovementAllowance - lastTask.movementFactor + formationChangeCost) / 2);
 							} else {
 								movementFactor = columnMovementAllowance - ((lineMovementAllowance - lastTask.movementFactor + formationChangeCost) * 2);
 							}
-							task = lastTask.clone(wego.TaskType.CHANGE_FORMATION, formationChangeCost, movementFactor);
+							task = lastTask.clone(TaskType.CHANGE_FORMATION, formationChangeCost, movementFactor);
 						break;
-						case wego.CounterType.ARTILLERY:
-						case wego.CounterType.INFANTRY:
-							task = lastTask.clone(wego.TaskType.CHANGE_FORMATION, formationChangeCost, lastTask.movementFactor - formationChangeCost);
+						case CounterType.ARTILLERY:
+						case CounterType.INFANTRY:
+							task = lastTask.clone(TaskType.CHANGE_FORMATION, formationChangeCost, lastTask.movementFactor - formationChangeCost);
 						break;
 					}
 

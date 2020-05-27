@@ -1,15 +1,17 @@
+import {Topic, GameMode} from '../../model/enum.js';
+
 class ToolbarView {
 	constructor(component, state) {
 		this.component = component;
 		this.state = state;
         let view = this;
-		amplify.subscribe(wego.Topic.GAME_MODE,function() {
+		amplify.subscribe(Topic.GAME_MODE,function() {
 		    var button = $('#gameModeButton span');
-		    if (view.state.getGameMode() === wego.GameMode.PLAN) {
-			    button.html(wego.GameMode.PLAN);
+		    if (view.state.getGameMode() === GameMode.PLAN) {
+			    button.html(GameMode.PLAN);
 			    view.enableDisableCommandButtons(false);
 		    } else {
-    			button.html(wego.GameMode.REPLAY);
+    			button.html(GameMode.REPLAY);
     			view.enableDisableCommandButtons(true);
     		}
         });

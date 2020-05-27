@@ -1,6 +1,6 @@
 import {GameMode} from '../../model/enum.js';
 
-class UnitsReportController {
+class TerrainChartController {
 	constructor(component, state) {
 		this.component = component;  
 		this.state = state;
@@ -26,4 +26,4 @@ class UnitsReportController {
 };
 
 export default {};
-export {UnitsReportController};
+export {TerrainChartController};

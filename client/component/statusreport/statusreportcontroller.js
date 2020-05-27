@@ -1,3 +1,5 @@
+import {GameMode} from '../../model/enum.js';
+
 class StatusReportController {
 	constructor(component, state) {
 		this.component = component;  
@@ -13,7 +15,7 @@ class StatusReportController {
 
 	showReplay() {
 		$("#dialog").dialog("close");
-		this.state.setGameMode(wego.GameMode.REPLAY);
+		this.state.setGameMode(GameMode.REPLAY);
 	}
 }
 
